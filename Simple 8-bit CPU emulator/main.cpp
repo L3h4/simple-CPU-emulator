@@ -2,15 +2,23 @@
 #include<stdio.h>
 #include <string>
 #include<windows.h>
+
+#include"InstructionSet.h"
+#include"Memory.cpp"
+
+using namespace std;
+
+
 // Документация https://www.evernote.com/l/AfpYiDoi7_hKJJHEmHGxAVzqdoACyR6W718/
 
 
-using namespace std;
+
 
 // разкоментируйте следующую строку, чтобы видеть дебаг комментарии
 // #define PRINT_DEBUG
 
 #define u8 uint8_t
+#define u16 uint16_t
 
 /*
 	Документация https://www.evernote.com/l/AfpYiDoi7_hKJJHEmHGxAVzqdoACyR6W718/
@@ -19,276 +27,13 @@ using namespace std;
 	программу писать где-то в районе 616-й строки
 */
 
-u8 memory[256]; // "оперативная память"
-void mem_write(u8 addres, u8 value) {
-	memory[addres] = value;
-}
-u8 mem_read(u8 addres) {
-	return memory[addres];
-}
-void mem_print() {
-	printf("MEMORY");
-	for (short int i = 0; i < sizeof(memory); i++) {
-		if (i % 16 == 0) {
-			printf("\n");
-			printf("  0x%.2X  |  ", i);
-		}
-		printf(" %.2X ", memory[i]);
-	}
-	printf("\n==========================================================================\n\n");
-}
 
 
 // некоторые переменные
 bool execute_til_HLT = false;
-string stdout_buffer;
-
-// Регистры
-struct
-{
-	// Регистры общего назначения
-	u8 AX;
-	u8 BX;
-	u8 CX;
-	u8 DX;
-
-	u8 PC; // Счетчик программы
-	u8 SP; // Указатель стэка
-
-	struct {
-		bool Z; // Флаг ноля
-		bool C; // Флаг переноса
-		bool S; // Флаг знака (0 : + | 1 : -)
-	} STATUS;
-
-	void print() {
-		// Вывод значений регистров в консоль
-		printf("==========\n");
-		printf("REGISTERS\n");
-		printf("AX = 0x%.2X\n", Regs.AX);
-		printf("BX = 0x%.2X\n", Regs.BX);
-		printf("CX = 0x%.2X\n", Regs.CX);
-		printf("DX = 0x%.2X\n", Regs.DX);
-		printf("=========\n");
-		printf("PC = 0x%.2X\n", Regs.PC);
-		printf("SP = 0x%.2X\n", Regs.SP);
-		printf("FLAGS\n");
-		printf("S C Z\n");
-		printf("%d %d %d\n", Regs.STATUS.S, Regs.STATUS.C, Regs.STATUS.Z);
-		printf("==========\n");
-	}
-} Regs;
 
 
-struct
-{
-	void MOV(u8 *dest, u8 *source)
-	{
-		// просто копирую значение из source в dest
-		::memcpy(dest, source, sizeof(u8));
-	}
-
-	void ADD(u8 *oprand1, u8 *operand2)
-	{
-		// обнуляю флаги
-		Regs.STATUS.C = false;
-		Regs.STATUS.S = false;
-		Regs.STATUS.Z = false;
-		// Выставляю флаги
-		if (short int(*oprand1) + short int(*operand2) > 255)
-		{
-			Regs.STATUS.C = true;
-		}
-		if (u8(*oprand1 + *operand2) == 0)
-		{
-			Regs.STATUS.Z = true;
-		}
-		// провожу операцию
-		*oprand1 += *operand2;
-	}
-
-	void SUB(u8 *oprand1, u8 *operand2)
-	{
-		// обнуляю флаги
-		Regs.STATUS.C = false;
-		Regs.STATUS.Z = false;
-
-		// Выставляю флаги
-		if (short int(*oprand1) - *operand2 < 0)
-		{
-			Regs.STATUS.S = true;
-		}
-		if (*oprand1 - *operand2 == 0)
-		{
-			Regs.STATUS.Z = true;
-		}
-		// провожу операцию
-		*oprand1 -= *operand2;
-	}
-
-	void CMP(u8 *oprand1, u8 *operand2)
-	{
-		// обнуляю флаги
-		Regs.STATUS.C = false;
-		Regs.STATUS.S = false;
-		Regs.STATUS.Z = false;
-
-		// Выставляю флаги
-		if (short int(*oprand1) - *operand2 < 0)
-		{
-			Regs.STATUS.S = true;
-		}
-		if (u8(*oprand1 - *operand2) == 0)
-		{
-			Regs.STATUS.Z = true;
-		}
-
-	}
-
-	void JMP(u8 addres)
-	{
-		Regs.PC = addres;
-	}
-
-	void JE(u8 addres)
-	{
-		//  безусловный переход
-		if (Regs.STATUS.Z) {
-			JMP(addres);
-		}
-	}
-
-	void JNE(u8 addres)
-	{
-		if (!Regs.STATUS.Z) {
-			JMP(addres);
-		}
-	}
-
-	void JL(u8 addres)
-	{
-		if (Regs.STATUS.S) {
-			JMP(addres);
-		}
-	}
-
-	void JG(u8 addres)
-	{
-		if (!Regs.STATUS.S) {
-			JMP(addres);
-		}
-	}
-
-	void JLE(u8 addres)
-	{
-		if (Regs.STATUS.S || Regs.STATUS.Z) {
-			JMP(addres);
-		}
-	}
-
-	void JGE(u8 addres)
-	{
-		if (!Regs.STATUS.S || Regs.STATUS.Z) {
-			JMP(addres);
-		}
-	}
-
-	void SYSCALL()
-	{
-
-		if (Regs.AX == 1)
-		{
-			stdout_buffer += char(Regs.BX);
-		}
-		else if (Regs.AX == 2)
-		{
-			printf("==============EMULATOR says:===================\n");
-			printf("%s", stdout_buffer.c_str());
-			printf("===============================================\n");
-			stdout_buffer = "";
-		}
-	}
-
-	// ==================
-	u8* parse_register()
-	{
-		// парсинг регистра
-		u8 *res = nullptr;
-		switch (memory[Regs.PC])
-		{
-		case 0xA:
-			res = &Regs.AX;
-			break;
-		case 0xB:
-			res = &Regs.BX;
-			break;
-		case 0xC:
-			res = &Regs.CX;
-			break;
-		case 0xD:
-			res = &Regs.DX;
-			break;
-		case 0xE:
-			res = &Regs.PC;
-			break;
-		case 0xF:
-			res = &Regs.SP;
-			break;
-		default:
-			throw out_of_range("Can't parse register, " + to_string(memory[Regs.PC]));
-			break;
-		}
-		return res;
-	}
-
-	u8* parse_ptr_in_register()
-	{
-		// парсинг регистра 
-		u8 *res = nullptr;
-		switch (memory[Regs.PC])
-		{
-		case 0xA:
-			res = &memory[Regs.AX];
-			break;
-		case 0xB:
-			res = &memory[Regs.BX];
-			break;
-		case 0xC:
-			res = &memory[Regs.CX];
-			break;
-		case 0xD:
-			res = &memory[Regs.DX];
-			break;
-		case 0xE:
-			res = &memory[Regs.PC];
-			break;
-		case 0xF:
-			res = &memory[Regs.SP];
-			break;
-		default:
-			throw out_of_range("Can't parse register, " + to_string(memory[Regs.PC]));
-			break;
-		}
-		return res;
-	}
-
-	u8* parse_value()
-	{
-		// парсинг значения 
-		u8 *res = nullptr;
-		res = &memory[Regs.PC];
-		return res;
-	}
-
-	u8* parse_pointer()
-	{
-		// парсинг значения 
-		u8 *res = nullptr;
-		res = &memory[memory[Regs.PC]];
-		return res;
-	}
-} ALU;
-
+/*
 void decode_execute_instruction(u8 opcode) {
 	u8 *dest = nullptr;
 	u8 *source = nullptr;
@@ -310,11 +55,11 @@ void decode_execute_instruction(u8 opcode) {
 		printf("MOV instruction! @ [0x%.2X]\n", opcode);
 #endif // PRINT_DEBUG
 
-		dest = ALU.parse_register(); // парсинг 1-го аргумента	
+		dest = bin_parser.parse_register(); // парсинг 1-го аргумента	
 		Regs.PC++; // увеличить PC, потому что MOV имеет 2 аргумента 
-		source = ALU.parse_value(); // парсинг 2-го аргумента
+		source = ALUold.parse_value(); // парсинг 2-го аргумента
 
-		ALU.MOV(dest, source);
+		ALUold.MOV(dest, source);
 		Regs.PC++; // увеличить PC, потому что MOV имеет 2 аргумента
 		break;
 
@@ -324,11 +69,11 @@ void decode_execute_instruction(u8 opcode) {
 		printf("MOV instruction! @ [0x%.2X]\n", opcode);
 #endif // PRINT_DEBUG
 
-		dest = ALU.parse_register(); // парсинг 1-го аргумента
+		dest = bin_parser.parse_register(); // парсинг 1-го аргумента
 		Regs.PC++; // увеличить PC, потому что MOV имеет 2 аргумента 
-		source = ALU.parse_register(); // парсинг 2-го аргумента
+		source = bin_parser.parse_register(); // парсинг 2-го аргумента
 
-		ALU.MOV(dest, source);
+		ALUold.MOV(dest, source);
 		Regs.PC++; // увеличить PC, потому что MOV имеет 2 аргумента
 		break;
 
@@ -338,11 +83,11 @@ void decode_execute_instruction(u8 opcode) {
 		printf("MOV instruction! @ [0x%.2X]\n", opcode);
 #endif // PRINT_DEBUG
 
-		dest = ALU.parse_register();// парсинг 1-го аргумента
+		dest = bin_parser.parse_register();// парсинг 1-го аргумента
 		Regs.PC++; // увеличить PC, потому что MOV имеет 2 аргумента 
-		source = ALU.parse_pointer(); // парсинг 2-го аргумента
+		source = ALUold.parse_pointer(); // парсинг 2-го аргумента
 
-		ALU.MOV(dest, source);
+		ALUold.MOV(dest, source);
 		Regs.PC++; // увеличить PC, потому что MOV имеет 2 аргумента
 		break;
 
@@ -352,11 +97,11 @@ void decode_execute_instruction(u8 opcode) {
 		printf("MOV instruction! @ [0x%.2X]\n", opcode);
 #endif // PRINT_DEBUG
 
-		dest = ALU.parse_pointer(); // парсинг 1-го аргумента
+		dest = ALUold.parse_pointer(); // парсинг 1-го аргумента
 		Regs.PC++; // увеличить PC, потому что MOV имеет 2 аргумента 
-		source = ALU.parse_register(); // парсинг 2-го аргумента
+		source = bin_parser.parse_register(); // парсинг 2-го аргумента
 
-		ALU.MOV(dest, source);
+		ALUold.MOV(dest, source);
 		Regs.PC++; // увеличить PC, потому что MOV имеет 2 аргумента
 		break;
 
@@ -366,11 +111,11 @@ void decode_execute_instruction(u8 opcode) {
 		printf("MOV instruction! @ [0x%.2X]\n", opcode);
 #endif // PRINT_DEBUG
 
-		dest = ALU.parse_pointer(); // парсинг 1-го аргумента
+		dest = ALUold.parse_pointer(); // парсинг 1-го аргумента
 		Regs.PC++; // увеличить PC, потому что MOV имеет 2 аргумента 
-		source = ALU.parse_value(); // парсинг 2-го аргумента
+		source = ALUold.parse_value(); // парсинг 2-го аргумента
 
-		ALU.MOV(dest, source);
+		ALUold.MOV(dest, source);
 		Regs.PC++; // увеличить PC, потому что MOV имеет 2 аргумента
 		break;
 
@@ -380,11 +125,11 @@ void decode_execute_instruction(u8 opcode) {
 		printf("MOV instruction! @ [0x%.2X]\n", opcode);
 #endif // PRINT_DEBUG
 
-		dest = ALU.parse_register(); // парсинг 1-го аргумента
+		dest = bin_parser.parse_register(); // парсинг 1-го аргумента
 		Regs.PC++; // увеличить PC, потому что MOV имеет 2 аргумента 
-		source = ALU.parse_ptr_in_register(); // парсинг 2-го аргумента
+		source = ALUold.parse_ptr_in_register(); // парсинг 2-го аргумента
 
-		ALU.MOV(dest, source);
+		ALUold.MOV(dest, source);
 		Regs.PC++; // увеличить PC, потому что MOV имеет 2 аргумента
 		break;
 
@@ -394,11 +139,11 @@ void decode_execute_instruction(u8 opcode) {
 		printf("MOV instruction! @ [0x%.2X]\n", opcode);
 #endif // PRINT_DEBUG
 
-		dest = ALU.parse_ptr_in_register(); // парсинг 1-го аргумента
+		dest = ALUold.parse_ptr_in_register(); // парсинг 1-го аргумента
 		Regs.PC++; // увеличить PC, потому что MOV имеет 2 аргумента 
-		source = ALU.parse_register(); // парсинг 2-го аргумента
+		source = bin_parser.parse_register(); // парсинг 2-го аргумента
 
-		ALU.MOV(dest, source);
+		ALUold.MOV(dest, source);
 		Regs.PC++; // увеличить PC, потому что MOV имеет 2 аргумента
 		break;
 
@@ -408,9 +153,9 @@ void decode_execute_instruction(u8 opcode) {
 		printf("ADD instruction! @ [0x%.2X]\n", opcode);
 #endif // PRINT_DEBUG
 
-		dest = ALU.parse_register(); // парсинг 1-го аргумента
+		dest = bin_parser.parse_register(); // парсинг 1-го аргумента
 		Regs.PC++; // увеличить PC, потому что MOV имеет 2 аргумента 
-		source = ALU.parse_register(); // парсинг 2-го аргумента
+		source = bin_parser.parse_register(); // парсинг 2-го аргумента
 
 		ALU.ADD(dest, source);
 		Regs.PC++;
@@ -421,9 +166,9 @@ void decode_execute_instruction(u8 opcode) {
 		printf("ADD instruction! @ [0x%.2X]\n", opcode);
 #endif // PRINT_DEBUG
 
-		dest = ALU.parse_register(); // парсинг 1-го аргумента
+		dest = bin_parser.parse_register(); // парсинг 1-го аргумента
 		Regs.PC++; // увеличить PC, потому что MOV имеет 2 аргумента 
-		source = ALU.parse_value(); // парсинг 2-го аргумента
+		source = ALUold.parse_value(); // парсинг 2-го аргумента
 
 		ALU.ADD(dest, source);
 		Regs.PC++;
@@ -435,9 +180,9 @@ void decode_execute_instruction(u8 opcode) {
 		printf("SUB instruction! @ [0x%.2X]\n", opcode);
 #endif // PRINT_DEBUG
 
-		dest = ALU.parse_register(); // парсинг 1-го аргумента
+		dest = bin_parser.parse_register(); // парсинг 1-го аргумента
 		Regs.PC++; // увеличить PC, потому что MOV имеет 2 аргумента 
-		source = ALU.parse_register(); // парсинг 2-го аргумента
+		source = bin_parser.parse_register(); // парсинг 2-го аргумента
 
 		ALU.SUB(dest, source);
 		Regs.PC++;
@@ -449,9 +194,9 @@ void decode_execute_instruction(u8 opcode) {
 		printf("SUB instruction! @ [0x%.2X]\n", opcode);
 #endif // PRINT_DEBUG
 
-		dest = ALU.parse_register(); // парсинг 1-го аргумента
+		dest = bin_parser.parse_register(); // парсинг 1-го аргумента
 		Regs.PC++; // увеличить PC, потому что MOV имеет 2 аргумента 
-		source = ALU.parse_value(); // парсинг 2-го аргумента
+		source = ALUold.parse_value(); // парсинг 2-го аргумента
 
 		ALU.SUB(dest, source);
 		Regs.PC++;
@@ -463,7 +208,7 @@ void decode_execute_instruction(u8 opcode) {
 		printf("INC instruction! @ [0x%.2X]\n", opcode);
 #endif // PRINT_DEBUG
 
-		dest = ALU.parse_register(); // парсинг 1-го аргумента
+		dest = bin_parser.parse_register(); // парсинг 1-го аргумента
 		source = &incrementor;
 		Regs.PC++;
 		ALU.ADD(dest, source);
@@ -475,7 +220,7 @@ void decode_execute_instruction(u8 opcode) {
 		printf("DEC instruction! @ [0x%.2X]\n", opcode);
 #endif // PRINT_DEBUG
 
-		dest = ALU.parse_register(); // парсинг 1-го аргумента
+		dest = bin_parser.parse_register(); // парсинг 1-го аргумента
 
 		source = &incrementor;
 		Regs.PC++;
@@ -488,9 +233,9 @@ void decode_execute_instruction(u8 opcode) {
 		printf("CMP instruction! @ [0x%.2X]\n", opcode);
 #endif // PRINT_DEBUG
 
-		dest = ALU.parse_register(); // парсинг 1-го аргумента
+		dest = bin_parser.parse_register(); // парсинг 1-го аргумента
 		Regs.PC++; // увеличить PC, потому что MOV имеет 2 аргумента 
-		source = ALU.parse_register(); // парсинг 2-го аргумента
+		source = bin_parser.parse_register(); // парсинг 2-го аргумента
 
 		ALU.CMP(dest, source);
 		Regs.PC++;
@@ -501,9 +246,9 @@ void decode_execute_instruction(u8 opcode) {
 		printf("CMP instruction! @ [0x%.2X]\n", opcode);
 #endif // PRINT_DEBUG
 
-		dest = ALU.parse_register(); // парсинг 1-го аргумента
+		dest = bin_parser.parse_register(); // парсинг 1-го аргумента
 		Regs.PC++; // увеличить PC, потому что MOV имеет 2 аргумента 
-		source = ALU.parse_value(); // парсинг 2-го аргумента
+		source = ALUold.parse_value(); // парсинг 2-го аргумента
 
 		ALU.CMP(dest, source);
 		Regs.PC++;
@@ -514,9 +259,9 @@ void decode_execute_instruction(u8 opcode) {
 		printf("JMP instruction! @ [0x%.2X]\n", opcode);
 #endif // PRINT_DEBUG
 
-		addres = ALU.parse_value(); // парсинг 1-го аргумента
+		addres = ALUold.parse_value(); // парсинг 1-го аргумента
 
-		ALU.JMP(*addres);
+		ALUold.JMP(*addres);
 		break;
 
 	case 0x11: // JE a8
@@ -525,9 +270,9 @@ void decode_execute_instruction(u8 opcode) {
 		printf("JE instruction! @ [0x%.2X]\n", opcode);
 #endif // PRINT_DEBUG
 
-		addres = ALU.parse_value(); // парсинг 1-го аргумента
+		addres = ALUold.parse_value(); // парсинг 1-го аргумента
 		Regs.PC++;
-		ALU.JE(*addres);
+		ALUold.JE(*addres);
 		break;
 
 	case 0x12: // JNE a8
@@ -536,9 +281,9 @@ void decode_execute_instruction(u8 opcode) {
 		printf("JNE instruction! @ [0x%.2X]\n", opcode);
 #endif // PRINT_DEBUG
 
-		addres = ALU.parse_value(); // парсинг 1-го аргумента
+		addres = ALUold.parse_value(); // парсинг 1-го аргумента
 		Regs.PC++;
-		ALU.JNE(*addres);
+		ALUold.JNE(*addres);
 		break;
 
 	case 0x13: // JL a8
@@ -547,9 +292,9 @@ void decode_execute_instruction(u8 opcode) {
 		printf("JL instruction! @ [0x%.2X]\n", opcode);
 #endif // PRINT_DEBUG
 
-		addres = ALU.parse_value(); // парсинг 1-го аргумента
+		addres = ALUold.parse_value(); // парсинг 1-го аргумента
 		Regs.PC++;
-		ALU.JL(*addres);
+		ALUold.JL(*addres);
 		break;
 
 	case 0x14: // JG a8
@@ -558,9 +303,9 @@ void decode_execute_instruction(u8 opcode) {
 		printf("JG instruction! @ [0x%.2X]\n", opcode);
 #endif // PRINT_DEBUG
 
-		addres = ALU.parse_value(); // парсинг 1-го аргумента
+		addres = ALUold.parse_value(); // парсинг 1-го аргумента
 		Regs.PC++;
-		ALU.JG(*addres);
+		ALUold.JG(*addres);
 		break;
 
 	case 0x15: // JLE a8
@@ -569,9 +314,9 @@ void decode_execute_instruction(u8 opcode) {
 		printf("JLE instruction! @ [0x%.2X]\n", opcode);
 #endif // PRINT_DEBUG
 
-		addres = ALU.parse_value(); // парсинг 1-го аргумента
+		addres = ALUold.parse_value(); // парсинг 1-го аргумента
 		Regs.PC++;
-		ALU.JLE(*addres);
+		ALUold.JLE(*addres);
 		break;
 
 	case 0x16: // JGE a8
@@ -580,9 +325,9 @@ void decode_execute_instruction(u8 opcode) {
 		printf("JGE instruction! @ [0x%.2X]\n", opcode);
 #endif // PRINT_DEBUG
 
-		addres = ALU.parse_value(); // парсинг 1-го аргумента
+		addres = ALUold.parse_value(); // парсинг 1-го аргумента
 		Regs.PC++;
-		ALU.JGE(*addres);
+		ALUold.JGE(*addres);
 		break;
 
 	case 0x17: // HLT
@@ -599,7 +344,7 @@ void decode_execute_instruction(u8 opcode) {
 		printf("SYSCALL instruction! @ [0x%.2X]\n", opcode);
 #endif // PRINT_DEBUG
 
-		ALU.SYSCALL();
+		ALUold.SYSCALL();
 		break;
 
 	default:
@@ -608,9 +353,10 @@ void decode_execute_instruction(u8 opcode) {
 		break;
 	}
 }
+*/
 
 u8 fetch_instruction() {
-	return mem_read(Regs.PC);
+	return *RAM.read(Regs.PC);
 }
 
 void initialize_memory() {
@@ -682,7 +428,7 @@ void initialize_memory() {
 	// подставте сюда название пограммы которую хотите запустить
 #define program	hello_world_v2_program
 
-	::memcpy(&memory, &program, sizeof(program)); // скопировать прграму в память процессора
+	::memcpy(&RAM.memory, &program, sizeof(program)); // скопировать прграму в память процессора
 }
 
 void initialize_console_window() {
@@ -697,7 +443,7 @@ int main() {
 	string command;
 	initialize_console_window();
 	initialize_memory();
-	mem_print();
+	RAM.print();
 	printf("Press enter to make step or type .help to get help\n");
 	while (true)
 	{
@@ -727,21 +473,19 @@ int main() {
 			}
 			else if (command == ".memory" || command == ".mem")
 			{
-				mem_print();
+				RAM.print();
 				continue;
 			}
 			else if (command == ".reset")
 			{
 				initialize_memory();
-				Regs.AX = 0x0;
-				Regs.BX = 0x0;
-				Regs.CX = 0x0;
-				Regs.DX = 0x0;
+				Regs.AX.value = 0x0;
+				Regs.BX.value = 0x0;
+				Regs.CX.value = 0x0;
+				Regs.DX.value = 0x0;
 				Regs.PC = 0x0;
 				Regs.SP = 0x0;
-				Regs.STATUS.C = false;
-				Regs.STATUS.Z = false;
-				Regs.STATUS.S = false;
+				Regs.STATUS.value = 0;
 				continue;
 			}
 			else if (command == "") {}
@@ -757,7 +501,7 @@ int main() {
 		}
 
 		u8 inst = fetch_instruction();
-		decode_execute_instruction(inst);
+		//decode_execute_instruction(inst);
 
 	}
 	system("pause");
