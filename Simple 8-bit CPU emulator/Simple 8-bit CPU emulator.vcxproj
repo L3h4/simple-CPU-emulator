@@ -115,12 +115,17 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="InstructionSet.cpp" />
+    <ClCompile Include="Bus.cpp" />
     <ClCompile Include="main.cpp" />
-    <ClCompile Include="Memory.cpp" />
+    <ClCompile Include="Ox64cmCPU.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Bus.h" />
+    <ClInclude Include="MOV.h" />
+    <ClInclude Include="Ox64cmCPU.h" />
+    <ClInclude Include="Registers.h" />
     <ClInclude Include="InstructionSet.h" />
+    <ClInclude Include="Status.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="..\instruction set.xlsx" />

@@ -13,21 +13,51 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
+    <Filter Include="Исходные файлы\CPU">
+      <UniqueIdentifier>{b28652d6-0b23-44fe-a360-21e02914bdca}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Файлы заголовков\CPU">
+      <UniqueIdentifier>{6f242d22-deaf-4d79-b786-2a12378866dc}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Файлы заголовков\Bus">
+      <UniqueIdentifier>{bc8c6615-52c1-45ba-a0ba-5a876983e270}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Исходные файлы\Bus">
+      <UniqueIdentifier>{7ab389f1-2544-4d37-bdbc-b3f5765db6e5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Файлы заголовков\CPU\Instructions">
+      <UniqueIdentifier>{0dd7f6f7-ab90-4cbd-8314-656097c9e6ff}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
       <Filter>Исходные файлы</Filter>
     </ClCompile>
-    <ClCompile Include="Memory.cpp">
-      <Filter>Исходные файлы</Filter>
+    <ClCompile Include="Bus.cpp">
+      <Filter>Исходные файлы\Bus</Filter>
     </ClCompile>
-    <ClCompile Include="InstructionSet.cpp">
-      <Filter>Исходные файлы</Filter>
+    <ClCompile Include="Ox64cmCPU.cpp">
+      <Filter>Исходные файлы\CPU</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Bus.h">
+      <Filter>Файлы заголовков\Bus</Filter>
+    </ClInclude>
     <ClInclude Include="InstructionSet.h">
+      <Filter>Файлы заголовков\CPU</Filter>
+    </ClInclude>
+    <ClInclude Include="Registers.h">
+      <Filter>Файлы заголовков\CPU</Filter>
+    </ClInclude>
+    <ClInclude Include="Ox64cmCPU.h">
+      <Filter>Файлы заголовков\CPU</Filter>
+    </ClInclude>
+    <ClInclude Include="Status.h">
       <Filter>Файлы заголовков</Filter>
+    </ClInclude>
+    <ClInclude Include="MOV.h">
+      <Filter>Файлы заголовков\CPU\Instructions</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
