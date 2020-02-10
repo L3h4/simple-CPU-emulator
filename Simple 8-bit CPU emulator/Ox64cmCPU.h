@@ -5,9 +5,9 @@
 #include"Bus.h"
 #include"Status.h"
 
-
+#ifdef PRINT_DEBUG
 #define DEBUG
-
+#endif
 
 #define u8 uint8_t
 #define u16 uint16_t

@@ -65,6 +65,7 @@ void Ox64cmCPU::print_debug()
 void Ox64cmCPU::print_disassembly(u16 start, u16 size)
 {
 	u16 PC_backup = regs.PC.value;
+	regs.PC.value = start;
 	for (int i = 0; i < size; i++)
 	{
 		u16 INST_ADDR = regs.PC.value;

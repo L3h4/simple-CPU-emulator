@@ -4,7 +4,7 @@
 #include<windows.h>
 
 
-// разкоментируйте следующую строку, чтобы видеть дебаг комментарии
+// раскомментируйте следующую строку, чтобы видеть дебаг комментарии
 #define PRINT_DEBUG
 
 #include"Bus.h"
@@ -14,33 +14,40 @@
 using namespace std;
 
 
-// Документация https://www.evernote.com/l/AfpYiDoi7_hKJJHEmHGxAVzqdoACyR6W718/
-
+/*
+	Документация https://www.evernote.com/l/AfpYiDoi7_hKJJHEmHGxAVzqdoACyR6W718/
+	Дело было вечером, делать было нечего. Короче я наваял емулятор простого 8/16 битного процессора)
+	
+*/
 
 
 
 #define u8 uint8_t
 #define u16 uint16_t
 
-/*
-	Документация https://www.evernote.com/l/AfpYiDoi7_hKJJHEmHGxAVzqdoACyR6W718/
-	Дело было вечером, делать было нечего. Короче я наваял емулятор простого 8/16 битного процессора)
-*/
 
 
 Status status;
 Bus bus;
 Ox64cmCPU cpu;
 
-
+// скопировать прграму в память процессора по адресу
+void load_program(u16 address, u8 program[]) {
+	u16 memory_adr = address;
+	for (; memory_adr < sizeof(program) / sizeof(u8); memory_adr++) {
+		bus.write(memory_adr, program[memory_adr]);
+	}
+	printf("Your program located at 0x%.4X - 0x%.4X\n", address, memory_adr);
+	//::memcpy(&bus.RAM.memory, &program, sizeof(program)); // скопировать прграму в память процессора
+}
 
 void initialize_memory() {
 
 	// компилятора пока что нет поєтому прграму пишем сюда (
 	u8 hello_world_program[] = {
 		0x0,
-		0x10,0xA,0x3F,
-		0x50,0xBB,0x12,0x34
+		0x10,0xA,0x3F, // MOV A, 0x3F
+		0x50,0xBB,0x12,0x34 // MOV BX, 0x1234
 	};
 
 	// Hello world с циклом
@@ -61,11 +68,7 @@ void initialize_memory() {
 		0x18,			// SYSCALL
 		0x17            // HLT
 	};
-
-
-	// подставте сюда название пограммы которую хотите запустить
-#define program	hello_world_program
-	::memcpy(&bus.RAM.memory, &program, sizeof(program)); // скопировать прграму в память процессора
+	load_program(0, hello_world_program);
 }
 
 

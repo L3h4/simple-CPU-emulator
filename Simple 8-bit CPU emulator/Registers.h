@@ -17,12 +17,12 @@ _______________________
 struct Register {
 	std::string name;
 	std::string name16;
+	u8 permissions;
 	union 
 	{
 		u8 lo;
 		u16 value;
 	};
-	u8 permissions;
 };
 
 
