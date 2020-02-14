@@ -3,15 +3,11 @@
 #include<string>
 #include<windows.h>
 
-
-// раскомментируйте следующую строку, чтобы видеть дебаг комментарии
-#define PRINT_DEBUG
+using namespace std;
 
 #include"Bus.h"
 #include"Ox64cmCPU.h"
-#include"Status.h"
-
-using namespace std;
+#include"Status.hpp"
 
 
 /*
@@ -20,55 +16,43 @@ using namespace std;
 	
 */
 
-
-
-#define u8 uint8_t
+// обявляю сокращения для типов данных для 1 и 2 байтовых переменных
+#define u8 uint8_t 
 #define u16 uint16_t
 
-
-
+// создаю глобальные переменные
+// статус отвечает за некоторые глобальные переменные и механизм подьема ошибок
 Status status;
+// шина данных и адреса, на ней висят все устройства (пока что только ОЗУ)
 Bus bus;
+// процессор
 Ox64cmCPU cpu;
 
-// скопировать прграму в память процессора по адресу
-void load_program(u16 address, u8 program[]) {
-	u16 memory_adr = address;
-	for (; memory_adr < sizeof(program) / sizeof(u8); memory_adr++) {
-		bus.write(memory_adr, program[memory_adr]);
+// скопировать прграму в ОЗУ по адресу
+void load_program(u16 address, u8 program[], u16 size) {
+	u16 relative_address = address;
+	for (; relative_address - address < size; relative_address++) {
+		bus.write(relative_address, program[relative_address - address]);
 	}
-	printf("Your program located at 0x%.4X - 0x%.4X\n", address, memory_adr);
-	//::memcpy(&bus.RAM.memory, &program, sizeof(program)); // скопировать прграму в память процессора
+	printf("Your program located at 0x%.4X - 0x%.4X\n", address, relative_address);
 }
 
-void initialize_memory() {
+// временный механизм заполнения памяти
+void initialize_memory() 
+{
 
 	// компилятора пока что нет поєтому прграму пишем сюда (
-	u8 hello_world_program[] = {
-		0x0,
-		0x10,0xA,0x3F, // MOV A, 0x3F
-		0x50,0xBB,0x12,0x34 // MOV BX, 0x1234
+	// пока что работает только операцыя MOV
+	// простая программа для теста
+	u8 MOV_inst_test_program[] = {
+		0x10,0xA,0x3F,		  // MOV A, 0x3F
+		0x50,0xBB,0x02,0x34,  // MOV BX, 0x0234
+		0x11,0x0B,0xEF,       //MOV [B], 0xEF
+		0x72,0x02,0x35,0x0,0x1//MOV [0x0235], [0x0001]
 	};
-
-	// Hello world с циклом
-	u8 hello_world_v2_program[] = {
-		0x10, 0x11,     // JMP 0x12
-		0x48, 0x65, 0x6c, 0x6c, 0x6f, 0x2c, 0x20, 0x57, 0x6f, 0x72, 0x6c, 0x64, 0x21, 0xA, 0x0, // Hello, world\n\eol
-		0x1, 0xA, 0x1,  // MOV AX, 1
-
-		0x1, 0xD, 0x2,  // MOV DX, 0x2
-		0x6, 0xB, 0xD,  // MOV BX, [DX]
-		0xF, 0xB, 0x0,  // CMP BX, 0x0
-		0x11, 0x24,		// JE 0x24
-		0x18,		    // SYSCALL
-		0xC, 0xD,       // INC DX
-		0x10, 0x17,     // JMP 0x17
-
-		0x1, 0xA, 0x2,	// MOV AX, 2
-		0x18,			// SYSCALL
-		0x17            // HLT
-	};
-	load_program(0, hello_world_program);
+	
+	// загрузить программу в память
+	load_program(0, MOV_inst_test_program, sizeof(MOV_inst_test_program));
 }
 
 
@@ -82,21 +66,24 @@ void initialize_console_window() {
 
 
 int main() {
-	status = Status();
-	bus = Bus();
+	// инициализирую переменные
+	// они принимают указатели друг на друга
+	status = Status(); 
+	bus = Bus(&status);
 	cpu = Ox64cmCPU(&bus, &status);
-
-	
+	bus.connect_cpu(&cpu);
+	// переменная для хранения команды юзера
 	string command;
-
-
-	initialize_console_window();
-	initialize_memory();
 	
+
+	initialize_console_window(); // настройка размеров окна
+	initialize_memory(); // запись простой прграммы в память
 	printf("Press enter to make step or type .help to get help\n");
-	while (true)
+
+	while (true) // главный цикл программы
 	{
-		if (!status.execute_til_hlt) {
+		if (!status.execute_til_hlt) // процессор работает синхронно поэтому сначала мы ждем действий пользователя а потом делаем шаг(если процессор запущен в режиме виполнения до комманды HALT, пользователя не спрашиваем, а сразу делаем шаг)
+		{
 			// Неболюшое меню
 			printf("# ");
 			getline(cin, command);
@@ -104,52 +91,67 @@ int main() {
 			{
 				// help сообщение
 				printf("Help message\n");
-				printf("%-10s - %s\n", ".execute", "Execute program til HLT command. Warning if HLT wouldn't be found it can cause errors & executing non executable sections");
-				printf("%-10s - %s\n", ".registers", "Show what is in registers");
-				printf("%-10s - %s\n", ".memory", "Show what is in memory");
-				printf("%-10s - %s\n", ".reset", "Write program to memory");
-				printf("%-10s - %s\n", ".disassemble", "Print disassembly");
-				printf("%-10s - %s\n", ".exit", "Exit CPU emulator program"); 
+				printf("%-12s - %s\n", ".execute", "Execute program til HLT command. Warning if HLT wouldn't be found it can cause errors");
+				printf("%-12s - %s\n", ".registers", "Show what is in registers");
+				printf("%-12s - %s\n", ".memory", "Show what is in memory");
+				printf("%-12s - %s\n", ".reset", "Write program to memory");
+				printf("%-12s - %s\n", ".disassemble", "Print disassembly");
+				printf("%-12s - %s\n", ".exit", "Exit CPU emulator program"); 
 				continue;
 			}
 			else if (command == ".execute" || command == ".exec")
 			{
-				status.execute_til_hlt = true;
+				// при вводе этой команды процессор начнет работать в режиме виполнения до комманды HALT
+				if (!status.erorr) // соотвецтвено если ошибок нет, то стартуем
+					status.execute_til_hlt = true;
 			}
 			else if (command == ".registers" || command == ".regs")
 			{
-				cpu.regs.print();
+				// при вводе этой команды в консоль выведется содержимое регистров и флагов
+				cpu.print_regs();
 				continue;
 			}
 			else if (command == ".memory" || command == ".mem")
 			{
+				// при вводе этой команды в консоль выведется содержимое ВСЕХ 2 кб озу
 				bus.RAM.print();
 				continue;
 			}
 			else if (command == ".reset")
 			{
+				// при вводе этой команды произойдет перезапуск
 				initialize_memory();
 				cpu.reset();
+				status.erorr = false;
+				status.execute_til_hlt = false;
 				continue;
 			}
 			else if (command == ".disassemble" || command == ".dasm")
 			{
+				// при вводе этой команды в консоль выведется дисассемблированые первие 21 байт памяти
 				cpu.print_disassembly(0, 20);
 				continue;
 			}
-			else if (command == "") {}
+			else if (command == "") 
+			{
+				// при вводе этой команды просто произведется шаг процессора
+			}
 			else if (command == ".exit")
 			{
+				// при вводе этой команды выход из программы
 				return 0;
 			}
 			else
 			{
+				// если команда не найдена то вывести ошибку
 				printf("Error command %s not found\n", command.c_str());
 				continue;
 			}
 		}
-		
-		cpu.step();
+		if (!status.erorr)
+			cpu.step(); // выполнить операцию если ошибок нет
+		else
+			printf("Can't make step, CPU freezed\n"); // иначе ничего не делаем
 	}
 	system("pause");
 	return 0;

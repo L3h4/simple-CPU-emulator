@@ -121,11 +121,9 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Bus.h" />
-    <ClInclude Include="MOV.h" />
+    <ClInclude Include="MOV.hpp" />
     <ClInclude Include="Ox64cmCPU.h" />
-    <ClInclude Include="Registers.h" />
-    <ClInclude Include="InstructionSet.h" />
-    <ClInclude Include="Status.h" />
+    <ClInclude Include="Status.hpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="..\instruction set.xlsx" />

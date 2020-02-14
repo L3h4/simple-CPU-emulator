@@ -44,20 +44,14 @@
     <ClInclude Include="Bus.h">
       <Filter>Файлы заголовков\Bus</Filter>
     </ClInclude>
-    <ClInclude Include="InstructionSet.h">
-      <Filter>Файлы заголовков\CPU</Filter>
-    </ClInclude>
-    <ClInclude Include="Registers.h">
-      <Filter>Файлы заголовков\CPU</Filter>
-    </ClInclude>
     <ClInclude Include="Ox64cmCPU.h">
       <Filter>Файлы заголовков\CPU</Filter>
     </ClInclude>
-    <ClInclude Include="Status.h">
-      <Filter>Файлы заголовков</Filter>
-    </ClInclude>
-    <ClInclude Include="MOV.h">
+    <ClInclude Include="MOV.hpp">
       <Filter>Файлы заголовков\CPU\Instructions</Filter>
+    </ClInclude>
+    <ClInclude Include="Status.hpp">
+      <Filter>Файлы заголовков</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
