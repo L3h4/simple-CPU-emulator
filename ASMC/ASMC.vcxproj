@@ -69,7 +69,22 @@
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
-  <PropertyGroup />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <OutDir>$(SolutionDir)bin\$(ProjectName)\$(Configuration)$(Platform)</OutDir>
+    <IntDir>$(SolutionDir)bin\intermediates\$(ProjectName)\$(Configuration)$(Platform)</IntDir>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <OutDir>$(SolutionDir)bin\$(ProjectName)\$(Configuration)$(Platform)</OutDir>
+    <IntDir>$(SolutionDir)bin\intermediates\$(ProjectName)\$(Configuration)$(Platform)</IntDir>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <OutDir>$(SolutionDir)bin\$(ProjectName)\$(Configuration)$(Platform)</OutDir>
+    <IntDir>$(SolutionDir)bin\intermediates\$(ProjectName)\$(Configuration)$(Platform)</IntDir>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <OutDir>$(SolutionDir)bin\$(ProjectName)\$(Configuration)$(Platform)</OutDir>
+    <IntDir>$(SolutionDir)bin\intermediates\$(ProjectName)\$(Configuration)$(Platform)</IntDir>
+  </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
@@ -116,16 +131,17 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="Lexer.cpp" />
-    <ClCompile Include="main.cpp" />
-    <ClCompile Include="Operation.cpp" />
-    <ClCompile Include="Parser.cpp" />
+    <ClCompile Include="src\Utilities\CompilingUtilities.cpp" />
+    <ClCompile Include="src\Utilities\CompilingUtilities.h" />
+    <ClCompile Include="src\Lexer\Lexer.cpp" />
+    <ClCompile Include="src\main.cpp" />
+    <ClCompile Include="src\Operation\Operation.cpp" />
+    <ClCompile Include="src\Parser\Parser.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Lexer.h" />
-    <ClInclude Include="Operation.h" />
-    <ClInclude Include="Parser.h" />
-    <ClInclude Include="Possible_instructions.h" />
+    <ClInclude Include="src\Lexer\Lexer.h" />
+    <ClInclude Include="src\Operation\Operation.h" />
+    <ClInclude Include="src\Parser\Parser.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

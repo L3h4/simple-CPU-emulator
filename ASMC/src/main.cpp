@@ -1,14 +1,18 @@
 #include<iostream>
 #include<stdio.h>
 #include<vector>
+#include<fstream>
 
-#include"Parser.h"
-#include"Lexer.h"
+#include"Parser/Parser.h"
+#include"Lexer/Lexer.h"
+
 using namespace std;
 
 #define pause() system("pause")
 
 /*
+	Документация https://www.evernote.com/l/AfpYiDoi7_hKJJHEmHGxAVzqdoACyR6W718/
+	
 	Простой компилятор для процессора Ox64cm
 	кароче программа чтобы делать программы xD
 	
@@ -18,6 +22,7 @@ struct
 {
 	bool print_debug = false;
 	string file_name;
+	string out_file_name = "out.cmb";
 } config;
 
 
@@ -58,7 +63,7 @@ bool parse_cmd_args(int argc, char *argv[])
 
 int main(int argc, char *argv[]) {
 	
-	if (parse_cmd_args(argc, argv)) 
+	if (parse_cmd_args(argc, argv))
 	{
 		printf("Compiling %s\n", config.file_name.c_str());
 
@@ -66,16 +71,17 @@ int main(int argc, char *argv[]) {
 		Lexer l;
 		vector<Lexeme> tokens;
 		vector<uint8_t> program;
-		try 
+		try
 		{
 			tokens = p.parse_from_file(config.file_name);
 		}
-		catch (string err_msg) 
+		catch (string err_msg)
 		{
 			printf("\nSYNTAX ERROR:\n\t%s\n\n", err_msg.c_str());
 			pause();
 			return 1;
 		}
+
 		try
 		{
 			program = l.analise(tokens);
@@ -86,6 +92,19 @@ int main(int argc, char *argv[]) {
 			pause();
 			return 1;
 		}
+		ofstream out_file(config.out_file_name, ios::out | ios::binary);
+		if (!out_file)
+		{
+			printf("Cannot open file \"%s\"\n", config.out_file_name.c_str());
+			pause();
+			return 1;
+		}
+		else
+		{
+			out_file.write((char *)program.data(), program.size());
+		}
+		out_file.close();
+		printf("Compiled succsesfuly\n");
 	}
 	pause();
 	return 0;
