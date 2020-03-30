@@ -1,4 +1,4 @@
-#include "CompilingUtilities.h"
+п»ї#include "CompilingUtilities.h"
 
 
 
@@ -56,7 +56,7 @@ std::string utilities::trim(const std::string& str)
 	return result;
 }
 
-// валидаторы аргументов
+// РІР°Р»РёРґР°С‚РѕСЂС‹ Р°СЂРіСѓРјРµРЅС‚РѕРІ
 bool utilities::is_instruction(std::string text)
 {
 	for (std::string possible_token : possible_cmds)
@@ -197,7 +197,7 @@ bool utilities::no_arg(std::string text)
 }
 
 
-// компиляторы аргументов
+// РєРѕРјРїРёР»СЏС‚РѕСЂС‹ Р°СЂРіСѓРјРµРЅС‚РѕРІ
 std::vector<uint8_t> utilities::compile_dec_number(std::string text, int size)
 {
 	std::vector<uint8_t> res;

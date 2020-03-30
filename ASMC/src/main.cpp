@@ -1,4 +1,4 @@
-#include<iostream>
+п»ї#include<iostream>
 #include<stdio.h>
 #include<vector>
 #include<fstream>
@@ -11,10 +11,10 @@ using namespace std;
 #define pause() system("pause")
 
 /*
-	Документация https://www.evernote.com/l/AfpYiDoi7_hKJJHEmHGxAVzqdoACyR6W718/
+	Р”РѕРєСѓРјРµРЅС‚Р°С†РёСЏ https://www.evernote.com/l/AfpYiDoi7_hKJJHEmHGxAVzqdoACyR6W718/
 	
-	Простой компилятор для процессора Ox64cm
-	кароче программа чтобы делать программы xD
+	РџСЂРѕСЃС‚РѕР№ РєРѕРјРїРёР»СЏС‚РѕСЂ РґР»СЏ РїСЂРѕС†РµСЃСЃРѕСЂР° Ox64cm
+	РєР°СЂРѕС‡Рµ РїСЂРѕРіСЂР°РјРјР° С‡С‚РѕР±С‹ РґРµР»Р°С‚СЊ РїСЂРѕРіСЂР°РјРјС‹ xD
 	
 	ASMC.exe file.asm -> file.bin
 */
@@ -22,12 +22,12 @@ struct
 {
 	bool print_debug = false;
 	string file_name;
-	string out_file_name = "out.cmb";
+	string out_file_name = "out.bin";
 } config;
 
 
 
-// Простой парсер аргументов возвращает разрешение на начало парсинга кода (если мы запустим его с ключем help то компилировать ничего не нужно) 
+// РџСЂРѕСЃС‚РѕР№ РїР°СЂСЃРµСЂ Р°СЂРіСѓРјРµРЅС‚РѕРІ РІРѕР·РІСЂР°С‰Р°РµС‚ СЂР°Р·СЂРµС€РµРЅРёРµ РЅР° РЅР°С‡Р°Р»Рѕ РїР°СЂСЃРёРЅРіР° РєРѕРґР° (РµСЃР»Рё РјС‹ Р·Р°РїСѓСЃС‚РёРј РµРіРѕ СЃ РєР»СЋС‡РµРј help С‚Рѕ РєРѕРјРїРёР»РёСЂРѕРІР°С‚СЊ РЅРёС‡РµРіРѕ РЅРµ РЅСѓР¶РЅРѕ) 
 bool parse_cmd_args(int argc, char *argv[]) 
 {
 	if (argc == 1)
@@ -46,7 +46,7 @@ bool parse_cmd_args(int argc, char *argv[])
 		{
 			config.print_debug = true;
 		}
-		else if (i == argc - 1)  // последним всегда идет имя файла
+		else if (i == argc - 1)  // РїРѕСЃР»РµРґРЅРёРј РІСЃРµРіРґР° РёРґРµС‚ РёРјСЏ С„Р°Р№Р»Р°
 		{
 			config.file_name = argv[argc - 1];
 			return true;

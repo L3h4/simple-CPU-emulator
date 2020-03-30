@@ -1,11 +1,11 @@
-#pragma once
+п»ї#pragma once
 #include<iostream>
 #include<vector>
 #include<string>
 #include"../Operation/Operation.h"
 
 #include "../Utilities/CompilingUtilities.h"
-// Класс котрый отвечает за лексический анализ
+// РљР»Р°СЃСЃ РєРѕС‚СЂС‹Р№ РѕС‚РІРµС‡Р°РµС‚ Р·Р° Р»РµРєСЃРёС‡РµСЃРєРёР№ Р°РЅР°Р»РёР·
 class Lexer
 {
 public:

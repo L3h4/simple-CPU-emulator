@@ -1,9 +1,9 @@
-#include "Ox64cmCPU.h"
+п»ї#include "../Ox64cmCPU.h"
 #pragma once
 
 void Ox64cmCPU::MOV()
 {
-	// обработчик всех типов операции MOV
+	// РѕР±СЂР°Р±РѕС‚С‡РёРє РІСЃРµС… С‚РёРїРѕРІ РѕРїРµСЂР°С†РёРё MOV
 	if (arg1.type == REGISTER)
 	{
 		if (arg2.type == IMMDATA)

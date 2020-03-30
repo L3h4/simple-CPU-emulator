@@ -1,4 +1,4 @@
-#pragma once
+п»ї#pragma once
 #include<iostream>
 #include<vector>
 #include<string>
@@ -13,7 +13,7 @@ namespace utilities
 	std::string delete_brackets(std::string text);
 	std::string trim(const std::string& str);
 
-	// валидаторы аргументов
+	// РІР°Р»РёРґР°С‚РѕСЂС‹ Р°СЂРіСѓРјРµРЅС‚РѕРІ
 	bool is_instruction(std::string text);
 	bool is_size_identifier(std::string text);
 
@@ -39,7 +39,7 @@ namespace utilities
 	bool no_arg(std::string text);
 
 
-	// компиляторы аргументов
+	// РєРѕРјРїРёР»СЏС‚РѕСЂС‹ Р°СЂРіСѓРјРµРЅС‚РѕРІ
 	std::vector<uint8_t> compile_dec_number(std::string text, int size);
 	std::vector<uint8_t> compile_hex_number(std::string text, int size);
 	std::vector<uint8_t> compile_number(std::string text, int size);

@@ -1,4 +1,4 @@
-#pragma once
+п»ї#pragma once
 #include<iostream>
 #include<stdio.h>
 
@@ -9,11 +9,11 @@ class Status
 {
 
 public:
-	bool execute_til_hlt = false; // режим виполнения программы до команды HLT (прекратить выполнение)
-	bool execute_til_ie = false; // режим виполнения программы до команды IE (прервать выполнение)
-	bool erorr = false; // флаг ошибки
+	bool execute_til_hlt = false; // СЂРµР¶РёРј РІРёРїРѕР»РЅРµРЅРёСЏ РїСЂРѕРіСЂР°РјРјС‹ РґРѕ РєРѕРјР°РЅРґС‹ HLT (РїСЂРµРєСЂР°С‚РёС‚СЊ РІС‹РїРѕР»РЅРµРЅРёРµ)
+	bool execute_til_ie = false; // СЂРµР¶РёРј РІРёРїРѕР»РЅРµРЅРёСЏ РїСЂРѕРіСЂР°РјРјС‹ РґРѕ РєРѕРјР°РЅРґС‹ IE (РїСЂРµСЂРІР°С‚СЊ РІС‹РїРѕР»РЅРµРЅРёРµ)
+	bool erorr = false; // С„Р»Р°Рі РѕС€РёР±РєРё
 public:
-	// типы ошибок
+	// С‚РёРїС‹ РѕС€РёР±РѕРє
 	enum Exceptions {
 		UNKNOWN_REGISTER,
 		READONLY_REGISTER,
@@ -25,7 +25,7 @@ public:
 	};
 	void raise_exception(u16 PC, Exceptions e_type, std::string text) 
 	{
-		// метод выводит где произошла ошибка и что именно пошло не так
+		// РјРµС‚РѕРґ РІС‹РІРѕРґРёС‚ РіРґРµ РїСЂРѕРёР·РѕС€Р»Р° РѕС€РёР±РєР° Рё С‡С‚Рѕ РёРјРµРЅРЅРѕ РїРѕС€Р»Рѕ РЅРµ С‚Р°Рє
 		erorr = true;
 		execute_til_hlt = false;
 		std::string e_type_str;

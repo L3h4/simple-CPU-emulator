@@ -30,31 +30,28 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="main.cpp">
+    <ClCompile Include="src\main.cpp">
       <Filter>Исходные файлы</Filter>
     </ClCompile>
-    <ClCompile Include="Bus.cpp">
+    <ClCompile Include="src\Bus\Bus.cpp">
       <Filter>Исходные файлы\Bus</Filter>
     </ClCompile>
-    <ClCompile Include="Ox64cmCPU.cpp">
+    <ClCompile Include="src\cpu\Ox64cmCPU.cpp">
       <Filter>Исходные файлы\CPU</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Bus.h">
-      <Filter>Файлы заголовков\Bus</Filter>
-    </ClInclude>
-    <ClInclude Include="Ox64cmCPU.h">
-      <Filter>Файлы заголовков\CPU</Filter>
-    </ClInclude>
-    <ClInclude Include="MOV.hpp">
-      <Filter>Файлы заголовков\CPU\Instructions</Filter>
-    </ClInclude>
-    <ClInclude Include="Status.hpp">
+    <ClInclude Include="src\Status.hpp">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="..\instruction set.xlsx" />
+    <ClInclude Include="src\Bus\Bus.h">
+      <Filter>Файлы заголовков\Bus</Filter>
+    </ClInclude>
+    <ClInclude Include="src\cpu\Ox64cmCPU.h">
+      <Filter>Файлы заголовков\CPU</Filter>
+    </ClInclude>
+    <ClInclude Include="src\cpu\instructions\MOV.hpp">
+      <Filter>Файлы заголовков\CPU\Instructions</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

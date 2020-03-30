@@ -1,14 +1,14 @@
-#include "Ox64cmCPU.h"
+ï»¿#include "Ox64cmCPU.h"
 
 
 
 Ox64cmCPU::Ox64cmCPU(Bus * b, Status * s)
 {
-	// êîíñòðóêòîð ïðîöåññîðà
+	// ÐºÐ¾Ð½ÑÑ‚Ñ€ÑƒÐºÑ‚Ð¾Ñ€ Ð¿Ñ€Ð¾Ñ†ÐµÑÑÐ¾Ñ€Ð°
 	this->bus = b;
 	this->status = s;
 
-	// Èíèöèàëèçàöèÿ ñýòà èíñòðóêöèé
+	// Ð˜Ð½Ð¸Ñ†Ð¸Ð°Ð»Ð¸Ð·Ð°Ñ†Ð¸Ñ ÑÑÑ‚Ð° Ð¸Ð½ÑÑ‚Ñ€ÑƒÐºÑ†Ð¸Ð¹
 	using a = Ox64cmCPU;
 	opcodes = {
 		{"NOP", &a::NOP, &a::NA, &a::NA}, {"NOP", &a::NOP, &a::NA, &a::NA}, {"NOP", &a::NOP, &a::NA, &a::NA}, {"NOP", &a::NOP, &a::NA, &a::NA}, {"NOP", &a::NOP, &a::NA, &a::NA}, {"NOP", &a::NOP, &a::NA, &a::NA}, {"NOP", &a::NOP, &a::NA, &a::NA}, {"NOP", &a::NOP, &a::NA, &a::NA}, {"NOP", &a::NOP, &a::NA, &a::NA}, {"NOP", &a::NOP, &a::NA, &a::NA}, {"NOP", &a::NOP, &a::NA, &a::NA}, {"NOP", &a::NOP, &a::NA, &a::NA}, {"NOP", &a::NOP, &a::NA, &a::NA}, {"NOP", &a::NOP, &a::NA, &a::NA}, {"NOP", &a::NOP, &a::NA, &a::NA}, {"NOP", &a::NOP, &a::NA, &a::NA},
@@ -31,9 +31,9 @@ Ox64cmCPU::Ox64cmCPU(Bus * b, Status * s)
 		{"NOP", &a::NOP, &a::NA, &a::NA}, {"NOP", &a::NOP, &a::NA, &a::NA}, {"NOP", &a::NOP, &a::NA, &a::NA}, {"NOP", &a::NOP, &a::NA, &a::NA}, {"NOP", &a::NOP, &a::NA, &a::NA}, {"NOP", &a::NOP, &a::NA, &a::NA}, {"NOP", &a::NOP, &a::NA, &a::NA}, {"NOP", &a::NOP, &a::NA, &a::NA}, {"NOP", &a::NOP, &a::NA, &a::NA}, {"NOP", &a::NOP, &a::NA, &a::NA}, {"NOP", &a::NOP, &a::NA, &a::NA}, {"NOP", &a::NOP, &a::NA, &a::NA}, {"NOP", &a::NOP, &a::NA, &a::NA}, {"NOP", &a::NOP, &a::NA, &a::NA}, {"NOP", &a::NOP, &a::NA, &a::NA}, {"NOP", &a::NOP, &a::NA, &a::NA}
 	};
 	/*
-		ïîòîì â êîäå ÿ ñìîãó ëåãêî ïîëó÷àòü íóæíûå îáðàáîò÷èêè êîìàíä è àðãóìåíòîâ òèïà 
-		opcodes[êîä îïåðàöèè] è èç ýòîãî ÿ ïîëó÷àþ îáüåêò ÈÍÑÒÐÊÖÈß, êîòîðîþ ÿ ñìîãó îáðàáàòûâàòü 
-		Îáüÿâëåíèå ñòðóêòóðû ÈÍÑÒÐÓÊÖÈß â ôàéëå Ox64cmCPU.h
+		Ð¿Ð¾Ñ‚Ð¾Ð¼ Ð² ÐºÐ¾Ð´Ðµ Ñ ÑÐ¼Ð¾Ð³Ñƒ Ð»ÐµÐ³ÐºÐ¾ Ð¿Ð¾Ð»ÑƒÑ‡Ð°Ñ‚ÑŒ Ð½ÑƒÐ¶Ð½Ñ‹Ðµ Ð¾Ð±Ñ€Ð°Ð±Ð¾Ñ‚Ñ‡Ð¸ÐºÐ¸ ÐºÐ¾Ð¼Ð°Ð½Ð´ Ð¸ Ð°Ñ€Ð³ÑƒÐ¼ÐµÐ½Ñ‚Ð¾Ð² Ñ‚Ð¸Ð¿Ð° 
+		opcodes[ÐºÐ¾Ð´ Ð¾Ð¿ÐµÑ€Ð°Ñ†Ð¸Ð¸] Ð¸ Ð¸Ð· ÑÑ‚Ð¾Ð³Ð¾ Ñ Ð¿Ð¾Ð»ÑƒÑ‡Ð°ÑŽ Ð¾Ð±ÑŒÐµÐºÑ‚ Ð˜ÐÐ¡Ð¢Ð ÐšÐ¦Ð˜Ð¯, ÐºÐ¾Ñ‚Ð¾Ñ€Ð¾ÑŽ Ñ ÑÐ¼Ð¾Ð³Ñƒ Ð¾Ð±Ñ€Ð°Ð±Ð°Ñ‚Ñ‹Ð²Ð°Ñ‚ÑŒ 
+		ÐžÐ±ÑŒÑÐ²Ð»ÐµÐ½Ð¸Ðµ ÑÑ‚Ñ€ÑƒÐºÑ‚ÑƒÑ€Ñ‹ Ð˜ÐÐ¡Ð¢Ð Ð£ÐšÐ¦Ð˜Ð¯ Ð² Ñ„Ð°Ð¹Ð»Ðµ Ox64cmCPU.h
 	*/
 	this->reset();
 }
@@ -42,7 +42,7 @@ void Ox64cmCPU::step()
 {
 	u8 opcode = bus->read(this->PC.value);
 	u16 PC_backup = this->PC.value;
-	if (!status->erorr) // åñëè îøèáîê íåò òî ïàðñèì (ïàðñåðû ìîãóò ïîäûìàòü îøèáêè)
+	if (!status->erorr) // ÐµÑÐ»Ð¸ Ð¾ÑˆÐ¸Ð±Ð¾Ðº Ð½ÐµÑ‚ Ñ‚Ð¾ Ð¿Ð°Ñ€ÑÐ¸Ð¼ (Ð¿Ð°Ñ€ÑÐµÑ€Ñ‹ Ð¼Ð¾Ð³ÑƒÑ‚ Ð¿Ð¾Ð´Ñ‹Ð¼Ð°Ñ‚ÑŒ Ð¾ÑˆÐ¸Ð±ÐºÐ¸)
 	{
 		std::string op_dasm = this->opcodes[opcode].name;
 		std::string arg1_dasm = (this->*opcodes[opcode].get_arg1)();
@@ -51,7 +51,7 @@ void Ox64cmCPU::step()
 		printf("0x%.4X | %s %s,%s\n", PC_backup, op_dasm.c_str(), arg1_dasm.c_str(), arg2_dasm.c_str());
 		#endif //DEBUG
 	}
-	if (!status->erorr) // åñëè îøèáîê íåò òî âûïîëíÿåì
+	if (!status->erorr) // ÐµÑÐ»Ð¸ Ð¾ÑˆÐ¸Ð±Ð¾Ðº Ð½ÐµÑ‚ Ñ‚Ð¾ Ð²Ñ‹Ð¿Ð¾Ð»Ð½ÑÐµÐ¼
 	{
 		(this->*opcodes[opcode].execute)();
 		this->PC.value++;
@@ -77,8 +77,8 @@ void Ox64cmCPU::print_debug()
 
 void Ox64cmCPU::print_disassembly(u16 start, u16 size)
 {
-	// ôóíêöèÿ äëÿ  äèçàññåìáëèíãà 
-	// ïî ñóòè äåëàåò òî æå ñàìîå ÷òî è ô-öèÿ step() íî ïðîñòî íå çàïóñêàåò îáðàáîò÷èê îïåðàöèè, è ïîñëå ñâîåé ðàáîòû âîçâðàùàåò âñå íàçàä
+	// Ñ„ÑƒÐ½ÐºÑ†Ð¸Ñ Ð´Ð»Ñ  Ð´Ð¸Ð·Ð°ÑÑÐµÐ¼Ð±Ð»Ð¸Ð½Ð³Ð° 
+	// Ð¿Ð¾ ÑÑƒÑ‚Ð¸ Ð´ÐµÐ»Ð°ÐµÑ‚ Ñ‚Ð¾ Ð¶Ðµ ÑÐ°Ð¼Ð¾Ðµ Ñ‡Ñ‚Ð¾ Ð¸ Ñ„-Ñ†Ð¸Ñ step() Ð½Ð¾ Ð¿Ñ€Ð¾ÑÑ‚Ð¾ Ð½Ðµ Ð·Ð°Ð¿ÑƒÑÐºÐ°ÐµÑ‚ Ð¾Ð±Ñ€Ð°Ð±Ð¾Ñ‚Ñ‡Ð¸Ðº Ð¾Ð¿ÐµÑ€Ð°Ñ†Ð¸Ð¸, Ð¸ Ð¿Ð¾ÑÐ»Ðµ ÑÐ²Ð¾ÐµÐ¹ Ñ€Ð°Ð±Ð¾Ñ‚Ñ‹ Ð²Ð¾Ð·Ð²Ñ€Ð°Ñ‰Ð°ÐµÑ‚ Ð²ÑÐµ Ð½Ð°Ð·Ð°Ð´
 	u16 PC_backup = this->PC.value;
 	this->PC.value = start;
 	for (int i = 0; i < size; i++)
@@ -100,7 +100,7 @@ void Ox64cmCPU::print_disassembly(u16 start, u16 size)
 
 void Ox64cmCPU::print_regs() 
 {
-	// Âûâîä çíà÷åíèé ðåãèñòðîâ â êîíñîëü
+	// Ð’Ñ‹Ð²Ð¾Ð´ Ð·Ð½Ð°Ñ‡ÐµÐ½Ð¸Ð¹ Ñ€ÐµÐ³Ð¸ÑÑ‚Ñ€Ð¾Ð² Ð² ÐºÐ¾Ð½ÑÐ¾Ð»ÑŒ
 	printf("==========\n");
 	printf("REGISTERS\n");
 	printf("AX = 0x%.4X\n", this->AX.value);
@@ -362,7 +362,7 @@ std::string Ox64cmCPU::NA()
 }
 
 
-#include"MOV.hpp" 
+#include"instructions/MOV.hpp" 
 
 void Ox64cmCPU::ADD()
 {
