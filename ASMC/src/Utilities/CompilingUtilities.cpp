@@ -25,7 +25,7 @@ std::string utilities::delete_brackets(std::string text)
 
 std::string utilities::trim(const std::string& str)
 {
-	//stackoverflow
+	// херобора со stackoverflow
 	// trim first
 	const std::string fill = " ";
 	const std::string whitespace = " \t";
@@ -98,6 +98,12 @@ bool utilities::register16(std::string text)
 }
 bool utilities::dec_number(std::string text)
 {
+	if (text.substr(0, 1) == "-")
+		text = text.substr(1);
+
+	if (text == "")
+		return false;
+
 	for (auto ch : text)
 		if (ch < '0' || ch > '9')
 			return false;
@@ -110,6 +116,10 @@ bool utilities::hex_number(std::string text)
 		return false;
 	else
 		text = text.substr(2);
+
+	if(text == "")
+		return false;
+
 	for (auto ch : text)
 		if (('9' < ch || ch < '0') && ('f' < ch || ch < 'a'))
 			return false;
@@ -148,8 +158,12 @@ bool utilities::ptr_in_hex_number(std::string text)
 
 bool utilities::named_ptr(std::string text)
 {
+	if (text == "")
+		return false;
+
 	if (dec_number(text.substr(0, 1)) || text.substr(text.size() - 1, 1) == ":")
 		return false;
+
 	for (auto ch : text)
 		if ((ch < 'a' || ch > 'z') && (ch < '0' || ch > '9'))
 			if (ch != '_' && ch != '-')
@@ -178,23 +192,7 @@ bool utilities::named_ptr_definition(std::string text)
 	return named_ptr(text);
 }
 
-bool utilities::is_ptr_in_named_ptr(std::string text)
-{
-	if (has_brackets(text))
-		text = delete_brackets(text);
 
-	return named_ptr(text);
-}
-
-
-bool utilities::no_arg(std::string text)
-{
-	if (text == "")
-		return true;
-	else
-		return false;
-
-}
 
 
 // компиляторы аргументов

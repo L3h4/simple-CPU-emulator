@@ -8,7 +8,14 @@
 
 using namespace std;
 
+
+
+#ifdef DEBUG
 #define pause() system("pause")
+#else
+#define pause()
+#endif
+
 
 /*
 	Документация https://www.evernote.com/l/AfpYiDoi7_hKJJHEmHGxAVzqdoACyR6W718/
@@ -16,9 +23,9 @@ using namespace std;
 	Простой компилятор для процессора Ox64cm
 	кароче программа чтобы делать программы xD
 	
-	ASMC.exe file.asm -> file.bin
+	ASMC.exe -i file.asm -o file.bin -> file.bin
 */
-struct 
+struct // некоторые настройки
 {
 	bool print_debug = false;
 	string file_name;
@@ -31,14 +38,19 @@ struct
 bool parse_cmd_args(int argc, char *argv[]) 
 {
 	if (argc == 1)
+	{
+		printf("Use \"%s --help\" to get help\n", argv[0]);
 		return false;
+	}
 
 	for (int i = 1; i < argc; i++)
 	{
 		if ((string)argv[i] == "-h" || (string)argv[i] == "--help")
 		{
-			printf("USAGE: \"ASMC.EXE [options] source.asm\"\n\n");
+			printf("USAGE: \"%s [options] -f source.asm -o out.bin\"\n\n", argv[0]);
 			printf("\t%-2s %-7s  -  %s", "-h", "--help", "Shows this message\n");
+			printf("\t%-2s %-7s  -  %s", "-i", "--in", "Input file\n");
+			printf("\t%-2s %-7s  -  %s", "-o", "--out", "Output file\n");
 			printf("\t%-2s %-7s  -  %s", "-d", "--debug", "Shows debug messages while compileing\n");
 			return false;
 		}
@@ -46,10 +58,15 @@ bool parse_cmd_args(int argc, char *argv[])
 		{
 			config.print_debug = true;
 		}
-		else if (i == argc - 1)  // последним всегда идет имя файла
+		else if ((string)argv[i] == "-o" || (string)argv[i] == "--out")
 		{
-			config.file_name = argv[argc - 1];
-			return true;
+			if (i < argc)
+				config.out_file_name = (string)argv[++i];
+		}
+		else if ((string)argv[i] == "-i" || (string)argv[i] == "--in")
+		{
+			if (i < argc)
+				config.file_name = (string)argv[++i];
 		}
 		else 
 		{
@@ -67,28 +84,29 @@ int main(int argc, char *argv[]) {
 	{
 		printf("Compiling %s\n", config.file_name.c_str());
 
-		Parser p(config.print_debug);
-		Lexer l;
+		Parser parser(config.print_debug);
+		Lexer lexer(config.print_debug);
 		vector<Lexeme> tokens;
 		vector<uint8_t> program;
 		try
 		{
-			tokens = p.parse_from_file(config.file_name);
+			tokens = parser.parse_from_file(config.file_name); // Прочитать и пропарсить 
 		}
 		catch (string err_msg)
 		{
-			printf("\nSYNTAX ERROR:\n\t%s\n\n", err_msg.c_str());
+			printf("\nSYNTAX ERROR:\n\t%s\n\n", err_msg.c_str()); // Если ошибка
 			pause();
 			return 1;
 		}
 
 		try
 		{
-			program = l.analise(tokens);
+			program = lexer.analise(tokens); // Провести лексический анализ и скомпилировать
+			
 		}
 		catch (string err_msg)
 		{
-			printf("\nLEXICAL ERROR:\n\t%s\n\n", err_msg.c_str());
+			printf("\nLEXICAL ERROR:\n\t%s\n\n", err_msg.c_str()); // Если ошибка
 			pause();
 			return 1;
 		}

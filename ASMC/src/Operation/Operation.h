@@ -9,13 +9,11 @@ enum type {
 	POINT_DEFINITION,
 	NONE
 };
+// типы аргументов
 enum arg_type {
 	REGISTER,
-	//REGISTER16,
 	NUMBER,
-
 	PTR_IN_REGISTER,
-	//PTR_IN_REGISTER16,
 	PTR_IN_NUMBER,
 	NOARG
 };
@@ -33,14 +31,14 @@ struct Lexeme
 	std::string named_ptr; // Сюда запишеться название функции например start:
 	type type; // Флажок который помечает реальная ли это инструкция или чтото другое
 	int line; // Номер строки на которой находится инструкция (нужно для вывода ошибок)
-	int size = 0;
-	std::vector<uint8_t> bin;
-	bool uses_POINT;
+	int size = 0; // размер операции в бинарном виде
+	std::vector<uint8_t> bin; // сама бинарная программа
+	bool uses_POINT = false; // 
 };
 
 
-const std::vector<std::string> possible_cmds = { "mov", "nop", "jmp" };
-const std::vector<std::string> possible_size_identifiers = { "byte", "b", "word", "w" };
-const std::vector<std::string> possible_registers = { "a", "b", "c", "d", "ax", "bx", "cx", "dx", "pc", "sp" };
-const std::vector<std::string> possible_registers16 = { "ax", "bx", "cx", "dx", "pc", "sp" };
-const std::vector<std::string> possible_registers8 = { "a", "b", "c", "d" };
+const std::vector<std::string> possible_cmds = { "mov", "nop" }; // Все  возможные операции
+const std::vector<std::string> possible_size_identifiers = { "byte", "b", "word", "w" }; // Все возможные типы данных
+const std::vector<std::string> possible_registers = { "a", "b", "c", "d", "ax", "bx", "cx", "dx", "pc", "sp" }; // Все возможные регистры
+const std::vector<std::string> possible_registers16 = { "ax", "bx", "cx", "dx", "pc", "sp" }; // Все возможные 8 битные регистры
+const std::vector<std::string> possible_registers8 = { "a", "b", "c", "d" }; // Все возможные 16 битные регистры

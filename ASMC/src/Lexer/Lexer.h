@@ -3,14 +3,16 @@
 #include<vector>
 #include<string>
 #include"../Operation/Operation.h"
-
 #include "../Utilities/CompilingUtilities.h"
-// Класс котрый отвечает за лексический анализ
+
+// Класс котрый отвечает за лексический анализ и генерацию кода
 class Lexer
 {
 public:
 	Lexer();
 	~Lexer();
+	Lexer(bool debug);
+
 public:
 	std::vector<uint8_t> analise(std::vector<Lexeme> operations);
 
@@ -30,13 +32,12 @@ private:
 		arg_type arg1_type;
 		int size;
 	};
-	struct Point 
+	struct NamedPtr 
 	{
-		Point(std::string name, int addr)
+		NamedPtr(std::string name, int addr)
 		{
 			this->name = name.substr(0, name.length() - 1);
 			address = addr;
-			printf("Point(%s, %d)\n", name.c_str(), addr);
 		}
 		int address;
 		std::string name;
@@ -49,5 +50,6 @@ private:
 
 	std::vector<Instrution> instruction_table;
 	std::vector<Lexeme> program;
+	bool debug = false;
 };
 

@@ -1,8 +1,9 @@
-jmp start
+;jmp start
 
-nop
-nop
-nop
+data:
+  nop
+  nop
+  nop
 
 ; TODO fix size modifiers priorities
 
@@ -22,4 +23,7 @@ start:
   mov w [0x0123], [0x0123]
   mov b [ax], [sp]
   mov b [0x44], 0xFFE
+
+  mov b [0x0133], data
+  mov b [start], data
   nop

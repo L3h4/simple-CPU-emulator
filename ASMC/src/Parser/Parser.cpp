@@ -22,15 +22,16 @@ std::vector<Lexeme> Parser::parse_from_file(std::string file_name)
 	std::fstream file(file_name);
 	std::vector<Lexeme> operations;
 	std::string line;
-	int line_counter = 1;
+	int line_counter = 1; // счетчик номера строки
 
 	if (!file)
 		throw "File not found " + file_name;
 
-	while (std::getline(file, line)) {
-		std::transform(line.begin(), line.end(), line.begin(), std::tolower);
-		Lexeme op = parse_line(line, line_counter++);
-		if(op.type != NONE)
+	while (std::getline(file, line)) { // Читаем файл построчно
+		line = trim(line); // Обрезать лишние пробелы и табы
+		std::transform(line.begin(), line.end(), line.begin(), std::tolower); // перевести все в нижний регистр
+		Lexeme op = parse_line(line, line_counter++); // парсим
+		if(op.type != NONE) // если получилось добавляем в масив
 			operations.push_back(op);
 	}
 	file.close();
@@ -40,8 +41,10 @@ std::vector<Lexeme> Parser::parse_from_file(std::string file_name)
 
 Lexeme Parser::parse_line(std::string line, int line_N)
 {
+	// Добро пожаловать в обитель говнокода 
+	// тут происходит магия парсинга
+
 	Lexeme op;
-	op.full_command = trim(line);
 	line.erase(std::remove(line.begin(), line.end(), ','), line.end());
 	line = line.substr(0, line.find(';'));
 	op.line = line_N;
@@ -51,8 +54,7 @@ Lexeme Parser::parse_line(std::string line, int line_N)
 		return op;
 	}
 
-	//printf("%s\n", line.c_str());
-	
+	op.full_command = line;
 	std::istringstream f(line);
 	std::string token;
 	int argid = 0;
@@ -116,11 +118,13 @@ Lexeme Parser::parse_line(std::string line, int line_N)
 				op.arg1_type = NUMBER;
 			}
 			argid++;
-			if (op.size_identifier == "")
+			if (op.size_identifier == "" && !size_modifier_read_only)
 			{
-				unsigned int x;
+				int x;
 				sscanf_s(token.c_str(), "%d", &x);
-				op.size_identifier = x > 0xFF && x < 0xFFFF ? "w" : "b";
+				if (x < 0) x = -x;
+				
+				op.size_identifier = x > 0xFF ? "w" : "b";
 			}
 		}
 		else if (hex_number(token)) {
@@ -133,11 +137,13 @@ Lexeme Parser::parse_line(std::string line, int line_N)
 				op.arg1_type = NUMBER;
 			}
 			argid++;
-			if (op.size_identifier == "")
+			if (op.size_identifier == "" && !size_modifier_read_only)
 			{
-				unsigned int x;
+				int x;
 				sscanf_s(token.c_str(), "%x", &x);
-				op.size_identifier = x > 0xFF && x < 0xFFFF ? "w" : "b";
+				if (x < 0) x = -x;
+
+				op.size_identifier = x > 0xFF ? "w" : "b";
 			}
 		}
 		else if (named_ptr(token) && op.cmd != "")
@@ -156,11 +162,11 @@ Lexeme Parser::parse_line(std::string line, int line_N)
 		else if (ptr_in_register(token) && has_brackets(token)) {
 			if (argid == 0) {
 				op.arg0 = token;
-				op.arg0_type = register16(delete_brackets(token)) ? PTR_IN_REGISTER : PTR_IN_REGISTER;
+				op.arg0_type = PTR_IN_REGISTER;
 			}
 			else if (argid == 1) {
 				op.arg1 = token;
-				op.arg1_type = register16(delete_brackets(token)) ? PTR_IN_REGISTER : PTR_IN_REGISTER;
+				op.arg1_type = PTR_IN_REGISTER;
 			}
 			if (!size_modifier_read_only)
 			{
@@ -191,7 +197,7 @@ Lexeme Parser::parse_line(std::string line, int line_N)
 			}
 			argid++;
 		}
-		else if (is_ptr_in_named_ptr(token) && has_brackets(token))
+		else if (ptr_in_named_ptr(token) && has_brackets(token))
 		{
 			op.uses_POINT = true;
 			if (argid == 0) {
@@ -220,15 +226,15 @@ Lexeme Parser::parse_line(std::string line, int line_N)
 		pos++;
 	}
 
-	if(debug)
+	if(debug && op.type == CPU_INSTRUCTION)
 		printf("%d : %-5s %s  %s  %s\n", line_N, op.cmd.c_str(), op.size_identifier.c_str(), op.arg0.c_str(), op.arg1.c_str());
 
-	if (op.cmd == "" && op.type == CPU_INSTRUCTION) 
-	{
-		char buf[70];
-		sprintf_s(buf, "Line: %d bad operation \"%s\"", line_N, op.full_command.c_str());
-		throw (std::string)buf;
-	}
+	//if (op.cmd == "" && op.type == CPU_INSTRUCTION) 
+	//{
+	//	char buf[70];
+	//	sprintf_s(buf, "Line: %d bad operation \"%s\"", line_N, op.full_command.c_str());
+	//	throw (std::string)buf;
+	//}
 	return op;
 }
 

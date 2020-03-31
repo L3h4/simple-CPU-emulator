@@ -4,6 +4,9 @@ using namespace utilities;
 
 Lexer::Lexer()
 {
+	// таблица всех возможных опкодов, их сигнатур и размеров
+	// например операция "mov [0x0000], 123" будет занимать 4 байта в памяти, 
+	// а "mov word [0x0000], 123" будет занимать уже 5 байт
 	instruction_table = 
 	{
 		{ 0x0, "nop", "", NOARG, NOARG, 1 }, { 0x0, "nop", "", NOARG, NOARG, 1 }, {0x0, "nop", "", NOARG, NOARG, 1}, {0x0, "nop", "", NOARG, NOARG, 1}, {0x0, "nop", "", NOARG, NOARG, 1}, {0x0, "nop", "", NOARG, NOARG, 1}, {0x0, "nop", "", NOARG, NOARG, 1}, {0x0, "nop", "", NOARG, NOARG, 1}, {0x0, "nop", "", NOARG, NOARG, 1}, {0x0, "nop", "", NOARG, NOARG, 1}, {0x0, "nop", "", NOARG, NOARG, 1}, {0x0, "nop", "", NOARG, NOARG, 1}, {0x0, "nop", "", NOARG, NOARG, 1}, {0x0, "nop", "", NOARG, NOARG, 1}, {0x0, "nop", "", NOARG, NOARG, 1}, {0x0, "nop", "", NOARG, NOARG, 1},
@@ -18,7 +21,7 @@ Lexer::Lexer()
 		{ 0x70, "mov", "w", REGISTER, PTR_IN_NUMBER,   4 }, { 0x71, "mov", "w", PTR_IN_REGISTER, PTR_IN_NUMBER,   4 }, { 0x72, "mov", "w", PTR_IN_NUMBER, PTR_IN_NUMBER,   5 }, { 0x0, "nop", "", NOARG, NOARG, 1}, {0x0, "nop", "", NOARG, NOARG, 1}, {0x0, "nop", "", NOARG, NOARG, 1}, {0x0, "nop", "", NOARG, NOARG, 1}, {0x0, "nop", "", NOARG, NOARG, 1}, {0x0, "nop", "", NOARG, NOARG, 1}, {0x0, "nop", "", NOARG, NOARG, 1}, {0x0, "nop", "", NOARG, NOARG, 1}, {0x0, "nop", "", NOARG, NOARG, 1}, {0x0, "nop", "", NOARG, NOARG, 1}, {0x0, "nop", "", NOARG, NOARG, 1}, {0x0, "nop", "", NOARG, NOARG, 1}, {0x0, "nop", "", NOARG, NOARG, 1},
 		{ 0x80, "mov", "w", REGISTER, PTR_IN_REGISTER, 3 }, { 0x81, "mov", "w", PTR_IN_REGISTER, PTR_IN_REGISTER, 3 }, { 0x82, "mov", "w", PTR_IN_NUMBER, PTR_IN_REGISTER, 4 }, { 0x0, "nop", "", NOARG, NOARG, 1}, {0x0, "nop", "", NOARG, NOARG, 1}, {0x0, "nop", "", NOARG, NOARG, 1}, {0x0, "nop", "", NOARG, NOARG, 1}, {0x0, "nop", "", NOARG, NOARG, 1}, {0x0, "nop", "", NOARG, NOARG, 1}, {0x0, "nop", "", NOARG, NOARG, 1}, {0x0, "nop", "", NOARG, NOARG, 1}, {0x0, "nop", "", NOARG, NOARG, 1}, {0x0, "nop", "", NOARG, NOARG, 1}, {0x0, "nop", "", NOARG, NOARG, 1}, {0x0, "nop", "", NOARG, NOARG, 1}, {0x0, "nop", "", NOARG, NOARG, 1},
 
-		{ 0x90, "jmp", "", NUMBER, NOARG, 3 }, { 0x0, "nop", "", NOARG, NOARG, 1 }, {0x0, "nop", "", NOARG, NOARG, 1}, {0x0, "nop", "", NOARG, NOARG, 1}, {0x0, "nop", "", NOARG, NOARG, 1}, {0x0, "nop", "", NOARG, NOARG, 1}, {0x0, "nop", "", NOARG, NOARG, 1}, {0x0, "nop", "", NOARG, NOARG, 1}, {0x0, "nop", "", NOARG, NOARG, 1}, {0x0, "nop", "", NOARG, NOARG, 1}, {0x0, "nop", "", NOARG, NOARG, 1}, {0x0, "nop", "", NOARG, NOARG, 1}, {0x0, "nop", "", NOARG, NOARG, 1}, {0x0, "nop", "", NOARG, NOARG, 1}, {0x0, "nop", "", NOARG, NOARG, 1}, {0x0, "nop", "", NOARG, NOARG, 1},
+		{ 0x0, "nop", "", NOARG, NOARG, 1 }, { 0x0, "nop", "", NOARG, NOARG, 1 }, {0x0, "nop", "", NOARG, NOARG, 1}, {0x0, "nop", "", NOARG, NOARG, 1}, {0x0, "nop", "", NOARG, NOARG, 1}, {0x0, "nop", "", NOARG, NOARG, 1}, {0x0, "nop", "", NOARG, NOARG, 1}, {0x0, "nop", "", NOARG, NOARG, 1}, {0x0, "nop", "", NOARG, NOARG, 1}, {0x0, "nop", "", NOARG, NOARG, 1}, {0x0, "nop", "", NOARG, NOARG, 1}, {0x0, "nop", "", NOARG, NOARG, 1}, {0x0, "nop", "", NOARG, NOARG, 1}, {0x0, "nop", "", NOARG, NOARG, 1}, {0x0, "nop", "", NOARG, NOARG, 1}, {0x0, "nop", "", NOARG, NOARG, 1},
 		{ 0x0, "nop", "", NOARG, NOARG, 1 }, { 0x0, "nop", "", NOARG, NOARG, 1 }, {0x0, "nop", "", NOARG, NOARG, 1}, {0x0, "nop", "", NOARG, NOARG, 1}, {0x0, "nop", "", NOARG, NOARG, 1}, {0x0, "nop", "", NOARG, NOARG, 1}, {0x0, "nop", "", NOARG, NOARG, 1}, {0x0, "nop", "", NOARG, NOARG, 1}, {0x0, "nop", "", NOARG, NOARG, 1}, {0x0, "nop", "", NOARG, NOARG, 1}, {0x0, "nop", "", NOARG, NOARG, 1}, {0x0, "nop", "", NOARG, NOARG, 1}, {0x0, "nop", "", NOARG, NOARG, 1}, {0x0, "nop", "", NOARG, NOARG, 1}, {0x0, "nop", "", NOARG, NOARG, 1}, {0x0, "nop", "", NOARG, NOARG, 1},
 		{ 0x0, "nop", "", NOARG, NOARG, 1 }, { 0x0, "nop", "", NOARG, NOARG, 1 }, {0x0, "nop", "", NOARG, NOARG, 1}, {0x0, "nop", "", NOARG, NOARG, 1}, {0x0, "nop", "", NOARG, NOARG, 1}, {0x0, "nop", "", NOARG, NOARG, 1}, {0x0, "nop", "", NOARG, NOARG, 1}, {0x0, "nop", "", NOARG, NOARG, 1}, {0x0, "nop", "", NOARG, NOARG, 1}, {0x0, "nop", "", NOARG, NOARG, 1}, {0x0, "nop", "", NOARG, NOARG, 1}, {0x0, "nop", "", NOARG, NOARG, 1}, {0x0, "nop", "", NOARG, NOARG, 1}, {0x0, "nop", "", NOARG, NOARG, 1}, {0x0, "nop", "", NOARG, NOARG, 1}, {0x0, "nop", "", NOARG, NOARG, 1},
 		{ 0x0, "nop", "", NOARG, NOARG, 1 }, { 0x0, "nop", "", NOARG, NOARG, 1 }, {0x0, "nop", "", NOARG, NOARG, 1}, {0x0, "nop", "", NOARG, NOARG, 1}, {0x0, "nop", "", NOARG, NOARG, 1}, {0x0, "nop", "", NOARG, NOARG, 1}, {0x0, "nop", "", NOARG, NOARG, 1}, {0x0, "nop", "", NOARG, NOARG, 1}, {0x0, "nop", "", NOARG, NOARG, 1}, {0x0, "nop", "", NOARG, NOARG, 1}, {0x0, "nop", "", NOARG, NOARG, 1}, {0x0, "nop", "", NOARG, NOARG, 1}, {0x0, "nop", "", NOARG, NOARG, 1}, {0x0, "nop", "", NOARG, NOARG, 1}, {0x0, "nop", "", NOARG, NOARG, 1}, {0x0, "nop", "", NOARG, NOARG, 1},
@@ -33,20 +36,25 @@ Lexer::~Lexer()
 {
 }
 
+Lexer::Lexer(bool debug) : Lexer()
+{
+	this->debug = debug;
+}
+
 std::vector<uint8_t> Lexer::analise(std::vector<Lexeme> operations)
 {
 	std::vector<uint8_t> res;
 	program = operations;
-	analise_sizes();
-	analise_named_pointers();
-	compile();
+	analise_sizes(); // считаем размер будущей программы
+	analise_named_pointers(); // подставляем вместо именованых указателей их адреса
+	compile(); // компилируем
 
 	for (auto inst : program)
 	{
-		res = concat_vectors(res, inst.bin);
+		res = concat_vectors(res, inst.bin); // записываем программу в массив
 	}
 
-	return res;
+	return res; // возращаем скомпилироавною программу
 }
 
 void Lexer::analise_sizes()
@@ -56,16 +64,12 @@ void Lexer::analise_sizes()
 		if (program[i].type != CPU_INSTRUCTION)
 			continue;
 
-		//printf("Line %d : Analising %s\n", program[i].line, program[i].cmd.c_str());
-		//printf("%-4d : %-5s %s  %s  %s\n", program[i].line, program[i].cmd.c_str(), program[i].size_identifier.c_str(), program[i].arg0.c_str(), program[i].arg1.c_str());
 		for (int j = 0; j < instruction_table.size(); j++)
 		{
-			if (program[i].cmd != instruction_table[j].name)
-				continue;
 			if (program[i].cmd == instruction_table[j].name && program[i].arg0_type == instruction_table[j].arg0_type && program[i].arg1_type == instruction_table[j].arg1_type && program[i].size_identifier == instruction_table[j].size_identifier)
 			{
 				program[i].size = instruction_table[j].size;
-				//program[i].bin.push_back(instruction_table[j].code);
+				
 				break;
 			}
 
@@ -73,7 +77,7 @@ void Lexer::analise_sizes()
 		if (program[i].size == 0)
 		{
 			char buf[70];
-			sprintf_s(buf, "Line %d can't understand \"%s\"", program[i].line, program[i].full_command.c_str());
+			sprintf_s(buf, "Line %d can't understand \"%s\", check arguments and data type", program[i].line, program[i].full_command.c_str());
 			throw (std::string)buf;
 		}
 	}
@@ -81,52 +85,54 @@ void Lexer::analise_sizes()
 
 void Lexer::analise_named_pointers()
 {
-	std::vector<Point> definitions;
+	if (debug)
+		printf("\n\nAnalised instructions\n");
+	std::vector<NamedPtr> definitions;
 	for (int i = 0; i < program.size(); i++)
 	{
 		if (program[i].type == CPU_INSTRUCTION)
 			continue;
 		else if (program[i].type == POINT_DEFINITION)
 		{
-			definitions.push_back(Point(program[i].named_ptr, get_instruction_addres(i)));
+			definitions.push_back(NamedPtr(program[i].named_ptr, get_instruction_addres(i)));
 		}
 	}
-	for (auto p : definitions)
+	
+	for (int i = 0; i < program.size(); i++)
 	{
-		for (int i = 0; i < program.size(); i++)
+		if (program[i].uses_POINT)
 		{
+			for (auto p : definitions)
+			{
+ 				if (utilities::delete_brackets(program[i].arg0) == p.name)
+				{
+					program[i].arg0 = std::to_string(p.address);
+					program[i].uses_POINT = false;
+				}
+				if (delete_brackets(program[i].arg1) == p.name)
+				{
+					program[i].arg1 = std::to_string(p.address);
+					program[i].uses_POINT = false;
+				}
+			}
 
-			if (utilities::delete_brackets(program[i].arg0) == p.name)
-			{
-				program[i].arg0 = std::to_string(p.address);
-				program[i].uses_POINT = false;
-			}
-			else if (named_ptr(delete_brackets(program[i].arg0)))
-			{
-				char buf[70];
-				sprintf_s(buf, "Line %d unknown pointer \"%s\"", program[i].line, program[i].arg0.c_str());
-				throw (std::string)buf;
-			}
-			if (delete_brackets(program[i].arg1) == p.name)
-			{
-				program[i].arg1 = std::to_string(p.address);
-				program[i].uses_POINT = false;
-			}
-			else if (named_ptr(delete_brackets(program[i].arg1)))
+			if (debug)
+				printf("%d : %s %s %s %s\n", program[i].line, program[i].cmd.c_str(), program[i].size_identifier.c_str(), program[i].arg0.c_str(), program[i].arg1.c_str());
+
+			if ((program[i].uses_POINT))
 			{
 				char buf[70];
 				sprintf_s(buf, "Line %d unknown pointer \"%s\"", program[i].line, program[i].arg1.c_str());
 				throw (std::string)buf;
 			}
-			printf("%s %s, %s\n", program[i].cmd.c_str(), program[i].arg0.c_str(), program[i].arg1.c_str());
-
 		}
 	}
 }
 
 void Lexer::compile()
 {
-
+	if (debug)
+		printf("\n\nCompiled binary\n");
 	for (int i = 0; i < program.size(); i++)
 	{
 		if (program[i].type != CPU_INSTRUCTION)
@@ -246,12 +252,15 @@ void Lexer::compile()
 				{
 				}
 
-				printf("Line %d { ", program[i].line);
-				for (auto num : program[i].bin)
+				if (debug)
 				{
-					printf("0x%.2X, ", num);
+					printf("%d : { ", program[i].line);
+					for (auto num : program[i].bin)
+					{
+						printf("0x%.2X, ", num);
+					}
+					printf("\b\b }\n");
 				}
-				printf("\b\b }\n");
 				break;
 			}
 		}
