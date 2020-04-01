@@ -18,8 +18,6 @@ using namespace std;
 
 
 /*
-	Документация https://www.evernote.com/l/AfpYiDoi7_hKJJHEmHGxAVzqdoACyR6W718/
-	
 	Простой компилятор для процессора Ox64cm
 	кароче программа чтобы делать программы xD
 	
