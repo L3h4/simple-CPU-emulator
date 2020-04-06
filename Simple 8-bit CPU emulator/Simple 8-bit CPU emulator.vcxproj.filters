@@ -39,6 +39,15 @@
     <ClCompile Include="src\cpu\Ox64cmCPU.cpp">
       <Filter>Исходные файлы\CPU</Filter>
     </ClCompile>
+    <ClCompile Include="src\cpu\Process\Process.cpp">
+      <Filter>Исходные файлы</Filter>
+    </ClCompile>
+    <ClCompile Include="src\cpu\Registers\RegisterFile.cpp">
+      <Filter>Исходные файлы</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Bus\Memory\Memory.cpp">
+      <Filter>Исходные файлы</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Status.hpp">
@@ -50,8 +59,14 @@
     <ClInclude Include="src\cpu\Ox64cmCPU.h">
       <Filter>Файлы заголовков\CPU</Filter>
     </ClInclude>
-    <ClInclude Include="src\cpu\instructions\MOV.hpp">
-      <Filter>Файлы заголовков\CPU\Instructions</Filter>
+    <ClInclude Include="src\cpu\Process\Process.h">
+      <Filter>Файлы заголовков</Filter>
+    </ClInclude>
+    <ClInclude Include="src\cpu\Registers\RegisterFile.h">
+      <Filter>Файлы заголовков</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Bus\Memory\Memory.h">
+      <Filter>Файлы заголовков</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

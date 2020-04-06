@@ -25,7 +25,6 @@ private:
 
 	struct Instrution
 	{
-		uint8_t code;
 		std::string name;
 		std::string size_identifier;
 		arg_type arg0_type;

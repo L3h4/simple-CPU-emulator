@@ -91,6 +91,7 @@
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
       <ConformanceMode>true</ConformanceMode>
+      <PreprocessorDefinitions>DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
@@ -99,6 +100,7 @@
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
       <ConformanceMode>true</ConformanceMode>
+      <PreprocessorDefinitions>DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -130,13 +132,18 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="src\Bus\Memory\Memory.cpp" />
+    <ClCompile Include="src\cpu\Registers\RegisterFile.cpp" />
+    <ClCompile Include="src\cpu\Process\Process.cpp" />
     <ClCompile Include="src\Bus\Bus.cpp" />
     <ClCompile Include="src\main.cpp" />
     <ClCompile Include="src\cpu\Ox64cmCPU.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\Bus\Memory\Memory.h" />
+    <ClInclude Include="src\cpu\Registers\RegisterFile.h" />
+    <ClInclude Include="src\cpu\Process\Process.h" />
     <ClInclude Include="src\Bus\Bus.h" />
-    <ClInclude Include="src\cpu\instructions\MOV.hpp" />
     <ClInclude Include="src\cpu\Ox64cmCPU.h" />
     <ClInclude Include="src\Status.hpp" />
   </ItemGroup>

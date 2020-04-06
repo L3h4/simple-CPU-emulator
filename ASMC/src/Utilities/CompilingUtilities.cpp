@@ -166,7 +166,7 @@ bool utilities::named_ptr(std::string text)
 
 	for (auto ch : text)
 		if ((ch < 'a' || ch > 'z') && (ch < '0' || ch > '9'))
-			if (ch != '_' && ch != '-')
+			if (ch != '_' && ch != '-'&& ch != '.')
 				return false;
 	for (auto reg : possible_registers)
 		if (reg == text)

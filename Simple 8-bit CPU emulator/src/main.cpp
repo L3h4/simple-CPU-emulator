@@ -8,7 +8,7 @@ using namespace std;
 #include"Bus/Bus.h"
 #include"cpu/Ox64cmCPU.h"
 #include"Status.hpp"
-
+#include"Bus/Memory/Memory.h"
 
 /*
 	Дело было вечером, делать было нечего. Короче я наваял эмулятор простого 8/16 битного процессора)
@@ -30,7 +30,8 @@ Ox64cmCPU cpu;
 void load_program(u16 address, u8 program[], u16 size) {
 	u16 relative_address = address;
 	for (; relative_address - address < size; relative_address++) {
-		bus.write(relative_address, program[relative_address - address]);
+		bus.RAM.write<u8>(relative_address, program[relative_address - address]);
+		//bus.RAM.write<u8>(123, 4);
 	}
 	printf("Your program located at 0x%.4X - 0x%.4X\n", address, relative_address);
 }
@@ -42,15 +43,28 @@ void initialize_memory()
 	// компилятора пока что нет поєтому прграму пишем сюда (
 	// пока что работает только операция MOV
 	// простая программа для теста
-	u8 MOV_inst_test_program[] = {
-		0x10,0xA,0x3F,		  // MOV A, 0x3F
-		0x50,0xBB,0x02,0x34,  // MOV BX, 0x0234
-		0x11,0x0B,0xEF,       //MOV [B], 0xEF
-		0x72,0x02,0x35,0x0,0x1//MOV [0x0235], [0x0001]
-	};
+	//u8 MOV_inst_test_program[] = {
+		//0x10,0xA,0xFF,		  // MOV A, 0xFE
+		//0x50,0xBB,0x02,0x34,  // MOV BX, 0x0234
+		//0x11,0x0B,0xEF,       //MOV [B], 0xEF
+		//0x72,0x02,0x35,0x0,0x1,//MOV [0x0235], [0x0001]
+
+		//0x13,0xA,0x01,		  // ADD A, 0x01
+		//0x53,0xBB,0x02,0x34,  // ADD BX, 0x0234
+		//0x63,0xAA,0xBB,       // ADD AX, BX
+		//0x75,0x02,0x35,0x0,0x1//ADD [0x0235], [0x0001]
+	//};
 	
 	// загрузить программу в память
-	load_program(0, MOV_inst_test_program, sizeof(MOV_inst_test_program));
+	try
+	{
+		bus.load_from_file("..\\Ox64cm_programs\\test.bin");
+	}
+	catch (std::string e)
+	{
+		printf("LOAD MEMORY EROR \"%s\"\n", e.c_str());
+	}
+	//load_program(0, MOV_inst_test_program, sizeof(MOV_inst_test_program));
 }
 
 
@@ -106,7 +120,7 @@ int main() {
 			else if (command == ".registers" || command == ".regs")
 			{
 				// при вводе этой команды в консоль выведется содержимое регистров и флагов
-				cpu.print_regs();
+				printf("%s\n", cpu.regs.get_string(0).c_str());
 				continue;
 			}
 			else if (command == ".memory" || command == ".mem")
