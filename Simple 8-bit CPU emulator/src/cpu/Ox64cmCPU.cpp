@@ -13,16 +13,16 @@ Ox64cmCPU::Ox64cmCPU(Bus * b, Status * s)
 	opcodes = {
 		
 
-		{"mov", BYTE, &a::MOV, REGISTER, NUMBER,          3}, {"mov", BYTE, &a::MOV, PTR_IN_REGISTER, NUMBER,          3}, {"mov", BYTE, &a::MOV, PTR_IN_NUMBER, NUMBER,          4}, /**/ {"add", BYTE, &a::ADD, REGISTER, NUMBER,          3}, {"add", BYTE, &a::ADD, PTR_IN_REGISTER, NUMBER,          3}, {"add", BYTE, &a::ADD, PTR_IN_NUMBER, NUMBER,          4}, /**/ {"sub", BYTE, &a::SUB, REGISTER, NUMBER,          3}, {"sub", BYTE, &a::SUB, PTR_IN_REGISTER, NUMBER,          3}, {"sub", BYTE, &a::SUB, PTR_IN_NUMBER, NUMBER,          4}, {"err", NODATA, &a::ERR, NO_ARG, NO_ARG, 1},          {"err", NODATA, &a::ERR, NO_ARG, NO_ARG, 1},        {"err", NODATA, &a::ERR, NO_ARG, NO_ARG, 1},          {"err", NODATA, &a::ERR, NO_ARG, NO_ARG, 1},        {"err", NODATA, &a::ERR, NO_ARG, NO_ARG, 1},        {"err", NODATA, &a::ERR, NO_ARG, NO_ARG, 1},          {"nop", NODATA, &a::NOP, NO_ARG, NO_ARG, 1},
-		{"mov", BYTE, &a::MOV, REGISTER, REGISTER,        3}, {"mov", BYTE, &a::MOV, PTR_IN_REGISTER, REGISTER,        3}, {"mov", BYTE, &a::MOV, PTR_IN_NUMBER, REGISTER,        4}, /**/ {"add", BYTE, &a::ADD, REGISTER, REGISTER,        3}, {"add", BYTE, &a::ADD, PTR_IN_REGISTER, REGISTER,        3}, {"add", BYTE, &a::ADD, PTR_IN_NUMBER, REGISTER,        4}, /**/ {"sub", BYTE, &a::SUB, REGISTER, REGISTER,        3}, {"sub", BYTE, &a::SUB, PTR_IN_REGISTER, REGISTER,        3}, {"sub", BYTE, &a::SUB, PTR_IN_NUMBER, REGISTER,        4}, {"err", NODATA, &a::ERR, NO_ARG, NO_ARG, 1},          {"err", NODATA, &a::ERR, NO_ARG, NO_ARG, 1},        {"err", NODATA, &a::ERR, NO_ARG, NO_ARG, 1},          {"err", NODATA, &a::ERR, NO_ARG, NO_ARG, 1},        {"err", NODATA, &a::ERR, NO_ARG, NO_ARG, 1},        {"err", NODATA, &a::ERR, NO_ARG, NO_ARG, 1},          {"err", NODATA, &a::ERR, NO_ARG, NO_ARG, 1},
-		{"mov", BYTE, &a::MOV, REGISTER, PTR_IN_NUMBER,   4}, {"mov", BYTE, &a::MOV, PTR_IN_REGISTER, PTR_IN_NUMBER,   4}, {"mov", BYTE, &a::MOV, PTR_IN_NUMBER, PTR_IN_NUMBER,   5}, /**/ {"add", BYTE, &a::ADD, REGISTER, PTR_IN_NUMBER,   4}, {"add", BYTE, &a::ADD, PTR_IN_REGISTER, PTR_IN_NUMBER,   4}, {"add", BYTE, &a::ADD, PTR_IN_NUMBER, PTR_IN_NUMBER,   5}, /**/ {"sub", BYTE, &a::SUB, REGISTER, PTR_IN_NUMBER,   4}, {"sub", BYTE, &a::SUB, PTR_IN_REGISTER, PTR_IN_NUMBER,   4}, {"sub", BYTE, &a::SUB, PTR_IN_NUMBER, PTR_IN_NUMBER,   5}, {"err", NODATA, &a::ERR, NO_ARG, NO_ARG, 1},          {"err", NODATA, &a::ERR, NO_ARG, NO_ARG, 1},        {"err", NODATA, &a::ERR, NO_ARG, NO_ARG, 1},          {"err", NODATA, &a::ERR, NO_ARG, NO_ARG, 1},        {"err", NODATA, &a::ERR, NO_ARG, NO_ARG, 1},        {"err", NODATA, &a::ERR, NO_ARG, NO_ARG, 1},          {"err", NODATA, &a::ERR, NO_ARG, NO_ARG, 1},
-		{"mov", BYTE, &a::MOV, REGISTER, PTR_IN_REGISTER, 3}, {"mov", BYTE, &a::MOV, PTR_IN_REGISTER, PTR_IN_REGISTER, 3}, {"mov", BYTE, &a::MOV, PTR_IN_NUMBER, PTR_IN_REGISTER, 4}, /**/ {"add", BYTE, &a::ADD, REGISTER, PTR_IN_REGISTER, 3}, {"add", BYTE, &a::ADD, PTR_IN_REGISTER, PTR_IN_REGISTER, 3}, {"add", BYTE, &a::ADD, PTR_IN_NUMBER, PTR_IN_REGISTER, 4}, /**/ {"sub", BYTE, &a::SUB, REGISTER, PTR_IN_REGISTER, 3}, {"sub", BYTE, &a::SUB, PTR_IN_REGISTER, PTR_IN_REGISTER, 3}, {"add", BYTE, &a::SUB, PTR_IN_NUMBER, PTR_IN_REGISTER, 4}, {"err", NODATA, &a::ERR, NO_ARG, NO_ARG, 1},          {"err", NODATA, &a::ERR, NO_ARG, NO_ARG, 1},        {"err", NODATA, &a::ERR, NO_ARG, NO_ARG, 1},          {"err", NODATA, &a::ERR, NO_ARG, NO_ARG, 1},        {"err", NODATA, &a::ERR, NO_ARG, NO_ARG, 1},        {"err", NODATA, &a::ERR, NO_ARG, NO_ARG, 1},          {"err", NODATA, &a::ERR, NO_ARG, NO_ARG, 1},
-																																																																																																																																																		         											          											            											        											        											         
-		{"mov", WORD, &a::MOV, REGISTER, NUMBER,          4}, {"mov", WORD, &a::MOV, PTR_IN_REGISTER, NUMBER,          4}, {"mov", WORD, &a::MOV, PTR_IN_NUMBER, NUMBER,          5}, /**/ {"add", WORD, &a::ADD, REGISTER, NUMBER,          4}, {"add", WORD, &a::ADD, PTR_IN_REGISTER, NUMBER,          4}, {"add", WORD, &a::ADD, PTR_IN_NUMBER, NUMBER,          5}, /**/ {"sub", WORD, &a::SUB, REGISTER, NUMBER,          4}, {"sub", WORD, &a::SUB, PTR_IN_REGISTER, NUMBER,          4}, {"sub", WORD, &a::SUB, PTR_IN_NUMBER, NUMBER,          5}, {"err", NODATA, &a::ERR, NO_ARG, NO_ARG, 1},          {"err", NODATA, &a::ERR, NO_ARG, NO_ARG, 1},        {"err", NODATA, &a::ERR, NO_ARG, NO_ARG, 1},          {"err", NODATA, &a::ERR, NO_ARG, NO_ARG, 1},        {"err", NODATA, &a::ERR, NO_ARG, NO_ARG, 1},        {"err", NODATA, &a::ERR, NO_ARG, NO_ARG, 1},          {"err", NODATA, &a::ERR, NO_ARG, NO_ARG, 1},
-		{"mov", WORD, &a::MOV, REGISTER, REGISTER,        3}, {"mov", WORD, &a::MOV, PTR_IN_REGISTER, REGISTER,        3}, {"mov", WORD, &a::MOV, PTR_IN_NUMBER, REGISTER,        4}, /**/ {"add", WORD, &a::ADD, REGISTER, REGISTER,        3}, {"add", WORD, &a::ADD, PTR_IN_REGISTER, REGISTER,        3}, {"add", WORD, &a::ADD, PTR_IN_NUMBER, REGISTER,        4}, /**/ {"sub", WORD, &a::SUB, REGISTER, REGISTER,        3}, {"sub", WORD, &a::SUB, PTR_IN_REGISTER, REGISTER,        3}, {"sub", WORD, &a::SUB, PTR_IN_NUMBER, REGISTER,        4}, {"err", NODATA, &a::ERR, NO_ARG, NO_ARG, 1},          {"err", NODATA, &a::ERR, NO_ARG, NO_ARG, 1},        {"err", NODATA, &a::ERR, NO_ARG, NO_ARG, 1},          {"err", NODATA, &a::ERR, NO_ARG, NO_ARG, 1},        {"err", NODATA, &a::ERR, NO_ARG, NO_ARG, 1},        {"err", NODATA, &a::ERR, NO_ARG, NO_ARG, 1},          {"err", NODATA, &a::ERR, NO_ARG, NO_ARG, 1},
-		{"mov", WORD, &a::MOV, REGISTER, PTR_IN_NUMBER,   4}, {"mov", WORD, &a::MOV, PTR_IN_REGISTER, PTR_IN_NUMBER,   4}, {"mov", WORD, &a::MOV, PTR_IN_NUMBER, PTR_IN_NUMBER,   5}, /**/ {"add", WORD, &a::ADD, REGISTER, PTR_IN_NUMBER,   4}, {"add", WORD, &a::ADD, PTR_IN_REGISTER, PTR_IN_NUMBER,   4}, {"add", WORD, &a::ADD, PTR_IN_NUMBER, PTR_IN_NUMBER,   5}, /**/ {"sub", WORD, &a::SUB, REGISTER, PTR_IN_NUMBER,   4}, {"sub", WORD, &a::SUB, PTR_IN_REGISTER, PTR_IN_NUMBER,   4}, {"sub", WORD, &a::SUB, PTR_IN_NUMBER, PTR_IN_NUMBER,   5}, {"err", NODATA, &a::ERR, NO_ARG, NO_ARG, 1},          {"err", NODATA, &a::ERR, NO_ARG, NO_ARG, 1},        {"err", NODATA, &a::ERR, NO_ARG, NO_ARG, 1},          {"err", NODATA, &a::ERR, NO_ARG, NO_ARG, 1},        {"err", NODATA, &a::ERR, NO_ARG, NO_ARG, 1},        {"err", NODATA, &a::ERR, NO_ARG, NO_ARG, 1},          {"err", NODATA, &a::ERR, NO_ARG, NO_ARG, 1},
-		{"mov", WORD, &a::MOV, REGISTER, PTR_IN_REGISTER, 3}, {"mov", WORD, &a::MOV, PTR_IN_REGISTER, PTR_IN_REGISTER, 3}, {"mov", WORD, &a::MOV, PTR_IN_NUMBER, PTR_IN_REGISTER, 4}, /**/ {"add", WORD, &a::ADD, REGISTER, PTR_IN_REGISTER, 3}, {"add", WORD, &a::ADD, PTR_IN_REGISTER, PTR_IN_REGISTER, 3}, {"add", WORD, &a::ADD, PTR_IN_NUMBER, PTR_IN_REGISTER, 4}, /**/ {"sub", WORD, &a::SUB, REGISTER, PTR_IN_REGISTER, 3}, {"sub", WORD, &a::SUB, PTR_IN_REGISTER, PTR_IN_REGISTER, 3}, {"sub", WORD, &a::SUB, PTR_IN_NUMBER, PTR_IN_REGISTER, 4}, {"err", NODATA, &a::ERR, NO_ARG, NO_ARG, 1},          {"err", NODATA, &a::ERR, NO_ARG, NO_ARG, 1},        {"err", NODATA, &a::ERR, NO_ARG, NO_ARG, 1},          {"err", NODATA, &a::ERR, NO_ARG, NO_ARG, 1},        {"err", NODATA, &a::ERR, NO_ARG, NO_ARG, 1},        {"err", NODATA, &a::ERR, NO_ARG, NO_ARG, 1},          {"err", NODATA, &a::ERR, NO_ARG, NO_ARG, 1},
-																																																																																																																																																															          											            											        											        											         
+		{"mov", BYTE, &a::MOV, REGISTER, NUMBER,          3}, {"mov", BYTE, &a::MOV, PTR_IN_REGISTER, NUMBER,          3}, {"mov", BYTE, &a::MOV, PTR_IN_NUMBER, NUMBER,          4}, /**/ {"add", BYTE, &a::ADD, REGISTER, NUMBER,          3}, {"add", BYTE, &a::ADD, PTR_IN_REGISTER, NUMBER,          3}, {"add", BYTE, &a::ADD, PTR_IN_NUMBER, NUMBER,          4}, /**/ {"sub", BYTE, &a::SUB, REGISTER, NUMBER,          3}, {"sub", BYTE, &a::SUB, PTR_IN_REGISTER, NUMBER,          3}, {"sub", BYTE, &a::SUB, PTR_IN_NUMBER, NUMBER,          4}, {"push", BYTE, &a::PUSH, NUMBER,          NO_ARG, 2}, {"err", NODATA, &a::ERR, NO_ARG, NO_ARG, 1},        {"err", NODATA, &a::ERR, NO_ARG, NO_ARG, 1},          {"err", NODATA, &a::ERR, NO_ARG, NO_ARG, 1},        {"err", NODATA, &a::ERR, NO_ARG, NO_ARG, 1},        {"err", NODATA, &a::ERR, NO_ARG, NO_ARG, 1},          {"nop", NODATA, &a::NOP, NO_ARG, NO_ARG, 1},
+		{"mov", BYTE, &a::MOV, REGISTER, REGISTER,        3}, {"mov", BYTE, &a::MOV, PTR_IN_REGISTER, REGISTER,        3}, {"mov", BYTE, &a::MOV, PTR_IN_NUMBER, REGISTER,        4}, /**/ {"add", BYTE, &a::ADD, REGISTER, REGISTER,        3}, {"add", BYTE, &a::ADD, PTR_IN_REGISTER, REGISTER,        3}, {"add", BYTE, &a::ADD, PTR_IN_NUMBER, REGISTER,        4}, /**/ {"sub", BYTE, &a::SUB, REGISTER, REGISTER,        3}, {"sub", BYTE, &a::SUB, PTR_IN_REGISTER, REGISTER,        3}, {"sub", BYTE, &a::SUB, PTR_IN_NUMBER, REGISTER,        4}, {"push", BYTE, &a::PUSH, REGISTER,        NO_ARG, 2}, {"pop", BYTE, &a::POP, REGISTER,        NO_ARG, 2}, {"err", NODATA, &a::ERR, NO_ARG, NO_ARG, 1},          {"err", NODATA, &a::ERR, NO_ARG, NO_ARG, 1},        {"err", NODATA, &a::ERR, NO_ARG, NO_ARG, 1},        {"err", NODATA, &a::ERR, NO_ARG, NO_ARG, 1},          {"err", NODATA, &a::ERR, NO_ARG, NO_ARG, 1},
+		{"mov", BYTE, &a::MOV, REGISTER, PTR_IN_NUMBER,   4}, {"mov", BYTE, &a::MOV, PTR_IN_REGISTER, PTR_IN_NUMBER,   4}, {"mov", BYTE, &a::MOV, PTR_IN_NUMBER, PTR_IN_NUMBER,   5}, /**/ {"add", BYTE, &a::ADD, REGISTER, PTR_IN_NUMBER,   4}, {"add", BYTE, &a::ADD, PTR_IN_REGISTER, PTR_IN_NUMBER,   4}, {"add", BYTE, &a::ADD, PTR_IN_NUMBER, PTR_IN_NUMBER,   5}, /**/ {"sub", BYTE, &a::SUB, REGISTER, PTR_IN_NUMBER,   4}, {"sub", BYTE, &a::SUB, PTR_IN_REGISTER, PTR_IN_NUMBER,   4}, {"sub", BYTE, &a::SUB, PTR_IN_NUMBER, PTR_IN_NUMBER,   5}, {"push", BYTE, &a::PUSH, PTR_IN_NUMBER,   NO_ARG, 3}, {"pop", BYTE, &a::POP, PTR_IN_NUMBER,   NO_ARG, 3}, {"err", NODATA, &a::ERR, NO_ARG, NO_ARG, 1},          {"err", NODATA, &a::ERR, NO_ARG, NO_ARG, 1},        {"err", NODATA, &a::ERR, NO_ARG, NO_ARG, 1},        {"err", NODATA, &a::ERR, NO_ARG, NO_ARG, 1},          {"err", NODATA, &a::ERR, NO_ARG, NO_ARG, 1},
+		{"mov", BYTE, &a::MOV, REGISTER, PTR_IN_REGISTER, 3}, {"mov", BYTE, &a::MOV, PTR_IN_REGISTER, PTR_IN_REGISTER, 3}, {"mov", BYTE, &a::MOV, PTR_IN_NUMBER, PTR_IN_REGISTER, 4}, /**/ {"add", BYTE, &a::ADD, REGISTER, PTR_IN_REGISTER, 3}, {"add", BYTE, &a::ADD, PTR_IN_REGISTER, PTR_IN_REGISTER, 3}, {"add", BYTE, &a::ADD, PTR_IN_NUMBER, PTR_IN_REGISTER, 4}, /**/ {"sub", BYTE, &a::SUB, REGISTER, PTR_IN_REGISTER, 3}, {"sub", BYTE, &a::SUB, PTR_IN_REGISTER, PTR_IN_REGISTER, 3}, {"add", BYTE, &a::SUB, PTR_IN_NUMBER, PTR_IN_REGISTER, 4}, {"push", BYTE, &a::PUSH, PTR_IN_REGISTER, NO_ARG, 2}, {"pop", BYTE, &a::POP, PTR_IN_REGISTER, NO_ARG, 2}, {"err", NODATA, &a::ERR, NO_ARG, NO_ARG, 1},          {"err", NODATA, &a::ERR, NO_ARG, NO_ARG, 1},        {"err", NODATA, &a::ERR, NO_ARG, NO_ARG, 1},        {"err", NODATA, &a::ERR, NO_ARG, NO_ARG, 1},          {"err", NODATA, &a::ERR, NO_ARG, NO_ARG, 1},
+																																																																																																																																											   
+		{"mov", WORD, &a::MOV, REGISTER, NUMBER,          4}, {"mov", WORD, &a::MOV, PTR_IN_REGISTER, NUMBER,          4}, {"mov", WORD, &a::MOV, PTR_IN_NUMBER, NUMBER,          5}, /**/ {"add", WORD, &a::ADD, REGISTER, NUMBER,          4}, {"add", WORD, &a::ADD, PTR_IN_REGISTER, NUMBER,          4}, {"add", WORD, &a::ADD, PTR_IN_NUMBER, NUMBER,          5}, /**/ {"sub", WORD, &a::SUB, REGISTER, NUMBER,          4}, {"sub", WORD, &a::SUB, PTR_IN_REGISTER, NUMBER,          4}, {"sub", WORD, &a::SUB, PTR_IN_NUMBER, NUMBER,          5}, {"push", WORD, &a::PUSH, NUMBER,          NO_ARG, 3}, {"err", NODATA, &a::ERR, NO_ARG, NO_ARG, 1},        {"err", NODATA, &a::ERR, NO_ARG, NO_ARG, 1},          {"err", NODATA, &a::ERR, NO_ARG, NO_ARG, 1},        {"err", NODATA, &a::ERR, NO_ARG, NO_ARG, 1},        {"err", NODATA, &a::ERR, NO_ARG, NO_ARG, 1},          {"err", NODATA, &a::ERR, NO_ARG, NO_ARG, 1},
+		{"mov", WORD, &a::MOV, REGISTER, REGISTER,        3}, {"mov", WORD, &a::MOV, PTR_IN_REGISTER, REGISTER,        3}, {"mov", WORD, &a::MOV, PTR_IN_NUMBER, REGISTER,        4}, /**/ {"add", WORD, &a::ADD, REGISTER, REGISTER,        3}, {"add", WORD, &a::ADD, PTR_IN_REGISTER, REGISTER,        3}, {"add", WORD, &a::ADD, PTR_IN_NUMBER, REGISTER,        4}, /**/ {"sub", WORD, &a::SUB, REGISTER, REGISTER,        3}, {"sub", WORD, &a::SUB, PTR_IN_REGISTER, REGISTER,        3}, {"sub", WORD, &a::SUB, PTR_IN_NUMBER, REGISTER,        4}, {"push", WORD, &a::PUSH, REGISTER,        NO_ARG, 2}, {"pop", WORD, &a::POP, REGISTER,        NO_ARG, 2}, {"err", NODATA, &a::ERR, NO_ARG, NO_ARG, 1},          {"err", NODATA, &a::ERR, NO_ARG, NO_ARG, 1},        {"err", NODATA, &a::ERR, NO_ARG, NO_ARG, 1},        {"err", NODATA, &a::ERR, NO_ARG, NO_ARG, 1},          {"err", NODATA, &a::ERR, NO_ARG, NO_ARG, 1},
+		{"mov", WORD, &a::MOV, REGISTER, PTR_IN_NUMBER,   4}, {"mov", WORD, &a::MOV, PTR_IN_REGISTER, PTR_IN_NUMBER,   4}, {"mov", WORD, &a::MOV, PTR_IN_NUMBER, PTR_IN_NUMBER,   5}, /**/ {"add", WORD, &a::ADD, REGISTER, PTR_IN_NUMBER,   4}, {"add", WORD, &a::ADD, PTR_IN_REGISTER, PTR_IN_NUMBER,   4}, {"add", WORD, &a::ADD, PTR_IN_NUMBER, PTR_IN_NUMBER,   5}, /**/ {"sub", WORD, &a::SUB, REGISTER, PTR_IN_NUMBER,   4}, {"sub", WORD, &a::SUB, PTR_IN_REGISTER, PTR_IN_NUMBER,   4}, {"sub", WORD, &a::SUB, PTR_IN_NUMBER, PTR_IN_NUMBER,   5}, {"push", WORD, &a::PUSH, PTR_IN_NUMBER,   NO_ARG, 3}, {"pop", WORD, &a::POP, PTR_IN_NUMBER,   NO_ARG, 3}, {"err", NODATA, &a::ERR, NO_ARG, NO_ARG, 1},          {"err", NODATA, &a::ERR, NO_ARG, NO_ARG, 1},        {"err", NODATA, &a::ERR, NO_ARG, NO_ARG, 1},        {"err", NODATA, &a::ERR, NO_ARG, NO_ARG, 1},          {"err", NODATA, &a::ERR, NO_ARG, NO_ARG, 1},
+		{"mov", WORD, &a::MOV, REGISTER, PTR_IN_REGISTER, 3}, {"mov", WORD, &a::MOV, PTR_IN_REGISTER, PTR_IN_REGISTER, 3}, {"mov", WORD, &a::MOV, PTR_IN_NUMBER, PTR_IN_REGISTER, 4}, /**/ {"add", WORD, &a::ADD, REGISTER, PTR_IN_REGISTER, 3}, {"add", WORD, &a::ADD, PTR_IN_REGISTER, PTR_IN_REGISTER, 3}, {"add", WORD, &a::ADD, PTR_IN_NUMBER, PTR_IN_REGISTER, 4}, /**/ {"sub", WORD, &a::SUB, REGISTER, PTR_IN_REGISTER, 3}, {"sub", WORD, &a::SUB, PTR_IN_REGISTER, PTR_IN_REGISTER, 3}, {"sub", WORD, &a::SUB, PTR_IN_NUMBER, PTR_IN_REGISTER, 4}, {"push", WORD, &a::PUSH, PTR_IN_REGISTER, NO_ARG, 2}, {"pop", WORD, &a::POP, PTR_IN_REGISTER, NO_ARG, 2}, {"err", NODATA, &a::ERR, NO_ARG, NO_ARG, 1},          {"err", NODATA, &a::ERR, NO_ARG, NO_ARG, 1},        {"err", NODATA, &a::ERR, NO_ARG, NO_ARG, 1},        {"err", NODATA, &a::ERR, NO_ARG, NO_ARG, 1},          {"err", NODATA, &a::ERR, NO_ARG, NO_ARG, 1},
+																																																																																																																																																															          				            											        											        											         
 		{"cmp", BYTE, &a::CMP, REGISTER, NUMBER,          3}, {"cmp", BYTE, &a::CMP, PTR_IN_REGISTER, NUMBER,          3}, {"cmp", BYTE, &a::CMP, PTR_IN_NUMBER, NUMBER,          4},{"nop", NODATA, &a::NOP, NO_ARG, NO_ARG, 1},                {"err", NODATA, &a::ERR, NO_ARG, NO_ARG, 1},                 {"err", NODATA, &a::ERR, NO_ARG, NO_ARG, 1},                    {"err", NODATA, &a::ERR, NO_ARG, NO_ARG, 1},          {"err", NODATA, &a::ERR, NO_ARG, NO_ARG, 1},                 {"err", NODATA, &a::ERR, NO_ARG, NO_ARG, 1},               {"err", NODATA, &a::ERR, NO_ARG, NO_ARG, 1},          {"err", NODATA, &a::ERR, NO_ARG, NO_ARG, 1},        {"err", NODATA, &a::ERR, NO_ARG, NO_ARG, 1},          {"err", NODATA, &a::ERR, NO_ARG, NO_ARG, 1},        {"err", NODATA, &a::ERR, NO_ARG, NO_ARG, 1},        {"err", NODATA, &a::ERR, NO_ARG, NO_ARG, 1},          {"err", NODATA, &a::ERR, NO_ARG, NO_ARG, 1},
 		{"cmp", BYTE, &a::CMP, REGISTER, REGISTER,        3}, {"cmp", BYTE, &a::CMP, PTR_IN_REGISTER, REGISTER,        3}, {"cmp", BYTE, &a::CMP, PTR_IN_NUMBER, REGISTER,        4},{"nop", NODATA, &a::NOP, NO_ARG, NO_ARG, 1},                {"err", NODATA, &a::ERR, NO_ARG, NO_ARG, 1},                 {"err", NODATA, &a::ERR, NO_ARG, NO_ARG, 1},                    {"err", NODATA, &a::ERR, NO_ARG, NO_ARG, 1},          {"err", NODATA, &a::ERR, NO_ARG, NO_ARG, 1},                 {"err", NODATA, &a::ERR, NO_ARG, NO_ARG, 1},               {"err", NODATA, &a::ERR, NO_ARG, NO_ARG, 1},          {"err", NODATA, &a::ERR, NO_ARG, NO_ARG, 1},        {"err", NODATA, &a::ERR, NO_ARG, NO_ARG, 1},          {"err", NODATA, &a::ERR, NO_ARG, NO_ARG, 1},        {"err", NODATA, &a::ERR, NO_ARG, NO_ARG, 1},        {"err", NODATA, &a::ERR, NO_ARG, NO_ARG, 1},          {"err", NODATA, &a::ERR, NO_ARG, NO_ARG, 1},
 		{"cmp", BYTE, &a::CMP, REGISTER, PTR_IN_NUMBER,   4}, {"cmp", BYTE, &a::CMP, PTR_IN_REGISTER, PTR_IN_NUMBER,   4}, {"cmp", BYTE, &a::CMP, PTR_IN_NUMBER, PTR_IN_NUMBER,   5},{"nop", NODATA, &a::NOP, NO_ARG, NO_ARG, 1},                {"err", NODATA, &a::ERR, NO_ARG, NO_ARG, 1},                 {"err", NODATA, &a::ERR, NO_ARG, NO_ARG, 1},                    {"err", NODATA, &a::ERR, NO_ARG, NO_ARG, 1},          {"err", NODATA, &a::ERR, NO_ARG, NO_ARG, 1},                 {"err", NODATA, &a::ERR, NO_ARG, NO_ARG, 1},               {"err", NODATA, &a::ERR, NO_ARG, NO_ARG, 1},          {"err", NODATA, &a::ERR, NO_ARG, NO_ARG, 1},        {"err", NODATA, &a::ERR, NO_ARG, NO_ARG, 1},          {"err", NODATA, &a::ERR, NO_ARG, NO_ARG, 1},        {"err", NODATA, &a::ERR, NO_ARG, NO_ARG, 1},        {"err", NODATA, &a::ERR, NO_ARG, NO_ARG, 1},          {"hlt", NODATA, &a::HLT, NO_ARG, NO_ARG, 1},
@@ -44,12 +44,17 @@ Ox64cmCPU::Ox64cmCPU(Bus * b, Status * s)
 
 void Ox64cmCPU::step()
 {
-	u8 opcode = bus->RAM.read<u8>(regs.PC.value);
+	try
+	{
+		u8 opcode = bus->RAM.fetch_instruction(regs.PC.value);
+		Instructin inst = opcodes[opcode];
+		(this->*opcodes[opcode].operate)(inst);
+	}
+	catch (std::string e)
+	{
+		printf("ERORR: \"%s\"\n", e.c_str());
+	}
 	
-	Instructin inst = opcodes[opcode];
-
-
-	(this->*opcodes[opcode].operate)(inst);
 }
 
 void Ox64cmCPU::reset()
@@ -60,7 +65,7 @@ void Ox64cmCPU::reset()
 	this->regs.DX.value = 0;
 
 	this->regs.PC.value = 0;
-	this->regs.SP.value = 0;
+	this->regs.SP.value = 0x07EF;
 
 	this->regs.STATUS.value = 0;
 }
@@ -359,6 +364,75 @@ void Ox64cmCPU::JGE(Instructin i)
 		regs.PC.value = address;
 	else
 		regs.PC.value++;
+}
+
+void Ox64cmCPU::PUSH(Instructin i)
+{
+	if (i.data_type == BYTE)
+	{
+		u8 value = parse_1st_arg_value8(i);
+		bus->RAM.write<u8>(regs.SP.value, value);
+		regs.SP.value--;
+	}
+	else if (i.data_type == WORD)
+	{
+		u16 value = parse_1st_arg_value16(i);
+		regs.SP.value--;
+		bus->RAM.write<u16>(regs.SP.value, value);
+		regs.SP.value--;
+	}
+	regs.PC.value++;
+}
+
+void Ox64cmCPU::POP(Instructin i)
+{
+	if (i.data_type == BYTE)
+	{
+		u8 value = bus->RAM.read<u8>(++regs.SP.value);
+		if (i.arg1_type == REGISTER)
+		{
+			u8 dest = bus->RAM.read<u8>(++regs.PC.value);
+			
+			regs.write<u8>(dest, value);
+		}
+		else if (i.arg1_type == PTR_IN_REGISTER)
+		{
+			u16 dest = regs.read<u16>(bus->RAM.read<u8>(++regs.PC.value));
+			
+			bus->RAM.write<u8>(dest, value);
+		}
+		else if (i.arg1_type == PTR_IN_NUMBER)
+		{
+			regs.PC.value++;
+			u16 dest = bus->RAM.read<u16>(regs.PC.value++);
+			
+			bus->RAM.write<u8>(dest, value);
+		}
+	}
+	else if (i.data_type == WORD)
+	{
+		regs.SP.value++;
+		u16 value = bus->RAM.read<u16>(regs.SP.value++);
+		if (i.arg1_type == REGISTER)
+		{
+			u8 dest = bus->RAM.read<u8>(++regs.PC.value);
+			regs.write<u16>(dest, value);
+		}
+		else if (i.arg1_type == PTR_IN_REGISTER)
+		{
+			u16 dest = regs.read<u16>(bus->RAM.read<u8>(++regs.PC.value));
+	
+			bus->RAM.write<u16>(dest, value);
+		}
+		else if (i.arg1_type == PTR_IN_NUMBER)
+		{
+			regs.PC.value++;
+			u16 dest = bus->RAM.read<u16>(regs.PC.value++);
+	
+			bus->RAM.write<u16>(dest, value);
+		}
+	}
+	regs.PC.value++;
 }
 
 void Ox64cmCPU::NOP(Instructin i)

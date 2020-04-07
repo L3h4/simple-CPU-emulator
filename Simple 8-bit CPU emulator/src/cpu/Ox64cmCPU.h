@@ -84,6 +84,13 @@ private:
 	void JG(Instructin i);
 	void JLE(Instructin i);
 	void JGE(Instructin i);
+
+	void PUSH(Instructin i);
+	void POP(Instructin i);
+
+	void CALL(Instructin i);
+	void RET(Instructin i);
+
 	void NOP(Instructin i);
 	void HLT(Instructin i);
 
