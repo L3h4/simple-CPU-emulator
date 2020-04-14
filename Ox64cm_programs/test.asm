@@ -1,15 +1,11 @@
 jmp start
 
-data:
-  nop
-  nop
-  nop
-
-
 start:
-  ;jmp 0x7F0
-  mov ax, [0x07F0]
-  mov [0x07FF], 1
+  .loop:
+    cmp ax, 10
+    je .finish
+    add ax, 1
+    jmp .loop
   .finish:
   hlt
 

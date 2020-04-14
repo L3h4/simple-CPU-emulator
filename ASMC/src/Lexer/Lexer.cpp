@@ -9,7 +9,6 @@ Lexer::Lexer()
 	// а "mov word [0x0000], 123" будет занимать уже 5 байт
 	instruction_table = 
 	{
-
 		{ "mov", "b", REGISTER, NUMBER,          3 }, { "mov", "b", PTR_IN_REGISTER, NUMBER,          3 }, { "mov", "b", PTR_IN_NUMBER, NUMBER,          4 }, /**/ { "add", "b", REGISTER, NUMBER,          3 }, { "add", "b", PTR_IN_REGISTER, NUMBER,          3 }, { "add", "b", PTR_IN_NUMBER, NUMBER,          4 }, /**/ { "sub", "b", REGISTER, NUMBER,          3 }, { "sub", "b", PTR_IN_REGISTER, NUMBER,          3 }, { "sub", "b", PTR_IN_NUMBER, NUMBER,          4 },  { "push", "b", NUMBER,          NOARG, 2 }, { "err", "", NOARG, NOARG, 1},             { "err", "", NOARG, NOARG, 1}, { "err", "", NOARG, NOARG, 1}, { "err", "", NOARG, NOARG, 1}, { "err", "", NOARG, NOARG, 1}, { "nop", "", NOARG, NOARG, 1},
 		{ "mov", "b", REGISTER, REGISTER,        3 }, { "mov", "b", PTR_IN_REGISTER, REGISTER,        3 }, { "mov", "b", PTR_IN_NUMBER, REGISTER,        4 }, /**/ { "add", "b", REGISTER, REGISTER,        3 }, { "add", "b", PTR_IN_REGISTER, REGISTER,        3 }, { "add", "b", PTR_IN_NUMBER, REGISTER,        4 }, /**/ { "sub", "b", REGISTER, REGISTER,        3 }, { "sub", "b", PTR_IN_REGISTER, REGISTER,        3 }, { "sub", "b", PTR_IN_NUMBER, REGISTER,        4 },  { "push", "b", REGISTER,        NOARG, 2 }, { "pop", "b", REGISTER,        NOARG, 2 }, { "err", "", NOARG, NOARG, 1}, { "err", "", NOARG, NOARG, 1}, { "err", "", NOARG, NOARG, 1}, { "err", "", NOARG, NOARG, 1}, { "err", "", NOARG, NOARG, 1},
 		{ "mov", "b", REGISTER, PTR_IN_NUMBER,   4 }, { "mov", "b", PTR_IN_REGISTER, PTR_IN_NUMBER,   4 }, { "mov", "b", PTR_IN_NUMBER, PTR_IN_NUMBER,   5 }, /**/ { "add", "b", REGISTER, PTR_IN_NUMBER,   4 }, { "add", "b", PTR_IN_REGISTER, PTR_IN_NUMBER,   4 }, { "add", "b", PTR_IN_NUMBER, PTR_IN_NUMBER,   5 }, /**/ { "sub", "b", REGISTER, PTR_IN_NUMBER,   4 }, { "sub", "b", PTR_IN_REGISTER, PTR_IN_NUMBER,   4 }, { "sub", "b", PTR_IN_NUMBER, PTR_IN_NUMBER,   5 },  { "push", "b", PTR_IN_NUMBER,   NOARG, 3 }, { "pop", "b", PTR_IN_NUMBER,   NOARG, 3 }, { "err", "", NOARG, NOARG, 1}, { "err", "", NOARG, NOARG, 1}, { "err", "", NOARG, NOARG, 1}, { "err", "", NOARG, NOARG, 1}, { "err", "", NOARG, NOARG, 1},
@@ -119,8 +118,8 @@ void Lexer::analise_named_pointers()
 				}
 			}
 
-			if (debug)
-				printf("%d : %s %s %s %s\n", program[i].line, program[i].cmd.c_str(), program[i].size_identifier.c_str(), program[i].arg0.c_str(), program[i].arg1.c_str());
+			//if (debug)
+			//	printf("%d : %s %s %s %s\n", program[i].line, program[i].cmd.c_str(), program[i].size_identifier.c_str(), program[i].arg0.c_str(), program[i].arg1.c_str());
 
 			if ((program[i].uses_POINT))
 			{
@@ -257,7 +256,7 @@ void Lexer::compile()
 
 				if (debug)
 				{
-					printf("%d : { ", program[i].line);
+					printf("%-2d : { ", program[i].line);
 					for (auto num : program[i].bin)
 					{
 						printf("0x%.2X, ", num);

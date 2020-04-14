@@ -6,6 +6,7 @@
 enum type {
 	CPU_INSTRUCTION,
 	META_DATA,
+	PREPROCESSOR_INSTRUCTION,
 	POINT_DEFINITION,
 	NONE
 };
@@ -29,7 +30,7 @@ struct Lexeme
 	arg_type arg0_type = NOARG;
 	arg_type arg1_type = NOARG;
 	std::string named_ptr; // Сюда запишеться название функции например start:
-	type type; // Флажок который помечает реальная ли это инструкция или чтото другое
+	type type = NONE; // Флажок который помечает реальная ли это инструкция или чтото другое
 	int line; // Номер строки на которой находится инструкция (нужно для вывода ошибок)
 	int size = 0; // размер операции в бинарном виде
 	std::vector<uint8_t> bin; // сама бинарная программа
@@ -42,3 +43,7 @@ const std::vector<std::string> possible_size_identifiers = { "byte", "b", "word"
 const std::vector<std::string> possible_registers = { "a", "b", "c", "d", "ax", "bx", "cx", "dx", "pc", "sp" }; // Все возможные регистры
 const std::vector<std::string> possible_registers16 = { "ax", "bx", "cx", "dx", "pc", "sp" }; // Все возможные 16 битные регистры
 const std::vector<std::string> possible_registers8 = { "a", "b", "c", "d" }; // Все возможные 8 битные регистры
+
+const std::vector<std::string> possible_preprocessor_cmds = { "db", "word", "byte", "dw" };
+const std::vector<std::string> possible_metadata_cmds = { "entry", "rights" };
+const std::vector<std::string> possible_rights = { "kernel", "root", "user" };

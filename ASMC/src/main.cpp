@@ -96,7 +96,7 @@ int main(int argc, char *argv[]) {
 			pause();
 			return 1;
 		}
-
+		
 		try
 		{
 			program = lexer.analise(tokens); // Провести лексический анализ и скомпилировать
@@ -120,6 +120,7 @@ int main(int argc, char *argv[]) {
 			out_file.write((char *)program.data(), program.size());
 		}
 		out_file.close();
+		
 		printf("Compiled succsesfuly\n");
 	}
 	pause();

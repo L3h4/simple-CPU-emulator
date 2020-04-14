@@ -2,6 +2,8 @@
 #include<iostream>
 #include<vector>
 #include<string>
+#include<algorithm>
+#include<cctype>
 #include"../Operation/Operation.h"
 
 // тут собраны все функции для работы с текстом
@@ -12,8 +14,12 @@ namespace utilities
 
 	std::string delete_brackets(std::string text);
 	std::string trim(const std::string& str);
+	std::string replace_string(std::string subject, const std::string& search, const std::string& replace);
+	std::string to_lower(std::string text);
 
 	// валидаторы аргументов
+	bool is_preprocessor_instruction(std::string text);
+	bool is_metadata(std::string text);
 	bool is_instruction(std::string text);
 	bool is_size_identifier(std::string text);
 

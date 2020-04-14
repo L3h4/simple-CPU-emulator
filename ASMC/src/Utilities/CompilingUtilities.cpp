@@ -56,6 +56,24 @@ std::string utilities::trim(const std::string& str)
 	return result;
 }
 
+std::string utilities::to_lower(std::string text)
+{
+	std::transform(text.begin(), text.end(), text.begin(), std::tolower); 
+
+	return text;
+}
+
+std::string utilities::replace_string(std::string subject, const std::string& search, const std::string& replace)
+{
+	size_t pos = 0;
+	while ((pos = subject.find(search, pos)) != std::string::npos) 
+	{
+		subject.replace(pos, search.length(), replace);
+		pos += replace.length();
+	}
+	return subject;
+}
+
 // валидаторы аргументов
 bool utilities::is_instruction(std::string text)
 {
@@ -192,7 +210,22 @@ bool utilities::named_ptr_definition(std::string text)
 	return named_ptr(text);
 }
 
+bool utilities::is_preprocessor_instruction(std::string text)
+{
+	for (auto pos_inst : possible_preprocessor_cmds)
+		if (pos_inst == text)
+			return true;
 
+	return false;
+}
+
+bool utilities::is_metadata(std::string text)
+{
+	for (auto pos_inst : possible_metadata_cmds)
+		if (pos_inst == text)
+			return true;
+	return false;
+}
 
 
 // компиляторы аргументов
@@ -277,6 +310,10 @@ std::vector<uint8_t> utilities::compile_register(std::string text)
 	else if (text == "d")
 	{
 		res.push_back(0xD);
+	}
+	else if (text == "status")
+	{
+		res.push_back(0xAB);
 	}
 	else if (text == "ax")
 	{

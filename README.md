@@ -33,17 +33,28 @@
 
 ### Сет инструкций
 
-|   0x  |      0         |        1         |       2        | 
-|   --  |      --        |       --         |       --       | 
-| **0** |` NOP`          |                  |                |
-| **1** |`MOV R, d8`     |`MOV [R], d8`     |`MOV a16, d8`   |
-| **2** |`MOV R, R`      |`MOV [R], R`      |`MOV a16, R`    |
-| **3** |`MOV R, a16`    |`MOV [R], a16`    |`MOV b a16, a16`|
-| **4** |`MOV R, [R]`    |`MOV [R], [R]`    |`MOV a16, [R]`  |
-| **5** |`MOV R16, d16`  |`MOV [R16], d16`  |`MOV a16, d16`  |
-| **6** |`MOV R16, R16`  |`MOV [R16], R16`  |`MOV a16, R16`  |
-| **7** |`MOV R16, a16`  |`MOV [R16], a16`  |`MOV w a16, a16`|
-| **8** |`MOV R16, [R16]`|`MOV [R16], [R16]`|`MOV a16, [R16]`|
+|   0x  |      0         |        1         |       2        |      3         |        4         |       5        |      6         |        7         |       8        |      9      |      A     |      6      |     7      |     8      |      9      |      A      |
+|   --  |      --        |       --         |       --       |      --        |       --         |       --       |      --        |       --         |       --       |      --     |     --     |     --      |     --     |     --     |     --      |      --     |
+| **0** |`MOV R, d8`     |`MOV [R], d8`     |`MOV a16, d8`   |`ADD R, d8`     |`ADD [R], d8`     |`ADD a16, d8`   |`SUB R, d8`     |`SUB [R], d8`     |`SUB a16, d8`   |`PUSH d8`    |            |             |            |            |             |`NOP`        |
+| **1** |`MOV R, R`      |`MOV [R], R`      |`MOV a16, R`    |`ADD R, R`      |`ADD [R], R`      |`ADD a16, R`    |`SUB R, R`      |`SUB [R], R`      |`SUB a16, R`    |`PUSH R`     |`POP R`     |             |            |            |             |             |
+| **2** |`MOV R, a16`    |`MOV [R], a16`    |`MOV b a16, a16`|`ADD R, a16`    |`ADD [R], a16`    |`ADD b a16, a16`|`SUB R, a16`    |`SUB [R], a16`    |`SUB b a16, a16`|`PUSH a16`   |`POP a16`   |             |            |            |             |             |
+| **3** |`MOV R, [R]`    |`MOV [R], [R]`    |`MOV a16, [R]`  |`ADD R, [R]`    |`ADD [R], [R]`    |`ADD a16, [R]`  |`SUB R, [R]`    |`SUB [R], [R]`    |`SUB a16, [R]`  |`PUSH [R]`   |`POP [R]`   |             |            |            |             |             |
+| **4** |`MOV R16, d16`  |`MOV [R16], d16`  |`MOV a16, d16`  |`ADD R16, d16`  |`ADD [R16], d16`  |`ADD a16, d16`  |`SUB R16, d16`  |`SUB [R16], d16`  |`SUB a16, d16`  |`PUSH d16`   |            |             |            |            |             |             |
+| **5** |`MOV R16, R16`  |`MOV [R16], R16`  |`MOV a16, R16`  |`ADD R16, R16`  |`ADD [R16], R16`  |`ADD a16, R16`  |`SUB R16, R16`  |`SUB [R16], R16`  |`SUB a16, R16`  |`PUSH R16`   |`POP R16`   |             |            |            |             |             |
+| **6** |`MOV R16, a16`  |`MOV [R16], a16`  |`MOV w a16, a16`|`ADD R16, a16`  |`ADD [R16], a16`  |`ADD w a16, a16`|`SUB R16, a16`  |`SUB [R16], a16`  |`SUB w a16, a16`|`PUSH a16`   |`POP a16`   |             |            |            |             |             |
+| **7** |`MOV R16, [R16]`|`MOV [R16], [R16]`|`MOV a16, [R16]`|`ADD R16, [R16]`|`ADD [R16], [R16]`|`ADD a16, [R16]`|`SUB R16, [R16]`|`SUB [R16], [R16]`|`SUB a16, [R16]`|`PUSH [R16]` |`POP [R16]` |             |            |            |             |             |
+| **8** |`CMP R, d8`     |`CMP [R], d8`     |`CMP a16, d8`   |                |                  |                |                |                  |                |             |            |             |            |            |             |             |
+| **9** |`CMP R, R`      |`CMP [R], R`      |`CMP a16, R`    |                |                  |                |                |                  |                |             |            |             |            |            |             |             |
+| **A** |`CMP R, a16`    |`CMP [R], a16`    |`CMP b a16, a16`|                |                  |                |                |                  |                |             |            |             |            |            |             |`HLT`        |
+| **B** |`CMP R, [R]`    |`CMP [R], [R]`    |`CMP a16, [R]`  |                |                  |                |                |                  |                |             |            |             |            |            |             |             |
+| **C** |`CMP R16, d16`  |`CMP [R16], d16`  |`CMP a16, d16`  |                |                  |                |                |                  |                |`JMP a16`    |`JE a16`    |`JNE a16`    |`JL a16`    |`JG a16`    |`JLE a16`    |`JGE a16`    |
+| **D** |`CMP R16, R16`  |`CMP [R16], R16`  |`CMP a16, R16`  |                |                  |                |                |                  |                |`JMP R/R16`  |`JE R/R16`  |`JNE R/R16`  |`JL R/R16`  |`JG R/R16`  |`JLE R/R16`  |`JGE R/R16`  |
+| **E** |`CMP R16, a16`  |`CMP [R16], a16`  |`CMP w a16, a16`|                |                  |                |                |                  |                |`JMP [a16]`  |`JE [a16]`  |`JNE [a16]`  |`JL [a16]`  |`JG [a16]`  |`JLE [a16]`  |`JGE [a16]`  |
+| **F** |`CMP R16, [R16]`|`CMP [R16], [R16]`|`CMP a16, [R16]`|                |                  |                |                |                  |                |`JMP [R/R16]`|`JE [R/R16]`|`JNE [R/R16]`|`JL [R/R16]`|`JG [R/R16]`|`JLE [R/R16]`|`JGE [R/R16]`|
+
+---
+
+![Сет инструкций](https://i.ibb.co/jbbcRLx/instset.png)
 
 ---
 
@@ -96,20 +107,20 @@
 
 ### Синтаксис
 
-По скольку мне не очень нравиться синтаксис 8 битных ассемблеров, я решил использовать чучуть модифицированный синтаксис Intel
+По скольку мне не очень нравиться синтаксис 8 битных ассемблеров, я решил использовать чуть модифицированный синтаксис Intel
 
 ```
-jmp start ; инструкции jmp пока что нет, будет добавлена в будущем
-
-data:
+jmp start
 
 
 start:
-  mov ax, 10
-  mov byte [data], [0x0700]
-  mov a, [data]
-  mov word bx, a
-  nop
+  .loop:
+    cmp ax, 10
+    je .finish
+    add ax, 1
+    jmp .loop
+  .finish:
+  hlt
 ```
 ---
 Паттерн инструкции выглядит так

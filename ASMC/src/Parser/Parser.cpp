@@ -29,7 +29,7 @@ std::vector<Lexeme> Parser::parse_from_file(std::string file_name)
 
 	while (std::getline(file, line)) { // Читаем файл построчно
 		line = trim(line); // Обрезать лишние пробелы и табы
-		std::transform(line.begin(), line.end(), line.begin(), std::tolower); // перевести все в нижний регистр
+		
 		Lexeme op = parse_line(line, line_counter++); // парсим
 		if(op.type != NONE) // если получилось добавляем в масив
 			operations.push_back(op);
@@ -45,196 +45,217 @@ Lexeme Parser::parse_line(std::string line, int line_N)
 	// тут происходит магия парсинга
 
 	Lexeme op;
-	line.erase(std::remove(line.begin(), line.end(), ','), line.end());
+	
 	line = line.substr(0, line.find(';'));
+
 	op.line = line_N;
-	if (line == "") 
-	{
-		op.type = NONE;
+	if (line == "")
 		return op;
-	}
 
 	op.full_command = line;
+
+	line = replace_string(line, ",", " , ");
+
+
+	
 	std::istringstream f(line);
 	std::string token;
-	int argid = 0;
-	int pos = 0;
-	bool size_modifier_read_only = false;
+	int argpos = 0;
+	bool size_modifier_set_by_user = false;
+	std::vector<std::string> tokens;
+	
 
 	while (std::getline(f, token, ' '))
 	{
-		if (token == "" ) 
-		{
+		if (token == "" || token == " ")
 			continue;
-		}
-		else if (named_ptr_definition(token))
+
+		tokens.push_back(token);
+	}
+
+	for (int i = 0; i < tokens.size(); i++)
+	{
+		token = tokens[i];
+		if (i == 0)
 		{
-			op.named_ptr = token;
-			op.type = POINT_DEFINITION;
-			
-		}
-		else if (is_instruction(token)) {
-			op.cmd = token;
-			op.type = CPU_INSTRUCTION;
-		}
-		else if (is_size_identifier(token) && pos == 1) {
-			if (!size_modifier_read_only)
+			if (named_ptr_definition(token))
 			{
-				op.size_identifier = (token == "word" || token == "w") ? "w" : op.size_identifier;
-				op.size_identifier = (token == "byte" || token == "b") ? "b" : op.size_identifier;
-				size_modifier_read_only = true;
+				op.type = POINT_DEFINITION;
+				op.named_ptr = token;
+			}
+			else if (is_instruction(to_lower(token)))
+			{
+				op.cmd = token;
+				op.type = CPU_INSTRUCTION;
+			}
+			else if (is_metadata(to_lower(token)))
+			{
+				op.type = META_DATA;
+			}
+			else if (named_ptr(token) && is_preprocessor_instruction(to_lower(tokens[i+1])))
+			{
+				op.type = PREPROCESSOR_INSTRUCTION;
+				op.named_ptr = token;
 			}
 			else
 			{
 				char buf[70];
-				sprintf_s(buf, "Line: %d unknown modifier \"%s\"", line_N, token.c_str());
+				sprintf_s(buf, "Line: %d unknown token \"%s\"", line_N, token.c_str());
 				throw (std::string)buf;
 			}
-		}
-		else if (register8(token) || register16(token)) {
-			if (argid == 0) {
-				op.arg0 = token;
-				op.arg0_type =  REGISTER;
-			}
-			else if (argid == 1) {
-				op.arg1 = token;
-				op.arg1_type = REGISTER;
-			}
-
-			if (!size_modifier_read_only)
-			{
-				op.size_identifier = (op.size_identifier == "") && register16(token) ? "w" : (op.size_identifier == "") ? "b" : op.size_identifier;
-				op.size_identifier = (op.size_identifier == "w" || op.size_identifier == "word") && !register16(token) ? "b" : op.size_identifier;
-			}
-			argid++;
-		}
-		else if (dec_number(token)) {
-			if (argid == 0) {
-				op.arg0 = token;
-				op.arg0_type = NUMBER;
-			}
-			else if (argid == 1) {
-				op.arg1 = token;
-				op.arg1_type = NUMBER;
-			}
-			argid++;
-			if (op.size_identifier == "" && !size_modifier_read_only)
-			{
-				int x;
-				sscanf_s(token.c_str(), "%d", &x);
-				if (x < 0) x = -x;
-				
-				op.size_identifier = x > 0xFF ? "w" : "b";
-			}
-		}
-		else if (hex_number(token)) {
-			if (argid == 0) {
-				op.arg0 = token;
-				op.arg0_type = NUMBER;
-			}
-			else if (argid == 1) {
-				op.arg1 = token;
-				op.arg1_type = NUMBER;
-			}
-			argid++;
-			if (op.size_identifier == "" && !size_modifier_read_only)
-			{
-				int x;
-				sscanf_s(token.c_str(), "%x", &x);
-				if (x < 0) x = -x;
-
-				op.size_identifier = x > 0xFF ? "w" : "b";
-			}
-		}
-		else if (named_ptr(token) && op.cmd != "")
-		{
-			op.uses_POINT = true;
-			if (argid == 0) {
-				op.arg0 = token;
-				op.arg0_type = NUMBER;
-			}
-			else if (argid == 1) {
-				op.arg1 = token;
-				op.arg1_type = NUMBER;
-			}
-			argid++;
-		}
-		else if (ptr_in_register(token) && has_brackets(token)) {
-			if (argid == 0) {
-				op.arg0 = token;
-				op.arg0_type = PTR_IN_REGISTER;
-			}
-			else if (argid == 1) {
-				op.arg1 = token;
-				op.arg1_type = PTR_IN_REGISTER;
-			}
-			if (!size_modifier_read_only)
-			{
-				op.size_identifier = (op.size_identifier == "") && register16(delete_brackets(token)) ? "w" : (op.size_identifier == "") ? "b" : op.size_identifier;
-				op.size_identifier = (op.size_identifier == "w" || op.size_identifier == "word") && !register16(delete_brackets(token)) ? "b" : op.size_identifier;
-			}
-			argid++;
-		}
-		else if (ptr_in_dec_number(token)) {
-			if (argid == 0) {
-				op.arg0 = token;
-				op.arg0_type = PTR_IN_NUMBER;
-			}
-			else if (argid == 1) {
-				op.arg1 = token;
-				op.arg1_type = PTR_IN_NUMBER;
-			}
-			argid++;
-		}
-		else if (ptr_in_hex_number(token)) {
-			if (argid == 0) {
-				op.arg0 = token;
-				op.arg0_type = PTR_IN_NUMBER;
-			}
-			else if (argid == 1) {
-				op.arg1 = token;
-				op.arg1_type = PTR_IN_NUMBER;
-			}
-			argid++;
-		}
-		else if (ptr_in_named_ptr(token) && has_brackets(token))
-		{
-			op.uses_POINT = true;
-			if (argid == 0) {
-				op.arg0 = token;
-				op.arg0_type = PTR_IN_NUMBER;
-			}
-			else if (argid == 1) {
-				op.arg1 = token;
-				op.arg1_type = PTR_IN_NUMBER;
-			}
-			argid++;
-		}
-		else
-		{
-			char buf[70];
-			sprintf_s(buf, "Line: %d unknown token \"%s\"", line_N, token.c_str());
-			throw (std::string)buf;
+			continue;
 		}
 
-		if (argid > 2) 
+		if (op.type == CPU_INSTRUCTION)
 		{
-			char buf[70];
-			sprintf_s(buf, "Line: %d at \"%s\" can't understand argument \"%s\"", line_N, op.full_command.c_str(), token.c_str());
-			throw (std::string)buf;
+			if (is_size_identifier(to_lower(token)) && op.size_identifier == "")
+			{
+				op.size_identifier = (to_lower(token) == "word" || to_lower(token) == "w") ? "w" : (to_lower(token) == "byte" || to_lower(token) == "b") ? "b" : op.size_identifier;
+				size_modifier_set_by_user = true;
+				i++;
+				token = tokens[i];
+			}
+
+			if (token == ",")
+			{
+				i++;
+				token = tokens[i];
+			}
+
+			if (register8(to_lower(token)) || register16(to_lower(token)))
+			{
+				if (argpos == 0) {
+					op.arg0 = to_lower(token);
+					op.arg0_type = REGISTER;
+				}
+				else if (argpos == 1) {
+					op.arg1 = to_lower(token);
+					op.arg1_type = REGISTER;
+				}
+				if (!size_modifier_set_by_user)
+				{
+					op.size_identifier = (op.size_identifier == "") && register16(to_lower(token)) ? "w" : (op.size_identifier == "") ? "b" : op.size_identifier;
+					op.size_identifier = (op.size_identifier == "w" || op.size_identifier == "word") && !register16(to_lower(token)) ? "b" : op.size_identifier;
+				}
+
+				argpos++;
+			}
+			else if (dec_number(token) || hex_number(to_lower(token))) {
+				if (argpos == 0) {
+					op.arg0 = to_lower(token);
+					op.arg0_type = NUMBER;
+				}
+				else if (argpos == 1) {
+					op.arg1 = to_lower(token);
+					op.arg1_type = NUMBER;
+				}
+				if (op.size_identifier == "" && !size_modifier_set_by_user)
+				{
+					int x;
+					if (dec_number(to_lower(token)))
+						sscanf_s(to_lower(token).c_str(), "%d", &x);
+					else
+						sscanf_s(to_lower(token).c_str(), "%x", &x);
+
+					if (x < 0) x = -x;
+					op.size_identifier = x > 0xFF ? "w" : "b";
+				}
+				argpos++;
+			}
+			else if (named_ptr(token))
+			{
+				op.uses_POINT = true;
+				if (argpos == 0) {
+					op.arg0 = token;
+					op.arg0_type = NUMBER;
+				}
+				else if (argpos == 1) {
+					op.arg1 = token;
+					op.arg1_type = NUMBER;
+				}
+				argpos++;
+			}
+			else if (ptr_in_register(to_lower(token)) && has_brackets(token)) 
+			{
+				if (argpos == 0) 
+				{
+					op.arg0 = to_lower(token);
+					op.arg0_type = PTR_IN_REGISTER;
+				}
+				else if (argpos == 1) 
+				{
+					op.arg1 = to_lower(token);
+					op.arg1_type = PTR_IN_REGISTER;
+				}
+				if (!size_modifier_set_by_user)
+				{
+					op.size_identifier = (op.size_identifier == "") && register16(delete_brackets(to_lower(token))) ? "w" : (op.size_identifier == "") ? "b" : op.size_identifier;
+					op.size_identifier = (op.size_identifier == "w" || op.size_identifier == "word") && !register16(delete_brackets(to_lower(token))) ? "b" : op.size_identifier;
+				}
+				argpos++;
+			}
+			else if (ptr_in_dec_number(token) || ptr_in_hex_number(to_lower(token)))
+			{
+				if (argpos == 0) 
+				{
+					op.arg0 = to_lower(token);
+					op.arg0_type = PTR_IN_NUMBER;
+				}
+				else if (argpos == 1) 
+				{
+					op.arg1 = to_lower(token);
+					op.arg1_type = PTR_IN_NUMBER;
+				}
+				argpos++;
+			}
+
+			else if (ptr_in_named_ptr(token) && has_brackets(token))
+			{
+				op.uses_POINT = true;
+				if (argpos == 0) {
+					op.arg0 = token;
+					op.arg0_type = PTR_IN_NUMBER;
+				}
+				else if (argpos == 1) {
+					op.arg1 = token;
+					op.arg1_type = PTR_IN_NUMBER;
+				}
+				argpos++;
+			}
+			else
+			{
+				char buf[70];
+				sprintf_s(buf, "Line: %d unknown token \"%s\"", line_N, token.c_str());
+				throw (std::string)buf;
+			}
+
 		}
-		pos++;
+		/*
+		else if (op.type == PREPROCESSOR_INSTRUCTION)
+		{
+			if (is_preprocessor_instruction(to_lower(token)))
+			{
+				if (to_lower(token) == "word")
+				{
+					if (dec_number(tokens[i + 1]) || hex_number(to_lower(tokens[i + 1])))
+					{
+						op.bin = compile_number(tokens[i + 1], 2);
+					}
+					//else
+				}
+			}
+		}
+		*/
+
 	}
 
-	if(debug && op.type == CPU_INSTRUCTION)
-		printf("%d : %-5s %s  %s  %s\n", line_N, op.cmd.c_str(), op.size_identifier.c_str(), op.arg0.c_str(), op.arg1.c_str());
 
-	//if (op.cmd == "" && op.type == CPU_INSTRUCTION) 
-	//{
-	//	char buf[70];
-	//	sprintf_s(buf, "Line: %d bad operation \"%s\"", line_N, op.full_command.c_str());
-	//	throw (std::string)buf;
-	//}
+	if (debug && op.type == CPU_INSTRUCTION)
+		printf("%-2d : %-5s %s  %s  %s\n", line_N, op.cmd.c_str(), op.size_identifier.c_str(), op.arg0.c_str(), op.arg1.c_str());
+
+	if (debug && op.type == POINT_DEFINITION)
+		printf("\n%-2d : %s\n", line_N, op.named_ptr.c_str());
+
 	return op;
 }
 
