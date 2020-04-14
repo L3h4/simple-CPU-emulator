@@ -54,7 +54,7 @@
 
 ---
 
-![Сет инструкций](https://i.ibb.co/jbbcRLx/instset.png)
+![Сет инструкций](https://www.upload.ee/image/11478535/instset.png)
 
 ---
 
