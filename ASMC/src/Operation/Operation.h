@@ -38,11 +38,11 @@ struct Lexeme
 };
 
 
-const std::vector<std::string> possible_cmds = { "nop", "mov", "add", "sub", "hlt", "cmp", "jmp", "je", "jne", "jl", "jg", "jle", "jge", "push", "pop" }; // Все  возможные операции
+const std::vector<std::string> possible_cmds = { "nop", "mov", "add", "sub", "hlt", "cmp", "jmp", "je", "jne", "jl", "jg", "jle", "jge", "push", "pop", "call", "ret" }; // Все  возможные операции
 const std::vector<std::string> possible_size_identifiers = { "byte", "b", "word", "w" }; // Все возможные типы данных
-const std::vector<std::string> possible_registers = { "a", "b", "c", "d", "ax", "bx", "cx", "dx", "pc", "sp" }; // Все возможные регистры
+const std::vector<std::string> possible_registers = { "a", "b", "c", "d", "status", "ax", "bx", "cx", "dx", "pc", "sp" }; // Все возможные регистры
 const std::vector<std::string> possible_registers16 = { "ax", "bx", "cx", "dx", "pc", "sp" }; // Все возможные 16 битные регистры
-const std::vector<std::string> possible_registers8 = { "a", "b", "c", "d" }; // Все возможные 8 битные регистры
+const std::vector<std::string> possible_registers8 = { "a", "b", "c", "d", "status" }; // Все возможные 8 битные регистры
 
 const std::vector<std::string> possible_preprocessor_cmds = { "db", "word", "byte", "dw" };
 const std::vector<std::string> possible_metadata_cmds = { "entry", "rights" };
