@@ -4,6 +4,9 @@ start:
   mov bx, 10
   mov cx, 10
   call multiply
+  mov ax, 1
+  mov bx, 0
+  syscall
   hlt
 
 ; bx, cx - in
@@ -22,3 +25,4 @@ multiply:
   pop dx
   mov status, 0
   ret
+  

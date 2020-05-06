@@ -85,3 +85,54 @@ std::string RegisterFile::get_string(u8 code)
 
 	return (std::string)buf;
 }
+
+std::string RegisterFile::get_string_name(u8 code)
+{
+	std::string name;
+	switch (code)
+	{
+	case Ac:
+		name = AX.name;
+		break;
+	case Bc:
+		name = BX.name;
+		break;
+	case Cc:
+		name = CX.name;
+		break;
+	case Dc:
+		name = DX.name;
+		break;
+	case STATc:
+		name = "STATUS";
+		break;
+
+	case AXc:
+		name = AX.name16;
+		break;
+	case BXc:
+		name = BX.name16;
+		break;
+	case CXc:
+		name = CX.name16;
+		break;
+	case DXc:
+		name = DX.name16;
+		break;
+
+	case PCc:
+		name = PC.name16;
+		break;
+	case SPc:
+		name = SP.name16;
+		break;
+
+	default:
+		char buf[40];
+		sprintf_s(buf, "Cant understand register 0x%.2X", code);
+		throw (std::string)buf;
+		break;
+	}
+
+   return name;
+}

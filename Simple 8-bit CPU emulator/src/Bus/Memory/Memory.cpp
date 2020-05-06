@@ -13,12 +13,14 @@ Memory::Memory()
 	}
 	allocated = {
 		{ 0x0, 0x06F0, READ | WRITE | EXECUTE, READ | WRITE | EXECUTE, READ | WRITE | EXECUTE },
-		{ 0x07F0, 0xF, READ, READ, NO }
+		{ 0x07F0, 0xF, READ, READ, NO },
+		stack
 	};
 }
 
 Memory::~Memory()
 {
+	//delete[] this->memory;
 }
 
 void Memory::print()

@@ -94,7 +94,7 @@ int main() {
 
 	while (true) // главный цикл программы
 	{
-		if (!status.execute_til_hlt) // процессор работает синхронно поэтому сначала мы ждем действий пользователя а потом делаем шаг(если процессор запущен в режиме виполнения до команды HALT, пользователя не спрашиваем, а сразу делаем шаг)
+		if (!status.execute_til_hlt || status.exit) // процессор работает синхронно поэтому сначала мы ждем действий пользователя а потом делаем шаг(если процессор запущен в режиме виполнения до команды HALT, пользователя не спрашиваем, а сразу делаем шаг)
 		{
 			// Неболюшое меню
 			printf("# ");
@@ -136,12 +136,13 @@ int main() {
 				cpu.reset();
 				status.erorr = false;
 				status.execute_til_hlt = false;
+				status.exit = false;
 				continue;
 			}
 			else if (command == ".disassemble" || command == ".dasm")
 			{
 				// при вводе этой команды в консоль выведется  дизассемблированые первые 21 байт памяти
-				cpu.print_disassembly(0, 20);
+				cpu.print_disassembly(0, 19);
 				continue;
 			}
 			else if (command == "") 
@@ -160,8 +161,8 @@ int main() {
 				continue;
 			}
 		}
-		if (!status.erorr)
-			cpu.step(); // выполнить операцию если ошибок нет
+		if (!status.erorr && !status.exit)
+			cpu.step(); // выполнить операцию если ошибок нет, и процессор не выключился
 		else
 			printf("Can't make step, CPU freezed\n"); // иначе ничего не делаем
 	}

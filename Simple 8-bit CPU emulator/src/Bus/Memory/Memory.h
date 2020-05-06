@@ -46,62 +46,35 @@ public:
 
 
 public:
-	u8 memory[1024 * 2]; // 2κα ξησ
+	u8 memory[2048]; // 2κα ξησ
 
 	template<typename T>
 	void write(u16 address, T value)
 	{
-		if (stack.in(address))
+		for (RamVec rv : allocated)
 		{
-			if (stack.rights_KERNEL & WRITE)
+			if (rv.in(address))
 			{
-				if (typeid(T) == typeid(u16))
+				if (rv.rights_KERNEL & WRITE)
 				{
-					memory[address] = (u8)(value >> 8);
-					memory[address + 1] = (u8)value;
-					return;
-				}
-				else
-				{
-					memory[address] = (u8)value;
-					return;
-				}
-			}
-			else
-			{
-				char buf[100];
-				sprintf_s(buf, "Cant write [0x%.4X] (stack) (UNWRITABLE_MEMORY)", address);
-				throw (std::string)buf;
-			}
-		}
-		else
-		{
-			for (RamVec rv : allocated)
-			{
-				if (rv.in(address))
-				{
-					if (rv.rights_KERNEL & WRITE)
+					if (typeid(T) == typeid(u16))
 					{
-						if (typeid(T) == typeid(u16))
-						{
-							memory[address] = (u8)(value >> 8);
-							memory[address + 1] = (u8)value;
-							return;
-						}
-						else
-						{
-							memory[address] = (u8)value;
-							return;
-						}
+						memory[address] = (u8)(value >> 8);
+						memory[address + 1] = (u8)value;
+						return;
 					}
 					else
 					{
-						char buf[100];
-						sprintf_s(buf, "Cant write [0x%.4X] (UNWRITABLE_MEMORY)", address);
-						throw (std::string)buf;
+						memory[address] = (u8)value;
+						return;
 					}
 				}
-
+				else
+				{
+					char buf[100];
+					sprintf_s(buf, "Cant write [0x%.4X] (UNWRITABLE_MEMORY)", address);
+					throw (std::string)buf;
+				}
 			}
 		}
 		char buf[100];
@@ -112,51 +85,27 @@ public:
 	template<typename T>
 	T  read(u16 address)
 	{
-		if (stack.in(address))
+		for (RamVec rv : allocated)
 		{
-			if (stack.rights_KERNEL & READ)
+			if (rv.in(address))
 			{
-				if (typeid(T) == typeid(u16))
+				if (rv.rights_KERNEL & READ)
 				{
-					return (u16)(memory[address] << 8) + memory[address + 1];
-				}
-				else
-				{
-					return memory[address];
-				}
-			}
-			else
-			{
-				char buf[100];
-				sprintf_s(buf, "Cant read [0x%.4X] (stack) (UNREADABLE_MEMORY)", address);
-				throw (std::string)buf;
-			}
-		}
-		else
-		{
-			for (RamVec rv : allocated)
-			{
-				if (rv.in(address))
-				{
-					if (rv.rights_KERNEL & READ)
+					if (typeid(T) == typeid(u16))
 					{
-						if (typeid(T) == typeid(u16))
-						{
-							return (u16)(memory[address] << 8) + memory[address + 1];
-						}
-						else
-						{
-							return memory[address];
-						}
+						return (u16)(memory[address] << 8) + memory[address + 1];
 					}
-					else 
+					else
 					{
-						char buf[100];
-						sprintf_s(buf, "Cant read [0x%.4X] (UNREADABLE_MEMORY)", address);
-						throw (std::string)buf;
+						return memory[address];
 					}
 				}
-			
+				else 
+				{
+					char buf[100];
+					sprintf_s(buf, "Cant read [0x%.4X] (UNREADABLE_MEMORY)", address);
+					throw (std::string)buf;
+				}
 			}
 		}
 

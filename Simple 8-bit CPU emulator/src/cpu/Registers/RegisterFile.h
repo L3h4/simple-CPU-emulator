@@ -79,6 +79,8 @@ public:
 	std::string get_string(u8 code);
 
 
+	std::string get_string_name(u8 code);
+
 	template<typename T>
 	void write(u8 code, T value)
 	{
@@ -177,4 +179,7 @@ public:
 		}
 	}
 
+
+private:
+	Register* parse_register(u8 code);
 };

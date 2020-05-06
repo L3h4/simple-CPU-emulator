@@ -94,6 +94,8 @@ private:
 	void NOP(Instructin i);
 	void HLT(Instructin i);
 
+	void SYSCALL(Instructin i);
+
 	void ERR(Instructin i);
 
 public:
@@ -133,6 +135,8 @@ private:
 
 		return (T)dest - number;
 	}
+
+	std::string parse_arg(u16& PC, ArgType arg_type, DataType data_type);
 
 	//template<typename T>
 	u8 parse_2nd_arg_value8(Instructin i);
