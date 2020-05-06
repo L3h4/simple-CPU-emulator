@@ -86,7 +86,7 @@
 
 ---
 
-![пример](https://www.upload.ee/download/11642704/a01e82d6060917398dc8/example.png)
+![пример](https://www.upload.ee/image/11642781/example.png)
 
 ---
 
