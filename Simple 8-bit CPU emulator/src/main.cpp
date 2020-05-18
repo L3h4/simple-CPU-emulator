@@ -37,34 +37,18 @@ void load_program(u16 address, u8 program[], u16 size) {
 }
 
 // временный механизм заполнения памяти
-void initialize_memory() 
+void initialize_memory(std::string program_name) 
 {
-
-	// компилятора пока что нет поєтому прграму пишем сюда (
-	// пока что работает только операция MOV
-	// простая программа для теста
-	//u8 MOV_inst_test_program[] = {
-		//0x10,0xA,0xFF,		  // MOV A, 0xFE
-		//0x50,0xBB,0x02,0x34,  // MOV BX, 0x0234
-		//0x11,0x0B,0xEF,       //MOV [B], 0xEF
-		//0x72,0x02,0x35,0x0,0x1,//MOV [0x0235], [0x0001]
-
-		//0x13,0xA,0x01,		  // ADD A, 0x01
-		//0x53,0xBB,0x02,0x34,  // ADD BX, 0x0234
-		//0x63,0xAA,0xBB,       // ADD AX, BX
-		//0x75,0x02,0x35,0x0,0x1//ADD [0x0235], [0x0001]
-	//};
-	
 	// загрузить программу в память
 	try
 	{
-		bus.load_from_file("..\\Ox64cm_programs\\test.bin");
+		bus.load_from_file(program_name);
 	}
 	catch (std::string e)
 	{
-		printf("LOAD MEMORY EROR \"%s\"\n", e.c_str());
+		printf("LOAD MEMORY ERROR \"%s\"\n", e.c_str());
+		status.exit = true;
 	}
-	//load_program(0, MOV_inst_test_program, sizeof(MOV_inst_test_program));
 }
 
 
@@ -77,7 +61,42 @@ void initialize_console_window() {
 }
 
 
-int main() {
+std::string parse_args(int argc, char *argv[])
+{
+	// простой парсер аргументрв командной строки
+	if (argc == 1)
+	{
+		printf("No input file specified\n");
+	}
+
+	for (int i = 1; i < argc; i++)
+	{
+		if ((string)argv[i] == "--help" || (string)argv[i] == "-h")
+		{
+			printf("USAGE: \"%s [options] -i program.bin\"\n\n", argv[0]);
+			printf("\t%-2s %-7s  -  %s", "-h", "--help", "Shows this message\n");
+			printf("\t%-2s %-7s  -  %s", "-i", "--in", "Input file\n");
+			status.exit = true;
+		}
+		else if ((string)argv[i] == "-i" || (string)argv[i] == "--in")
+		{
+			if (i < argc)
+				return argv[++i];
+			else
+				printf("No input file specified\n");
+		}
+		else
+		{
+			printf("Unknown argument \"%s\" use \"%s --help\" to get help\n", argv[i], argv[0]);
+			return false;
+		}
+	}
+	return "";
+}
+
+
+int main(int argc, char *argv[]) 
+{
 	// инициализирую переменные
 	// они принимают указатели друг на друга
 	status = Status(); 
@@ -87,12 +106,19 @@ int main() {
 	// переменная для хранения команды юзера
 	string command;
 	
-
+	std::string program_file_name = parse_args(argc, argv);
+	
+	if (program_file_name == "")
+		status.exit = true;
 	initialize_console_window(); // настройка размеров окна
-	initialize_memory(); // запись простой прграммы в память
-	printf("Press enter to make step or type .help to get help\n");
 
-	while (true) // главный цикл программы
+	if (!status.exit)
+		initialize_memory(program_file_name);
+
+	if(!status.exit)
+		printf("Press enter to make step or type .help to get help\n");
+
+	while (!status.exit) // главный цикл программы
 	{
 		if (!status.execute_til_hlt || status.exit) // процессор работает синхронно поэтому сначала мы ждем действий пользователя а потом делаем шаг(если процессор запущен в режиме виполнения до команды HALT, пользователя не спрашиваем, а сразу делаем шаг)
 		{
@@ -132,7 +158,7 @@ int main() {
 			else if (command == ".reset")
 			{
 				// при вводе этой команды произойдет перезапуск
-				initialize_memory();
+				initialize_memory(program_file_name);
 				cpu.reset();
 				status.erorr = false;
 				status.execute_til_hlt = false;
@@ -142,7 +168,7 @@ int main() {
 			else if (command == ".disassemble" || command == ".dasm")
 			{
 				// при вводе этой команды в консоль выведется  дизассемблированые первые 21 байт памяти
-				cpu.print_disassembly(0, 19);
+				cpu.print_disassembly(0, 20);
 				continue;
 			}
 			else if (command == "") 
@@ -166,6 +192,8 @@ int main() {
 		else
 			printf("Can't make step, CPU freezed\n"); // иначе ничего не делаем
 	}
+	#ifdef DEBUG
 	system("pause");
+	#endif // DEBUG
 	return 0;
 }
