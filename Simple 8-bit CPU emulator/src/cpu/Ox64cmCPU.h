@@ -69,7 +69,13 @@ private:
 		ArgType arg1_type;
 		ArgType arg2_type;
 		int size;
-		// , {"err", &a::ERR, NO_ARG, NO_ARG, 1}
+	};
+
+	struct Syscall_instruction
+	{
+		std::string name;
+		void (Ox64cmCPU::*operate)(void) = nullptr;
+		//int permissions = 0;
 	};
 
 	// функции / операции
@@ -98,10 +104,18 @@ private:
 
 	void ERR(Instructin i);
 
-public:
+	std::string cout_buffer;
+
+	void exit_syscall();
+	void cout_buf_push_syscall();
+	void cout_buf_clear_syscall();
+	void cout_buf_print_syscall();
+
+
 	Bus* bus;
 	Status* status;
 	std::vector<Instructin> opcodes;
+	std::vector<Syscall_instruction> syscalls;
 
 private:
 	template<typename T>

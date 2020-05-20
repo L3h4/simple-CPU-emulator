@@ -39,6 +39,12 @@ Ox64cmCPU::Ox64cmCPU(Bus * b, Status * s)
 		opcodes[код операции] и из этого я получаю обьект ИНСТРКЦИЯ, которою я смогу обрабатывать 
 		Обьявление структуры ИНСТРУКЦИЯ в файле Ox64cmCPU.h
 	*/
+	// "таблица" системных вызовов
+	syscalls = {
+		{"Exit", &a::exit_syscall}, {"CoutBufPush", &a::cout_buf_push_syscall}, {"CoutBufClear", &a::cout_buf_clear_syscall},  {"CoutBufPrint", &a::cout_buf_print_syscall}
+	};
+
+	// Обнуление всех регистров
 	this->reset();
 }
 
@@ -53,6 +59,7 @@ void Ox64cmCPU::step()
 	catch (std::string e)
 	{
 		printf("ERORR: \"%s\"\n", e.c_str());
+		status->erorr = true;
 	}
 	
 }
@@ -169,7 +176,6 @@ void Ox64cmCPU::MOV(Instructin i)
 	regs.PC.value++;
 }
 
-
 void Ox64cmCPU::ADD(Instructin i)
 {
 	
@@ -235,7 +241,6 @@ void Ox64cmCPU::ADD(Instructin i)
 	regs.PC.value++;
 }
 
-
 void Ox64cmCPU::SUB(Instructin i)
 {
 	this->regs.STATUS.C = false;
@@ -299,8 +304,6 @@ void Ox64cmCPU::SUB(Instructin i)
 	}
 	regs.PC.value++;
 }
-
-
 
 void Ox64cmCPU::CMP(Instructin i)
 {
@@ -522,20 +525,37 @@ void Ox64cmCPU::HLT(Instructin i)
 
 void Ox64cmCPU::SYSCALL(Instructin i)
 {
-	switch (regs.AX.value)
-	{
-	case 0x1:
-		printf("Exited with code 0x%X\n", regs.BX.value);
-		status->exit = true;
-		break;
-	default:
-		break;
-	}
+	if (regs.AX.lo < syscalls.size())
+		(this->*syscalls[regs.AX.lo].operate)();
+	else
+		throw (std::string)"Unknown SYSCALL";
+	regs.PC.value++;
 }
 
 void Ox64cmCPU::ERR(Instructin i)
 {
 	throw (std::string)"Bad instruction";
+}
+
+void Ox64cmCPU::exit_syscall()
+{
+	printf("Exited with code 0x%X\n", regs.BX.value);
+	status->exit = true;
+}
+
+void Ox64cmCPU::cout_buf_push_syscall()
+{
+	cout_buffer += (char)regs.BX.lo;
+}
+
+void Ox64cmCPU::cout_buf_clear_syscall()
+{
+	cout_buffer = "";
+}
+
+void Ox64cmCPU::cout_buf_print_syscall()
+{
+	printf("%s", cout_buffer.c_str());
 }
 
 

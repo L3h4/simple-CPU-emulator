@@ -1,28 +1,49 @@
 jmp start
 
 start:
-  mov bx, 10
-  mov cx, 10
-  call multiply
-  mov ax, 1
-  mov bx, 0
-  syscall
+  call print
+  call exit
   hlt
 
 ; bx, cx - in
 ; ax - out
-multiply:
-  push dx
-  mov dx, 0
-  mov ax, 0
+;multiply:
+;  push dx
+;  mov dx, 0
+;  mov ax, 0
+;  .loop:
+;    cmp dx, cx
+;    je .finish
+;    add ax, bx
+;    add dx, 1
+;    jmp .loop
+;  .finish:
+;  pop dx
+;  mov status, 0
+;  ret
+
+print:
+  mov ax, 1
+  mov bx, 0x41
+  mov cx, 0
   .loop:
-    cmp dx, cx
+    cmp cx, 26
     je .finish
-    add ax, bx
-    add dx, 1
+    syscall
+    add cx, 1
+    add bx, 1
     jmp .loop
-  .finish:
-  pop dx
-  mov status, 0
+   .finish:
+
+  mov bx, 0xA
+  syscall
+  mov ax, 3 ; print
+  syscall
+  mov ax, 2
+  syscall
   ret
-  
+
+exit:
+  mov ax, 0
+  mov bx, 0
+  syscall
