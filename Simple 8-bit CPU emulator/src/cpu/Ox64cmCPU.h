@@ -14,7 +14,15 @@
 
 class Bus;
 
+struct DisassembledInstruction
+{
+	u16 address;
+	std::string text;
 
+	DisassembledInstruction(u16 address, std::string text)
+		: address(address), text(text)
+	{ }
+};
 
 class Ox64cmCPU
 {
@@ -27,6 +35,8 @@ public:
 	void reset();
 	void print_debug();
 	void print_disassembly(u16 start, u16 size);
+
+	std::vector<DisassembledInstruction> get_disassembly(u16 start, u16 size);
 
 
 	RegisterFile regs;

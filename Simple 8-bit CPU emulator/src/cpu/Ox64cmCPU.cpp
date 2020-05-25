@@ -90,7 +90,7 @@ void Ox64cmCPU::print_disassembly(u16 start, u16 size)
 	// функция для  дизассемблинга 
 	// по сути делает то же самое что и ф-ция step() но просто не запускает обработчик операции, и после своей работы возвращает все назад
 	u16 PC = start;
-	u16 PC_backup;
+	u16 PC_backup= start;
 	for (int i = 0; i < size; i++)
 	{
 		char instruction_str[70];
@@ -116,6 +116,42 @@ void Ox64cmCPU::print_disassembly(u16 start, u16 size)
 		PC++;
 		printf("%s", instruction_str);
 	}
+}
+
+std::vector<DisassembledInstruction> Ox64cmCPU::get_disassembly(u16 start, u16 size)
+{
+	u16 PC = start;
+	u16 PC_backup = start;
+
+	std::vector<DisassembledInstruction> disassembled;
+
+
+	for (int i = 0; i < size; i++)
+	{
+		char instruction_str[70];
+		PC_backup = PC;
+		u8 opcode = bus->RAM.fetch_instruction(PC);
+
+		Instructin inst = opcodes[opcode];
+
+		if (inst.arg1_type == NO_ARG && inst.arg2_type == NO_ARG)
+		{
+			sprintf_s(instruction_str, "%s", inst.name.c_str());
+		}
+		else
+		{
+			std::string first_arg = parse_arg(PC, inst.arg1_type, inst.data_type);
+			std::string second_arg = parse_arg(PC, inst.arg2_type, inst.data_type);
+			if (inst.arg2_type == NO_ARG)
+				sprintf_s(instruction_str, "%s %s %s", inst.name.c_str(), "", first_arg.c_str());
+			else
+				sprintf_s(instruction_str, "%s %s %s, %s", inst.name.c_str(), (inst.data_type == WORD) ? "w" : (inst.data_type == BYTE) ? "b" : "", first_arg.c_str(), second_arg.c_str());
+		}
+
+		disassembled.push_back({ PC_backup, instruction_str });
+		PC++;
+	}
+	return disassembled;
 }
 
 

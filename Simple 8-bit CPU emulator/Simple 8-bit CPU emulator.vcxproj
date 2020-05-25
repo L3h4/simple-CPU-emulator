@@ -145,6 +145,8 @@
     <ClInclude Include="src\cpu\Process\Process.h" />
     <ClInclude Include="src\Bus\Bus.h" />
     <ClInclude Include="src\cpu\Ox64cmCPU.h" />
+    <ClInclude Include="src\GUI\MainWindow.h" />
+    <ClInclude Include="src\olcPixelGameEngine.h" />
     <ClInclude Include="src\Status.hpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

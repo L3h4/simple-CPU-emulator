@@ -9,6 +9,7 @@ using namespace std;
 #include"cpu/Ox64cmCPU.h"
 #include"Status.hpp"
 #include"Bus/Memory/Memory.h"
+#include"GUI/MainWindow.h"
 
 /*
 	Дело было вечером, делать было нечего. Короче я наваял эмулятор простого 8/16 битного процессора)
@@ -19,7 +20,7 @@ using namespace std;
 #define u16 uint16_t
 
 // создаю глобальные переменные
-// статус отвечает за некоторые глобальные переменные и механизм подьема ошибок
+// статус отвечает за некоторые глобальные переменные
 Status status;
 // шина данных и адреса, на ней висят все устройства (пока что только ОЗУ)
 Bus bus;
@@ -104,10 +105,24 @@ int main(int argc, char *argv[])
 	cpu = Ox64cmCPU(&bus, &status);
 	bus.connect_cpu(&cpu);
 	// переменная для хранения команды юзера
-	string command;
-	
+	//string command;
 	std::string program_file_name = parse_args(argc, argv);
+
+	if (program_file_name == "")
+		status.exit = true;
+
+	if (!status.exit)
+		initialize_memory(program_file_name);
+
+	MainWindow window;
+
+	window.coonect_cpu_bus_status(&cpu, &bus, &status);
+
+	if (window.Construct(600, 400, 2, 2) && !status.exit)
+		window.Start();
 	
+
+	/*
 	if (program_file_name == "")
 		status.exit = true;
 	initialize_console_window(); // настройка размеров окна
@@ -195,5 +210,6 @@ int main(int argc, char *argv[])
 	#ifdef DEBUG
 	system("pause");
 	#endif // DEBUG
+	*/
 	return 0;
 }

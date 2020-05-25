@@ -41,39 +41,39 @@ std::string RegisterFile::get_string(u8 code)
 		switch (code)
 		{
 		case Ac:
-			sprintf_s(buf, "0x%.2X", this->AX.lo);
+			sprintf_s(buf, "%.2X", this->AX.lo);
 			break;
 		case Bc:
-			sprintf_s(buf, "0x%.2X", this->BX.lo);
+			sprintf_s(buf, "%.2X", this->BX.lo);
 			break;
 		case Cc:
-			sprintf_s(buf, "0x%.2X", this->CX.lo);
+			sprintf_s(buf, "%.2X", this->CX.lo);
 			break;
 		case Dc:
-			sprintf_s(buf, "0x%.2X", this->DX.lo);
+			sprintf_s(buf, "%.2X", this->DX.lo);
 			break;
 		case STATc:
-			sprintf_s(buf, "0x%.2X", this->STATUS.value);
+			sprintf_s(buf, "%.2X", this->STATUS.value);
 			break;
 
 		case AXc:
-			sprintf_s(buf, "0x%.4X", this->AX.value);
+			sprintf_s(buf, "%.4X", this->AX.value);
 			break;
 		case BXc:
-			sprintf_s(buf, "0x%.4X", this->BX.value);
+			sprintf_s(buf, "%.4X", this->BX.value);
 			break;
 		case CXc:
-			sprintf_s(buf, "0x%.4X", this->CX.value);
+			sprintf_s(buf, "%.4X", this->CX.value);
 			break;
 		case DXc:
-			sprintf_s(buf, "0x%.4X", this->DX.value);
+			sprintf_s(buf, "%.4X", this->DX.value);
 			break;
 
 		case PCc:
-			sprintf_s(buf, "0x%.4X", this->PC.value);
+			sprintf_s(buf, "%.4X", this->PC.value);
 			break;
 		case SPc:
-			sprintf_s(buf, "0x%.4X", this->SP.value);
+			sprintf_s(buf, "%.4X", this->SP.value);
 			break;
 
 		default:
