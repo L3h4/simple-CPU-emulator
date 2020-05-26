@@ -132,6 +132,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="src\Bus\GPU\GPU.cpp" />
     <ClCompile Include="src\Bus\Memory\Memory.cpp" />
     <ClCompile Include="src\cpu\Registers\RegisterFile.cpp" />
     <ClCompile Include="src\cpu\Process\Process.cpp" />
@@ -140,6 +141,7 @@
     <ClCompile Include="src\cpu\Ox64cmCPU.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\Bus\GPU\GPU.h" />
     <ClInclude Include="src\Bus\Memory\Memory.h" />
     <ClInclude Include="src\cpu\Registers\RegisterFile.h" />
     <ClInclude Include="src\cpu\Process\Process.h" />

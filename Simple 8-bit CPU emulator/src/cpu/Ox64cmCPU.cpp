@@ -41,7 +41,7 @@ Ox64cmCPU::Ox64cmCPU(Bus * b, Status * s)
 	*/
 	// "таблица" системных вызовов
 	syscalls = {
-		{"Exit", &a::exit_syscall}, {"CoutBufPush", &a::cout_buf_push_syscall}, {"CoutBufClear", &a::cout_buf_clear_syscall},  {"CoutBufPrint", &a::cout_buf_print_syscall}
+		{"Exit", &a::exit_syscall}, {"CoutBufPush", &a::cout_buf_push_syscall}, {"CoutBufClear", &a::cout_buf_clear_syscall}, {"DisplayClear", &a::display_clear_syscall}, {"CoutBufPrint", &a::cout_buf_print_syscall}
 	};
 
 	// Обнуление всех регистров
@@ -54,6 +54,7 @@ void Ox64cmCPU::step()
 	{
 		u8 opcode = bus->RAM.fetch_instruction(regs.PC.value);
 		Instructin inst = opcodes[opcode];
+
 		(this->*opcodes[opcode].operate)(inst);
 	}
 	catch (std::string e)
@@ -79,6 +80,8 @@ void Ox64cmCPU::reset()
 	status->erorr = false;
 	status->execute_til_hlt = false;
 	status->exit = false;
+	bus->gpu.clear_buffer();
+	cout_buffer = "";
 }
 
 void Ox64cmCPU::print_debug()
@@ -589,9 +592,15 @@ void Ox64cmCPU::cout_buf_clear_syscall()
 	cout_buffer = "";
 }
 
+void Ox64cmCPU::display_clear_syscall()
+{
+	bus->gpu.clear_buffer();
+}
+
 void Ox64cmCPU::cout_buf_print_syscall()
 {
-	printf("%s", cout_buffer.c_str());
+	//printf("%s", cout_buffer.c_str());
+	bus->gpu.print_text(cout_buffer);
 }
 
 

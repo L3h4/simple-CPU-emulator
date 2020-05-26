@@ -2,7 +2,7 @@ jmp start
 
 start:
   call print
-  call exit
+  ;call exit
   hlt
 
 ; bx, cx - in
@@ -23,6 +23,9 @@ start:
 ;  ret
 
 print:
+  mov ax, 2
+  syscall
+  
   mov ax, 1
   mov bx, 0x41
   mov cx, 0
@@ -37,9 +40,14 @@ print:
 
   mov bx, 0xA
   syscall
-  mov ax, 3 ; print
+
+  mov ax, 3
   syscall
-  mov ax, 2
+  
+  mov ax, 4 ; print
+  syscall
+
+  mov ax, 4 ; print
   syscall
   ret
 

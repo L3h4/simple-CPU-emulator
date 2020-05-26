@@ -48,6 +48,9 @@
     <ClCompile Include="src\Bus\Memory\Memory.cpp">
       <Filter>Исходные файлы</Filter>
     </ClCompile>
+    <ClCompile Include="src\Bus\GPU\GPU.cpp">
+      <Filter>Исходные файлы</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Status.hpp">
@@ -72,6 +75,9 @@
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
     <ClInclude Include="src\olcPixelGameEngine.h">
+      <Filter>Файлы заголовков</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Bus\GPU\GPU.h">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
   </ItemGroup>

@@ -24,6 +24,7 @@ public:
 		//printf("hello\n");
 
 		disassembled = cpu->get_disassembly(0, 0xff);
+		//bus->gpu.screen.SetPixel(10, 10, olc::RED);
 
 		return true;
 	}
@@ -114,9 +115,12 @@ private:
 
 	void draw_video_output()
 	{
-		DrawString(olc::vi2d(115, 190), "Video does not implemented yet", olc::WHITE);
+		//DrawString(olc::vi2d(115, 190), "Video does not implemented yet", olc::WHITE);
+		
+		DrawString(0, 1, bus->gpu.get_buffer());
+		
 
-		DrawString(olc::vi2d(115, 300), "SPACE - Make 1 step\n    R - Reset\n    E - Satrt\stop execution", olc::WHITE);
+		//DrawString(olc::vi2d(115, 300), "SPACE - Make 1 step\n    R - Reset\n    E - Satrt\stop execution", olc::WHITE);
 	}
 
 	void print_disassembly()

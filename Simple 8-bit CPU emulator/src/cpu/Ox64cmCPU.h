@@ -119,6 +119,7 @@ private:
 	void exit_syscall();
 	void cout_buf_push_syscall();
 	void cout_buf_clear_syscall();
+	void display_clear_syscall();
 	void cout_buf_print_syscall();
 
 
