@@ -54,8 +54,8 @@ Lexeme Parser::parse_line(std::string line, int line_N)
 
 	op.full_command = line;
 
+	
 	line = replace_string(line, ",", " , ");
-
 
 	
 	std::istringstream f(line);
@@ -81,21 +81,30 @@ Lexeme Parser::parse_line(std::string line, int line_N)
 			if (named_ptr_definition(token))
 			{
 				op.type = POINT_DEFINITION;
+				
+				if (tokens.size() - 1 > i)
+				{
+					if (is_preprocessor_instruction(to_lower(tokens[i + 1])))
+						op.type = PREPROCESSOR_INSTRUCTION;
+					else
+					{
+						char buf[70];
+						sprintf_s(buf, "Line: %d unknown token \"%s\"", line_N, token.c_str());
+						throw (std::string)buf;
+					}
+				}
+				
 				op.named_ptr = token;
 			}
 			else if (is_instruction(to_lower(token)))
 			{
 				op.cmd = token;
 				op.type = CPU_INSTRUCTION;
+				
 			}
 			else if (is_metadata(to_lower(token)))
 			{
 				op.type = META_DATA;
-			}
-			else if (named_ptr(token) && is_preprocessor_instruction(to_lower(tokens[i+1])))
-			{
-				op.type = PREPROCESSOR_INSTRUCTION;
-				op.named_ptr = token;
 			}
 			else
 			{
@@ -230,11 +239,36 @@ Lexeme Parser::parse_line(std::string line, int line_N)
 			}
 
 		}
-		/*
 		else if (op.type == PREPROCESSOR_INSTRUCTION)
 		{
 			if (is_preprocessor_instruction(to_lower(token)))
 			{
+				
+				if (tokens.size() - 1 == i)
+				{
+					char buf[70];
+					sprintf_s(buf, "Line: %d in \"%s\" string not specified", line_N, op.full_command.c_str());
+					throw (std::string)buf;
+				}
+
+				std::string str;
+				for (int j = i+1; j < tokens.size(); j++)
+				{
+					str += tokens[j]+ " ";
+				}
+				str = str.substr(0, str.size()-1);
+
+				if (!has_quotes(str))
+				{
+					char buf[70];
+					sprintf_s(buf, "Line: %d in \"%s\" bad string", line_N, op.full_command.c_str());
+					throw (std::string)buf;
+				}
+
+				op.bin = compile_string(delete_quotes(str));
+				break;
+				
+				/*
 				if (to_lower(token) == "word")
 				{
 					if (dec_number(tokens[i + 1]) || hex_number(to_lower(tokens[i + 1])))
@@ -243,9 +277,9 @@ Lexeme Parser::parse_line(std::string line, int line_N)
 					}
 					//else
 				}
+				*/
 			}
 		}
-		*/
 
 	}
 

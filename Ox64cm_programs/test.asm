@@ -1,6 +1,9 @@
 jmp start
 
+text: string "Hello, world!"
+
 start:
+  mov bx, [text] 
   call print
   ;call exit
   hlt
@@ -23,18 +26,14 @@ start:
 ;  ret
 
 print:
-  mov ax, 2
-  syscall
-  
   mov ax, 1
-  mov bx, 0x41
-  mov cx, 0
+  mov cx, text
   .loop:
-    cmp cx, 26
+    cmp [cx], 0
     je .finish
+    mov b b, [cx]
     syscall
     add cx, 1
-    add bx, 1
     jmp .loop
    .finish:
 

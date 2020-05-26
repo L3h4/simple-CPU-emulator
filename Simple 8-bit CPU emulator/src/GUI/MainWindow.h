@@ -23,7 +23,7 @@ public:
 		// Called once at the start, so create things here
 		//printf("hello\n");
 
-		disassembled = cpu->get_disassembly(0, 0xff);
+		//disassembled = cpu->get_disassembly(0, 0xff);
 		//bus->gpu.screen.SetPixel(10, 10, olc::RED);
 
 		return true;
@@ -49,7 +49,7 @@ public:
 
 		draw_video_output();
 		draw_sidebar();
-		print_disassembly();
+		//print_disassembly();
 
 		return true;
 	}

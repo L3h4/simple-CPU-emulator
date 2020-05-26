@@ -44,6 +44,6 @@ const std::vector<std::string> possible_registers = { "a", "b", "c", "d", "statu
 const std::vector<std::string> possible_registers16 = { "ax", "bx", "cx", "dx", "pc", "sp" }; // Все возможные 16 битные регистры
 const std::vector<std::string> possible_registers8 = { "a", "b", "c", "d", "status" }; // Все возможные 8 битные регистры
 
-const std::vector<std::string> possible_preprocessor_cmds = { "db", "word", "byte", "dw" };
+const std::vector<std::string> possible_preprocessor_cmds = { "db", "word", "byte", "dw", "string" };
 const std::vector<std::string> possible_metadata_cmds = { "entry", "rights" };
 const std::vector<std::string> possible_rights = { "kernel", "root", "user" };

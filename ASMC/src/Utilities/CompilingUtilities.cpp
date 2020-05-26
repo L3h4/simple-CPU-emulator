@@ -13,9 +13,22 @@ bool utilities::has_brackets(std::string text)
 	return text.substr(0, 1) == "[" && text.substr(text.size() - 1) == "]";
 }
 
+bool utilities::has_quotes(std::string text)
+{
+	return text.substr(0, 1) == "\"" && text.substr(text.size() - 1) == "\"";;
+}
+
 std::string utilities::delete_brackets(std::string text)
 {
 	if (has_brackets(text))
+		return text.substr(1).substr(0, text.size() - 2);
+	else
+		return text;
+}
+
+std::string utilities::delete_quotes(std::string text)
+{
+	if (has_quotes(text))
 		return text.substr(1).substr(0, text.size() - 2);
 	else
 		return text;
@@ -346,6 +359,18 @@ std::vector<uint8_t> utilities::compile_register(std::string text)
 		throw (std::string)buf;
 	}
 
+	return res;
+}
+
+std::vector<uint8_t> utilities::compile_string(std::string text)
+{
+	std::vector<uint8_t> res;
+
+	for (char ch : text)
+	{
+		res.push_back(ch);
+	}
+	res.push_back(0);
 	return res;
 }
 

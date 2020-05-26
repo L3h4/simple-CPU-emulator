@@ -61,24 +61,28 @@ void Lexer::analise_sizes()
 {
 	for (int i = 0; i < program.size(); i++)
 	{
-		if (program[i].type != CPU_INSTRUCTION)
-			continue;
-
-		for (int j = 0; j < instruction_table.size(); j++)
+		if (program[i].type == CPU_INSTRUCTION)
 		{
-			if (program[i].cmd == instruction_table[j].name && program[i].arg0_type == instruction_table[j].arg0_type && program[i].arg1_type == instruction_table[j].arg1_type && (program[i].size_identifier == instruction_table[j].size_identifier || instruction_table[j].size_identifier == ""))
+			for (int j = 0; j < instruction_table.size(); j++)
 			{
-				program[i].size = instruction_table[j].size;
+				if (program[i].cmd == instruction_table[j].name && program[i].arg0_type == instruction_table[j].arg0_type && program[i].arg1_type == instruction_table[j].arg1_type && (program[i].size_identifier == instruction_table[j].size_identifier || instruction_table[j].size_identifier == ""))
+				{
+					program[i].size = instruction_table[j].size;
 				
-				break;
-			}
+					break;
+				}
 
+			}
+			if (program[i].size == 0)
+			{
+				char buf[70];
+				sprintf_s(buf, "Line %d can't understand \"%s\", check arguments and data type", program[i].line, program[i].full_command.c_str());
+				throw (std::string)buf;
+			}
 		}
-		if (program[i].size == 0)
+		else if (program[i].type == PREPROCESSOR_INSTRUCTION)
 		{
-			char buf[70];
-			sprintf_s(buf, "Line %d can't understand \"%s\", check arguments and data type", program[i].line, program[i].full_command.c_str());
-			throw (std::string)buf;
+			program[i].size = program[i].bin.size();
 		}
 	}
 }
@@ -92,7 +96,7 @@ void Lexer::analise_named_pointers()
 	{
 		if (program[i].type == CPU_INSTRUCTION)
 			continue;
-		else if (program[i].type == POINT_DEFINITION)
+		else if (program[i].type == POINT_DEFINITION || program[i].type == PREPROCESSOR_INSTRUCTION)
 		{
 			definitions.push_back(NamedPtr(program[i].named_ptr, get_instruction_addres(i)));
 			if(debug)
@@ -137,25 +141,58 @@ void Lexer::compile()
 		printf("\n\nCompiled binary\n");
 	for (int i = 0; i < program.size(); i++)
 	{
-		if (program[i].type != CPU_INSTRUCTION)
-			continue;
-
-		for (int j = 0; j < instruction_table.size(); j++)
+		if (program[i].type == CPU_INSTRUCTION)
 		{
-			if (program[i].cmd != instruction_table[j].name)
-				continue;
-			else if (program[i].cmd == instruction_table[j].name && program[i].arg0_type == instruction_table[j].arg0_type && program[i].arg1_type == instruction_table[j].arg1_type && (program[i].size_identifier == instruction_table[j].size_identifier || instruction_table[j].size_identifier == ""))
+
+			for (int j = 0; j < instruction_table.size(); j++)
 			{
-				program[i].bin.push_back(j);
-
-				if (program[i].arg0_type == NUMBER)
+				if (program[i].cmd != instruction_table[j].name)
+					continue;
+				else if (program[i].cmd == instruction_table[j].name && program[i].arg0_type == instruction_table[j].arg0_type && program[i].arg1_type == instruction_table[j].arg1_type && (program[i].size_identifier == instruction_table[j].size_identifier || instruction_table[j].size_identifier == ""))
 				{
-					int size = program[i].size - program[i].bin.size();
-					if (size <= 2 && size > 0)
+					program[i].bin.push_back(j);
+
+					if (program[i].arg0_type == NUMBER)
+					{
+						int size = program[i].size - program[i].bin.size();
+						if (size <= 2 && size > 0)
+						{
+							try
+							{
+								program[i].bin = concat_vectors(program[i].bin, compile_number(delete_brackets(program[i].arg0), size));
+							}
+							catch (std::string e)
+							{
+								char buf[70];
+								sprintf_s(buf, "Line %d %s", program[i].line, e.c_str());
+								throw (std::string)buf;
+							}
+						}
+						else
+						{
+							char buf[70];
+							sprintf_s(buf, "Line %d cant compile number \"%s\"", program[i].line, program[i].arg0.c_str());
+							throw (std::string)buf;
+						}
+					}
+					else if (program[i].arg0_type == PTR_IN_NUMBER)
 					{
 						try
 						{
-							program[i].bin = concat_vectors(program[i].bin, compile_number(delete_brackets(program[i].arg0), size));
+							program[i].bin = concat_vectors(program[i].bin, compile_number(delete_brackets(program[i].arg0), 2));
+						}
+						catch (std::string e)
+						{
+							char buf[70];
+							sprintf_s(buf, "Line %d %s", program[i].line, e.c_str());
+							throw (std::string)buf;
+						}
+					}
+					else if (program[i].arg0_type == REGISTER || program[i].arg0_type == PTR_IN_REGISTER)
+					{
+						try
+						{
+							program[i].bin = concat_vectors(program[i].bin, compile_register(delete_brackets(program[i].arg0)));
 						}
 						catch (std::string e)
 						{
@@ -166,49 +203,49 @@ void Lexer::compile()
 					}
 					else
 					{
-						char buf[70];
-						sprintf_s(buf, "Line %d cant compile number \"%s\"", program[i].line, program[i].arg0.c_str());
-						throw (std::string)buf;
 					}
-				}
-				else if (program[i].arg0_type == PTR_IN_NUMBER)
-				{
-					try
-					{
-						program[i].bin = concat_vectors(program[i].bin, compile_number(delete_brackets(program[i].arg0), 2));
-					}
-					catch (std::string e)
-					{
-						char buf[70];
-						sprintf_s(buf, "Line %d %s", program[i].line, e.c_str());
-						throw (std::string)buf;
-					}
-				}
-				else if (program[i].arg0_type == REGISTER || program[i].arg0_type == PTR_IN_REGISTER)
-				{
-					try
-					{
-						program[i].bin = concat_vectors(program[i].bin, compile_register(delete_brackets(program[i].arg0)));
-					}
-					catch (std::string e)
-					{
-						char buf[70];
-						sprintf_s(buf, "Line %d %s", program[i].line, e.c_str());
-						throw (std::string)buf;
-					}
-				}
-				else
-				{
-				}
 				
-				if (program[i].arg1_type == NUMBER)
-				{
-					int size = program[i].size - program[i].bin.size();
-					if (size <= 2 && size > 0)
+					if (program[i].arg1_type == NUMBER)
+					{
+						int size = program[i].size - program[i].bin.size();
+						if (size <= 2 && size > 0)
+						{
+							try
+							{
+								program[i].bin = concat_vectors(program[i].bin, compile_number(delete_brackets(program[i].arg1), size));
+							}
+							catch (std::string e)
+							{
+								char buf[70];
+								sprintf_s(buf, "Line %d %s", program[i].line, e.c_str());
+								throw (std::string)buf;
+							}
+						}
+						else
+						{
+							char buf[70];
+							sprintf_s(buf, "Line %d cant compile number \"%s\"", program[i].line, program[i].arg1.c_str());
+							throw (std::string)buf;
+						}
+					}
+					else if (program[i].arg1_type == PTR_IN_NUMBER)
 					{
 						try
 						{
-							program[i].bin = concat_vectors(program[i].bin, compile_number(delete_brackets(program[i].arg1), size));
+							program[i].bin = concat_vectors(program[i].bin, compile_number(delete_brackets(program[i].arg1), 2));
+						}
+						catch (std::string e)
+						{
+							char buf[70];
+							sprintf_s(buf, "Line %d %s", program[i].line, e.c_str());
+							throw (std::string)buf;
+						}
+					}
+					else if (program[i].arg1_type == REGISTER || program[i].arg1_type == PTR_IN_REGISTER)
+					{
+						try
+						{
+							program[i].bin = concat_vectors(program[i].bin, compile_register(delete_brackets(program[i].arg1)));
 						}
 						catch (std::string e)
 						{
@@ -219,59 +256,32 @@ void Lexer::compile()
 					}
 					else
 					{
-						char buf[70];
-						sprintf_s(buf, "Line %d cant compile number \"%s\"", program[i].line, program[i].arg1.c_str());
-						throw (std::string)buf;
 					}
-				}
-				else if (program[i].arg1_type == PTR_IN_NUMBER)
-				{
-					try
-					{
-						program[i].bin = concat_vectors(program[i].bin, compile_number(delete_brackets(program[i].arg1), 2));
-					}
-					catch (std::string e)
-					{
-						char buf[70];
-						sprintf_s(buf, "Line %d %s", program[i].line, e.c_str());
-						throw (std::string)buf;
-					}
-				}
-				else if (program[i].arg1_type == REGISTER || program[i].arg1_type == PTR_IN_REGISTER)
-				{
-					try
-					{
-						program[i].bin = concat_vectors(program[i].bin, compile_register(delete_brackets(program[i].arg1)));
-					}
-					catch (std::string e)
-					{
-						char buf[70];
-						sprintf_s(buf, "Line %d %s", program[i].line, e.c_str());
-						throw (std::string)buf;
-					}
-				}
-				else
-				{
-				}
 
-				if (debug)
-				{
-					printf("%-2d : { ", program[i].line);
-					for (auto num : program[i].bin)
+					if (debug)
 					{
-						printf("0x%.2X, ", num);
+						printf("%-2d : { ", program[i].line);
+						for (auto num : program[i].bin)
+						{
+							printf("0x%.2X, ", num);
+						}
+						printf("\b\b }\n");
 					}
-					printf("\b\b }\n");
+					break;
 				}
-				break;
+			}
+			if (program[i].size == 0)
+			{
+				char buf[70];
+				sprintf_s(buf, "Line %d can't compile \"%s\"", program[i].line, program[i].full_command.c_str());
+				throw (std::string)buf;
 			}
 		}
-		if (program[i].size == 0)
+		else if (program[i].type == PREPROCESSOR_INSTRUCTION)
 		{
-			char buf[70];
-			sprintf_s(buf, "Line %d can't compile \"%s\"", program[i].line, program[i].full_command.c_str());
-			throw (std::string)buf;
+
 		}
+
 	}
 }
 

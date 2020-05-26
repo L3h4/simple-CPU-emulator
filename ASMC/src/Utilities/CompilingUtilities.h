@@ -11,8 +11,11 @@ namespace utilities
 {
 	std::vector<uint8_t> concat_vectors(std::vector<uint8_t> a, std::vector<uint8_t> b);
 	bool has_brackets(std::string text);
+	bool has_quotes(std::string text);
+
 
 	std::string delete_brackets(std::string text);
+	std::string delete_quotes(std::string text);
 	std::string trim(const std::string& str);
 	std::string replace_string(std::string subject, const std::string& search, const std::string& replace);
 	std::string to_lower(std::string text);
@@ -43,4 +46,6 @@ namespace utilities
 	std::vector<uint8_t> compile_hex_number(std::string text, int size);
 	std::vector<uint8_t> compile_number(std::string text, int size);
 	std::vector<uint8_t> compile_register(std::string text);
+
+	std::vector<uint8_t> compile_string(std::string text);
 }
