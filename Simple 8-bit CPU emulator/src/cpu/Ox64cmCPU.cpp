@@ -72,7 +72,7 @@ void Ox64cmCPU::reset()
 	this->regs.CX.value = 0;
 	this->regs.DX.value = 0;
 
-	this->regs.PC.value = 0;
+	this->regs.PC.value = bus->read<u16>(0x07F0);
 	this->regs.SP.value = 0x07EF;
 
 	this->regs.STATUS.value = 0;

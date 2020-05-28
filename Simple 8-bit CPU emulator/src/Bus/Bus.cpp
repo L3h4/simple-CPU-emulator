@@ -41,9 +41,13 @@ void Bus::load_from_file(std::string file_name)
 	fclose(f);
 
 	
+	
 	for (int i = 0; i < size; i++)// заделка под чтение хедера и всего остального
 	{
-		RAM.memory[i] = (u8)bytes[i];
+		if (i < 16)
+			RAM.memory[0x07F0 + i] = (u8)bytes[i];
+		else
+			RAM.memory[i-16] = (u8)bytes[i];
 	}
 
 	delete bytes;

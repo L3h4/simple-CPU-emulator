@@ -115,6 +115,8 @@ int main(int argc, char *argv[])
 		initialize_memory(program_file_name);
 
 	MainWindow window;
+	bus.RAM.print();
+	cpu.reset();
 
 	window.coonect_cpu_bus_status(&cpu, &bus, &status);
 

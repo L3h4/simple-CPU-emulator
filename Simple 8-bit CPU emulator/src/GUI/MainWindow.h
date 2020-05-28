@@ -21,9 +21,7 @@ public:
 	bool OnUserCreate() override
 	{
 		// Called once at the start, so create things here
-		//printf("hello\n");
-
-		//disassembled = cpu->get_disassembly(0, 0xff);
+		disassembled = cpu->get_disassembly(cpu->regs.PC.value, 0xff);
 		//bus->gpu.screen.SetPixel(10, 10, olc::RED);
 
 		return true;
@@ -49,7 +47,7 @@ public:
 
 		draw_video_output();
 		draw_sidebar();
-		//print_disassembly();
+		print_disassembly();
 
 		return true;
 	}
@@ -149,7 +147,7 @@ private:
 
 
 			//disassembly_ofset + i >= 0 ? cpu->regs.PC.value == di.address ? ">" + di.text : di.text : ""
-			DrawString(position, i == ci_index ? ">" + di.text : " " + di.text, i == ci_index ? olc::RED : olc::WHITE);
+			DrawString(position, i == ci_index ? ">" + di.text : di.text, i == ci_index ? olc::RED : olc::WHITE);
 			
 			position += offset;
 		}
