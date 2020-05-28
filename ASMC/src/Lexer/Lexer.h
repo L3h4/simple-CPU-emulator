@@ -45,9 +45,8 @@ private:
 
 
 private:
-
-
 	std::vector<Instrution> instruction_table;
+	std::vector<uint8_t> header;
 	std::vector<Lexeme> program;
 	bool debug = false;
 };

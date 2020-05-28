@@ -241,46 +241,47 @@ Lexeme Parser::parse_line(std::string line, int line_N)
 		}
 		else if (op.type == PREPROCESSOR_INSTRUCTION)
 		{
-			if (is_preprocessor_instruction(to_lower(token)))
+			if (tokens.size() - 1 == i)
 			{
-				
-				if (tokens.size() - 1 == i)
-				{
-					char buf[70];
-					sprintf_s(buf, "Line: %d in \"%s\" string not specified", line_N, op.full_command.c_str());
-					throw (std::string)buf;
-				}
-
-				std::string str;
-				for (int j = i+1; j < tokens.size(); j++)
-				{
-					str += tokens[j]+ " ";
-				}
-				str = str.substr(0, str.size()-1);
-
-				if (!has_quotes(str))
-				{
-					char buf[70];
-					sprintf_s(buf, "Line: %d in \"%s\" bad string", line_N, op.full_command.c_str());
-					throw (std::string)buf;
-				}
-
-				op.bin = compile_string(delete_quotes(str));
-				break;
-				
-				/*
-				if (to_lower(token) == "word")
-				{
-					if (dec_number(tokens[i + 1]) || hex_number(to_lower(tokens[i + 1])))
-					{
-						op.bin = compile_number(tokens[i + 1], 2);
-					}
-					//else
-				}
-				*/
+				char buf[70];
+				sprintf_s(buf, "Line: %d in \"%s\" string not specified", line_N, op.full_command.c_str());
+				throw (std::string)buf;
 			}
-		}
 
+			std::string str;
+			for (int j = i+1; j < tokens.size(); j++)
+			{
+				str += tokens[j]+ " ";
+			}
+			str = str.substr(0, str.size()-1);
+
+			if (!has_quotes(str))
+			{
+				char buf[70];
+				sprintf_s(buf, "Line: %d in \"%s\" bad string", line_N, op.full_command.c_str());
+				throw (std::string)buf;
+			}
+
+			op.bin = compile_string(delete_quotes(str));
+			break;
+				
+			/*
+			if (to_lower(token) == "word")
+			{
+				if (dec_number(tokens[i + 1]) || hex_number(to_lower(tokens[i + 1])))
+				{
+					op.bin = compile_number(tokens[i + 1], 2);
+				}
+				//else
+			}
+			*/
+		}
+		else if (op.type == META_DATA)
+		{
+			op.uses_POINT = true;
+			op.arg0 = token;
+			op.cmd = tokens[i - 1];
+		}
 	}
 
 
@@ -289,6 +290,11 @@ Lexeme Parser::parse_line(std::string line, int line_N)
 
 	if (debug && op.type == POINT_DEFINITION)
 		printf("\n%-2d : %s\n", line_N, op.named_ptr.c_str());
+
+	if (debug && op.type == META_DATA)
+		printf("\n%-2d : %s %s\n", line_N, op.cmd.c_str(), op.arg0.c_str());
+
+
 
 	return op;
 }

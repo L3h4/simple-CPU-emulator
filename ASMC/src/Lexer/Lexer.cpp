@@ -29,6 +29,8 @@ Lexer::Lexer()
 		{ "cmp", "w", REGISTER, PTR_IN_NUMBER,   4 }, { "cmp", "w", PTR_IN_REGISTER, PTR_IN_NUMBER,   4 }, { "cmp", "w", PTR_IN_NUMBER, PTR_IN_NUMBER,   5 },      { "err", "", NOARG, NOARG, 1},                { "err", "", NOARG, NOARG, 1},                       { "err", "", NOARG, NOARG, 1},                          { "err", "", NOARG, NOARG, 1},                { "err", "", NOARG, NOARG, 1},                       { "err", "", NOARG, NOARG, 1},                     { "jmp", "", PTR_IN_NUMBER,   NOARG, 3 },    { "je", "", PTR_IN_NUMBER,   NOARG, 3 },   { "jne", "", PTR_IN_NUMBER,   NOARG, 3 }, { "jl", "", PTR_IN_NUMBER,   NOARG, 3 }, { "jg", "", PTR_IN_NUMBER,   NOARG, 3 }, { "jle", "", PTR_IN_NUMBER,   NOARG, 3 }, { "jge", "", PTR_IN_NUMBER,   NOARG, 3 },
 		{ "cmp", "w", REGISTER, PTR_IN_REGISTER, 3 }, { "cmp", "w", PTR_IN_REGISTER, PTR_IN_REGISTER, 3 }, { "cmp", "w", PTR_IN_NUMBER, PTR_IN_REGISTER, 4 },      { "err", "", NOARG, NOARG, 1},                { "err", "", NOARG, NOARG, 1},                       { "err", "", NOARG, NOARG, 1},                          { "err", "", NOARG, NOARG, 1},                { "err", "", NOARG, NOARG, 1},                       { "err", "", NOARG, NOARG, 1},                     { "jmp", "", PTR_IN_REGISTER, NOARG, 2 },    { "je", "", PTR_IN_REGISTER, NOARG, 2 },   { "jne", "", PTR_IN_REGISTER, NOARG, 2 }, { "jl", "", PTR_IN_REGISTER, NOARG, 2 }, { "jg", "", PTR_IN_REGISTER, NOARG, 2 }, { "jle", "", PTR_IN_REGISTER, NOARG, 2 }, { "jge", "", PTR_IN_REGISTER, NOARG, 2 },
 	};
+	header = std::vector<uint8_t>(16);
+	//header = { 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0 };
 }
 
 
@@ -53,6 +55,8 @@ std::vector<uint8_t> Lexer::analise(std::vector<Lexeme> operations)
 	{
 		res = concat_vectors(res, inst.bin); // записываем программу в массив
 	}
+
+	res = concat_vectors(header, res);
 
 	return res; // возращаем скомпилироавною программу
 }
@@ -279,9 +283,27 @@ void Lexer::compile()
 		}
 		else if (program[i].type == PREPROCESSOR_INSTRUCTION)
 		{
-
+	
 		}
-
+		else if (program[i].type == META_DATA)
+		{
+			if (program[i].cmd == "entry")
+			{
+				try
+				{
+					std::vector<uint8_t> addr = compile_number(program[i].arg0, 2);
+					header[0] = addr[0];
+					header[1] = addr[1];
+				}
+				catch (std::string e)
+				{
+					char buf[70];
+					sprintf_s(buf, "Line %d %s", program[i].line, e.c_str());
+					throw (std::string)buf;
+				}
+				
+			}
+		}
 	}
 }
 

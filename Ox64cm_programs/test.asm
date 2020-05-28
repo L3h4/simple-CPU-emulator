@@ -1,4 +1,5 @@
-jmp start
+entry start
+
 
 text: string "Hello, world!"
 
