@@ -8,7 +8,6 @@ public:
 	MainWindow()
 	{
 		sAppName = "Simple cpu emulator";
-		
 	}
 
 private:
@@ -20,9 +19,7 @@ private:
 public:
 	bool OnUserCreate() override
 	{
-		// Called once at the start, so create things here
 		disassembled = cpu->get_disassembly(cpu->regs.PC.value, 0xff);
-		//bus->gpu.screen.SetPixel(10, 10, olc::RED);
 
 		return true;
 	}
@@ -41,9 +38,6 @@ public:
 
 		if (GetKey(olc::Key::E).bPressed)
 			status->execute_til_hlt = !status->execute_til_hlt;
-
-		//if (status->exit)
-		//	exit(0);
 
 		draw_video_output();
 		draw_sidebar();
@@ -139,21 +133,17 @@ private:
 				ci_index = i;
 			}
 		}
-		//макс лох inc.
+
 
 		for (int i = ci_index - 9; i < ci_index + 13; i++)
 		{
 			auto di = i >= 0 ? disassembled[i] : DisassembledInstruction(0, "");
-
-
-			//disassembly_ofset + i >= 0 ? cpu->regs.PC.value == di.address ? ">" + di.text : di.text : ""
+		
 			DrawString(position, i == ci_index ? ">" + di.text : di.text, i == ci_index ? olc::RED : olc::WHITE);
 			
 			position += offset;
 		}
 
-
 	}
-
 	
 };
