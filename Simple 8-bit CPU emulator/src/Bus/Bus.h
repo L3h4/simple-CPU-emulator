@@ -39,7 +39,7 @@ public:
 		{
 			char buf[100];
 			sprintf_s(buf, "Cant read [0x%.4X] (BAD_ADDRESS)", address);
-			throw (std::string)buf;
+			throw buf;
 		}
 	}
 
@@ -54,7 +54,7 @@ public:
 		{
 			char buf[100];
 			sprintf_s(buf, "Cant read [0x%.4X] (BAD_ADDRESS)", address);
-			throw (std::string)buf;
+			throw buf;
 		}
 	}
 

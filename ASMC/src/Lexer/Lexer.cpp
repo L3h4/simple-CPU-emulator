@@ -81,7 +81,7 @@ void Lexer::analise_sizes()
 			{
 				char buf[70];
 				sprintf_s(buf, "Line %d can't understand \"%s\", check arguments and data type", program[i].line, program[i].full_command.c_str());
-				throw (std::string)buf;
+				throw buf;
 			}
 		}
 		else if (program[i].type == PREPROCESSOR_INSTRUCTION)
@@ -133,7 +133,7 @@ void Lexer::analise_named_pointers()
 			{
 				char buf[70];
 				sprintf_s(buf, "Line %d unknown pointer \"%s\"", program[i].line, program[i].arg1.c_str());
-				throw (std::string)buf;
+				throw buf;
 			}
 		}
 	}
@@ -169,14 +169,14 @@ void Lexer::compile()
 							{
 								char buf[70];
 								sprintf_s(buf, "Line %d %s", program[i].line, e.c_str());
-								throw (std::string)buf;
+								throw buf;
 							}
 						}
 						else
 						{
 							char buf[70];
 							sprintf_s(buf, "Line %d cant compile number \"%s\"", program[i].line, program[i].arg0.c_str());
-							throw (std::string)buf;
+							throw buf;
 						}
 					}
 					else if (program[i].arg0_type == PTR_IN_NUMBER)
@@ -189,7 +189,7 @@ void Lexer::compile()
 						{
 							char buf[70];
 							sprintf_s(buf, "Line %d %s", program[i].line, e.c_str());
-							throw (std::string)buf;
+							throw buf;
 						}
 					}
 					else if (program[i].arg0_type == REGISTER || program[i].arg0_type == PTR_IN_REGISTER)
@@ -202,7 +202,7 @@ void Lexer::compile()
 						{
 							char buf[70];
 							sprintf_s(buf, "Line %d %s", program[i].line, e.c_str());
-							throw (std::string)buf;
+							throw buf;
 						}
 					}
 					else
@@ -222,14 +222,14 @@ void Lexer::compile()
 							{
 								char buf[70];
 								sprintf_s(buf, "Line %d %s", program[i].line, e.c_str());
-								throw (std::string)buf;
+								throw buf;
 							}
 						}
 						else
 						{
 							char buf[70];
 							sprintf_s(buf, "Line %d cant compile number \"%s\"", program[i].line, program[i].arg1.c_str());
-							throw (std::string)buf;
+							throw buf;
 						}
 					}
 					else if (program[i].arg1_type == PTR_IN_NUMBER)
@@ -242,7 +242,7 @@ void Lexer::compile()
 						{
 							char buf[70];
 							sprintf_s(buf, "Line %d %s", program[i].line, e.c_str());
-							throw (std::string)buf;
+							throw buf;
 						}
 					}
 					else if (program[i].arg1_type == REGISTER || program[i].arg1_type == PTR_IN_REGISTER)
@@ -255,7 +255,7 @@ void Lexer::compile()
 						{
 							char buf[70];
 							sprintf_s(buf, "Line %d %s", program[i].line, e.c_str());
-							throw (std::string)buf;
+							throw buf;
 						}
 					}
 					else
@@ -278,7 +278,7 @@ void Lexer::compile()
 			{
 				char buf[70];
 				sprintf_s(buf, "Line %d can't compile \"%s\"", program[i].line, program[i].full_command.c_str());
-				throw (std::string)buf;
+				throw buf;
 			}
 		}
 		else if (program[i].type == PREPROCESSOR_INSTRUCTION)
@@ -299,7 +299,7 @@ void Lexer::compile()
 				{
 					char buf[70];
 					sprintf_s(buf, "Line %d %s", program[i].line, e.c_str());
-					throw (std::string)buf;
+					throw buf;
 				}
 				
 			}

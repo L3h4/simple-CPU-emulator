@@ -90,9 +90,9 @@ int main(int argc, char *argv[]) {
 		{
 			tokens = parser.parse_from_file(config.file_name); // Прочитать и пропарсить 
 		}
-		catch (string err_msg)
+		catch (const char* err_msg)
 		{
-			printf("\nSYNTAX ERROR:\n\t%s\n\n", err_msg.c_str()); // Если ошибка
+			printf("\nSYNTAX ERROR:\n\t%s\n\n", err_msg); // Если ошибка
 			pause();
 			return 1;
 		}
@@ -102,9 +102,9 @@ int main(int argc, char *argv[]) {
 			program = lexer.analise(tokens); // Провести лексический анализ и скомпилировать
 			
 		}
-		catch (string err_msg)
+		catch (const char* err_msg)
 		{
-			printf("\nLEXICAL ERROR:\n\t%s\n\n", err_msg.c_str()); // Если ошибка
+			printf("\nLEXICAL ERROR:\n\t%s\n\n", err_msg); // Если ошибка
 			pause();
 			return 1;
 		}

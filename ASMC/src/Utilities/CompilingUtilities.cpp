@@ -263,7 +263,7 @@ std::vector<uint8_t> utilities::compile_dec_number(std::string text, int size)
 	{
 		char buf[70];
 		sprintf_s(buf, "Can't understand number \"%s\"", text.c_str());
-		throw (std::string)buf;
+		throw buf;
 	}
 	return res;
 }
@@ -287,7 +287,7 @@ std::vector<uint8_t> utilities::compile_hex_number(std::string text, int size)
 	{
 		char buf[70];
 		sprintf_s(buf, "Can't understand number \"%s\"", text.c_str());
-		throw (std::string)buf;
+		throw buf;
 	}
 	return res;
 }
@@ -301,7 +301,7 @@ std::vector<uint8_t> utilities::compile_number(std::string text, int size)
 	{
 		char buf[70];
 		sprintf_s(buf, "Can't compile number \"%s\"", text.c_str());
-		throw (std::string)buf;
+		throw buf;
 	}
 }
 std::vector<uint8_t> utilities::compile_register(std::string text)
@@ -356,7 +356,7 @@ std::vector<uint8_t> utilities::compile_register(std::string text)
 	{
 		char buf[70];
 		sprintf_s(buf, "Can't understand register %s", text.c_str());
-		throw (std::string)buf;
+		throw buf;
 	}
 
 	return res;

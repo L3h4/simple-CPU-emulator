@@ -78,7 +78,7 @@ std::string RegisterFile::get_string(u8 code)
 
 		default:
 			sprintf_s(buf, "Cant understand register 0x%.2X", code);
-			throw (std::string)buf;
+			throw buf;
 			break;
 		}
 	}
@@ -130,7 +130,7 @@ std::string RegisterFile::get_string_name(u8 code)
 	default:
 		char buf[40];
 		sprintf_s(buf, "Cant understand register 0x%.2X", code);
-		throw (std::string)buf;
+		throw buf;
 		break;
 	}
 

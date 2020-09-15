@@ -73,13 +73,13 @@ public:
 				{
 					char buf[100];
 					sprintf_s(buf, "Cant write [0x%.4X] (UNWRITABLE_MEMORY)", address);
-					throw (std::string)buf;
+					throw buf;
 				}
 			}
 		}
 		char buf[100];
 		sprintf_s(buf, "Cant write [0x%.4X] (BAD_ADDRESS)", address);
-		throw (std::string)buf;		
+		throw buf;		
 	}
 
 	template<typename T>
@@ -104,14 +104,14 @@ public:
 				{
 					char buf[100];
 					sprintf_s(buf, "Cant read [0x%.4X] (UNREADABLE_MEMORY)", address);
-					throw (std::string)buf;
+					throw buf;
 				}
 			}
 		}
 
 		char buf[100];
 		sprintf_s(buf, "Cant read [0x%.4X] (BAD_ADDRESS)", address);
-		throw (std::string)buf;
+		throw buf;
 		
 	}
 

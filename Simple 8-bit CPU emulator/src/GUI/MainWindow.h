@@ -1,6 +1,6 @@
 #define OLC_PGE_APPLICATION
 #include "../olcPixelGameEngine.h"
-// Override base class with your custom functionality
+
 
 class MainWindow : public olc::PixelGameEngine
 {

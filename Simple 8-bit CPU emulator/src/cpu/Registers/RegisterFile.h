@@ -125,7 +125,7 @@ public:
 		default:
 			char buf[70];
 			sprintf_s(buf, "Cant understand write 0x%.2X (NOTFOUND)", code);
-			throw (std::string)buf;
+			throw buf;
 			break;
 		}
 	}
@@ -174,7 +174,7 @@ public:
 		default:
 			char buf[70];
 			sprintf_s(buf, "Cant read register 0x%.2X (NOTFOUND)", code);
-			throw (std::string)buf;
+			throw buf;
 			break;
 		}
 	}

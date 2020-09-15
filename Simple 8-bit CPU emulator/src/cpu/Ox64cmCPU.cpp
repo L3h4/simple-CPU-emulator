@@ -2,6 +2,12 @@
 
 
 
+
+Ox64cmCPU::Ox64cmCPU()
+{
+
+}
+
 Ox64cmCPU::Ox64cmCPU(Bus * b, Status * s)
 {
 	// конструктор процессора
@@ -57,9 +63,9 @@ void Ox64cmCPU::step()
 
 		(this->*opcodes[opcode].operate)(inst);
 	}
-	catch (std::string e)
+	catch (const char* e)
 	{
-		printf("ERORR: \"%s\"\n", e.c_str());
+		printf("ERORR: \"%s\"\n", e);
 		status->erorr = true;
 	}
 	
@@ -437,7 +443,7 @@ void Ox64cmCPU::PUSH(Instructin i)
 	if (regs.SP.value < 0x07EF - 0xFF)
 	{
 		status->execute_til_hlt = false;
-		throw (std::string)"stack overflow";
+		throw "stack overflow";
 	}
 
 	if (i.data_type == BYTE)
@@ -463,7 +469,7 @@ void Ox64cmCPU::POP(Instructin i)
 		if (regs.SP.value > 0x07EF)
 		{
 			status->execute_til_hlt = false;
-			throw (std::string)"stack empty";
+			throw "stack empty";
 		}
 
 		u8 value = bus->RAM.read<u8>(++regs.SP.value);
@@ -492,7 +498,7 @@ void Ox64cmCPU::POP(Instructin i)
 		if (regs.SP.value > 0x07EF - 1)
 		{
 			status->execute_til_hlt = false;
-			throw (std::string)"stack empty";
+			throw "stack empty";
 		}
 
 		regs.SP.value++;
@@ -524,7 +530,7 @@ void Ox64cmCPU::CALL(Instructin i)
 	if (regs.SP.value < 0x07EF - 0xFF)
 	{
 		status->execute_til_hlt = false;
-		throw (std::string)"stack overflow";
+		throw "stack overflow";
 	}
 
 	u16 value = parse_1st_arg_value16(i);
@@ -541,7 +547,7 @@ void Ox64cmCPU::RET(Instructin i)
 	if (regs.SP.value > 0x07EF - 1)
 	{
 		status->execute_til_hlt = false;
-		throw (std::string)"stack empty";
+		throw "stack empty";
 	}
 
 	regs.SP.value++;
@@ -567,13 +573,13 @@ void Ox64cmCPU::SYSCALL(Instructin i)
 	if (regs.AX.lo < syscalls.size())
 		(this->*syscalls[regs.AX.lo].operate)();
 	else
-		throw (std::string)"Unknown SYSCALL";
+		throw "Unknown SYSCALL";
 	regs.PC.value++;
 }
 
 void Ox64cmCPU::ERR(Instructin i)
 {
-	throw (std::string)"Bad instruction";
+	throw "Bad instruction";
 }
 
 void Ox64cmCPU::exit_syscall()

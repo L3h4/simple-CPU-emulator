@@ -53,7 +53,7 @@ u8 Memory::fetch_instruction(u16 address)
 			{
 				char buf[100];
 				sprintf_s(buf, "Cant execute [0x%.4X] (UNEXECUTABLE_MEMORY)", address);
-				throw (std::string)buf;
+				throw buf;
 			}
 		}
 	}
@@ -67,12 +67,12 @@ u8 Memory::fetch_instruction(u16 address)
 		{
 			char buf[100];
 			sprintf_s(buf, "Cant execute [0x%.4X] (stack) (UNEXECUTABLE_MEMORY)", address);
-			throw (std::string)buf;
+			throw buf;
 		}
 	}
 	char buf[100];
 	sprintf_s(buf, "Cant execute [0x%.4X] (BAD_ADDRESS)", address);
-	throw (std::string)buf;
+	throw buf;
 }
 
 bool RamVec::in(u16 addres)

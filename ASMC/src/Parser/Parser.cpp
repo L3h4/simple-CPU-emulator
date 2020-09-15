@@ -90,7 +90,7 @@ Lexeme Parser::parse_line(std::string line, int line_N)
 					{
 						char buf[70];
 						sprintf_s(buf, "Line: %d unknown token \"%s\"", line_N, token.c_str());
-						throw (std::string)buf;
+						throw buf;
 					}
 				}
 				
@@ -110,7 +110,7 @@ Lexeme Parser::parse_line(std::string line, int line_N)
 			{
 				char buf[70];
 				sprintf_s(buf, "Line: %d unknown token \"%s\"", line_N, token.c_str());
-				throw (std::string)buf;
+				throw buf;
 			}
 			continue;
 		}
@@ -235,7 +235,7 @@ Lexeme Parser::parse_line(std::string line, int line_N)
 			{
 				char buf[70];
 				sprintf_s(buf, "Line: %d unknown token \"%s\"", line_N, token.c_str());
-				throw (std::string)buf;
+				throw buf;
 			}
 
 		}
@@ -245,7 +245,7 @@ Lexeme Parser::parse_line(std::string line, int line_N)
 			{
 				char buf[70];
 				sprintf_s(buf, "Line: %d in \"%s\" string not specified", line_N, op.full_command.c_str());
-				throw (std::string)buf;
+				throw buf;
 			}
 
 			std::string str;
@@ -259,7 +259,7 @@ Lexeme Parser::parse_line(std::string line, int line_N)
 			{
 				char buf[70];
 				sprintf_s(buf, "Line: %d in \"%s\" bad string", line_N, op.full_command.c_str());
-				throw (std::string)buf;
+				throw buf;
 			}
 
 			op.bin = compile_string(delete_quotes(str));

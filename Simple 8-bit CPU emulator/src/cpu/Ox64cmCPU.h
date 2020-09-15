@@ -27,7 +27,7 @@ struct DisassembledInstruction
 class Ox64cmCPU
 {
 public:
-	Ox64cmCPU() {};
+	Ox64cmCPU();
 	Ox64cmCPU(Bus *b, Status *s);
 
 public:
@@ -183,11 +183,5 @@ private:
 	// [R]  или aR     - 1 байт по адресу в 16-битном регистре
 	// [R16]  или aR16 - 2 байта по адресу в 16-битном регистре
 	
-
-	// функции парсинга аргументов. Возвращают строку с тем что он там напарсил(нужно для вывода  дизассембли) 
-	//std::string V(); std::string V16(); std::string R(); std::string aR(); std::string R16(); std::string aR16(); std::string A(); std::string A16();
-	//std::string NA();
-
-
 };
 

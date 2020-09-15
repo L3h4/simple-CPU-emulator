@@ -25,7 +25,7 @@ void Bus::load_from_file(std::string file_name)
 		char buf[100];
 		sprintf_s(buf, "Cant open file \"%s\"", file_name.c_str());
 
-		throw (std::string)buf;
+		throw buf;
 	}
 
 
