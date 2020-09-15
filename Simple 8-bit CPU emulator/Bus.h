@@ -1,35 +1,33 @@
 ﻿#pragma once
 #include<iostream>
+#include<stdio.h>
 #include<fstream>
 
-#include"../cpu/Ox64cmCPU.h"
-#include"../Status.hpp"
-#include"Memory/Memory.h"
-#include"GPU/GPU.h"
+#include"Ox64cmCPU.h"
+#include"Status.h"
+#include"Memory.h"
+#include"GPU.h"
 
 #define u8 uint8_t
 #define u16 uint16_t
 
 class Ox64cmCPU;
-class Memory;
+
 
 // клас шина
 class Bus
 {
 public:
-	Bus() {}
+	Bus();
 	Bus(Status *s);
 
 	void connect_cpu(Ox64cmCPU *c);
 
-	
-public:
 	void load_from_file(std::string file_name);
-	//u8 read(u16 addres); // метод чтения ИЗ ШИНЫ
 
-	//void write(u16 addres, u8 data); // метод записи НА ШИНУ
+
 	template<typename T>
-	void write(u16 address, T value)
+	void write(u16 address, T value)// метод записи НА ШИНУ
 	{
 		if (address >= 0 && address < 2048)
 			RAM.write<T>(address,value);
@@ -44,7 +42,7 @@ public:
 	}
 
 	template<typename T>
-	T  read(u16 address)
+	T  read(u16 address)// метод чтения ИЗ ШИНЫ
 	{
 		if (address >= 0 && address < 2048)
 			return RAM.read<T>(address);
@@ -63,6 +61,6 @@ public: // девайсы на шине
 	GPU gpu; // видео адаптер
 
 private:
-		Status *status;
-		Ox64cmCPU *cpu;
+	Status *status;
+	Ox64cmCPU *cpu;
 };

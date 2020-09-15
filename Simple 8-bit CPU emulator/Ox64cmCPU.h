@@ -2,10 +2,10 @@
 #include<iostream>
 #include<vector>
 
-#include"../Bus/Bus.h"
-#include"../Status.hpp"
-#include"Registers/RegisterFile.h"
-#include"../Bus/Memory/Memory.h"
+#include"Bus.h"
+#include"Status.h"
+#include"RegisterFile.h"
+#include"Memory.h"
 
 
 #define u8 uint8_t

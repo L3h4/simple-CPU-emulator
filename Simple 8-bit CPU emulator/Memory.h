@@ -5,8 +5,7 @@
 
 
 
-#define u8 uint8_t
-#define u16 uint16_t
+#include "BusDevice.h"
 
 enum Rights
 {
@@ -19,9 +18,9 @@ enum Rights
 enum MemoryRights
 {
 	NO = 0,
-	READ = 1,
-	WRITE = 2,
-	EXECUTE = 4,
+	READ = (1 << 0),
+	WRITE = (1 << 1),
+	EXECUTE = (1 << 2),
 
 };
 
@@ -34,20 +33,28 @@ struct RamVec
 	int rights_ROOT = READ | WRITE;
 	int rights_USER = READ;
 	
-	bool in(u16 addres);
+	bool in(u16 addres) const;
 };
 
 
-class Memory // êëàñ ÎÇÓ
+class Memory : public BusDevice // êëàñ ÎÇÓ
 {
+	u8 *memory = nullptr; // 2êá îçó
 public:
 	Memory();
+	Memory(const Memory& obj);
+	Memory(Memory&& obj);
 	~Memory();
 
+	Memory& operator=(const Memory& obj);
+	Memory& operator=(Memory&& obj);
 
-public:
-	u8 memory[2048]; // 2êá îçó
+	u16 read16(u16 address)override;
+	u8 read8(u16 address)override;
 
+	void write16(u16 address, u16 data)override;
+	void write8(u16 address, u8 data)override;
+/*
 	template<typename T>
 	void write(u16 address, T value)
 	{
@@ -114,12 +121,16 @@ public:
 		throw buf;
 		
 	}
+*/
 
 	void print();
 
 	u8 fetch_instruction(u16 address);
 
-	RamVec stack = { 0x7EF, -0xFF, READ | WRITE, READ | WRITE, READ | WRITE };
-	std::vector<RamVec> allocated;
+	const RamVec stack = { 0x7EF, -0xFF, READ | WRITE, READ | WRITE, READ | WRITE };
+	std::vector<RamVec> allocated = {
+		{ 0x0, 0x06F0, READ | WRITE | EXECUTE, READ | WRITE | EXECUTE, READ | WRITE | EXECUTE }, // êó÷à
+		{ 0x07F0, 0xF, READ | WRITE, READ, NO }, // 
+		stack
+	};
 };
-

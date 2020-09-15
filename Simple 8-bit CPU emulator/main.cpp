@@ -5,11 +5,11 @@
 
 using namespace std;
 
-#include"Bus/Bus.h"
-#include"cpu/Ox64cmCPU.h"
-#include"Status.hpp"
-#include"Bus/Memory/Memory.h"
-#include"GUI/MainWindow.h"
+#include"Bus.h"
+#include"Ox64cmCPU.h"
+#include"Status.h"
+#include"Memory.h"
+#include"MainWindow.h"
 
 /*
 	Дело было вечером, делать было нечего. Короче я наваял эмулятор простого 8 битного процессора)
@@ -21,11 +21,11 @@ using namespace std;
 
 // создаю глобальные переменные
 // статус отвечает за некоторые глобальные переменные
-Status status;
+Status* status = nullptr;
 // шина данных и адреса, на ней висят все устройства (пока что только ОЗУ)
-Bus bus;
+Bus* bus = nullptr;
 // процессор
-Ox64cmCPU cpu;
+Ox64cmCPU* cpu = nullptr;
 
 
 
@@ -35,12 +35,12 @@ void initialize_memory(std::string program_name)
 	// загрузить программу в память
 	try
 	{
-		bus.load_from_file(program_name);
+		bus->load_from_file(program_name);
 	}
 	catch (const char* e)
 	{
 		printf("LOAD MEMORY ERROR \"%s\"\n", e);
-		status.exit = true;
+		status->exit = true;
 	}
 }
 
@@ -62,7 +62,7 @@ std::string parse_args(int argc, char *argv[])
 			printf("USAGE: \"%s [options] -i program.bin\"\n\n", argv[0]);
 			printf("\t%-2s %-7s  -  %s", "-h", "--help", "Shows this message\n");
 			printf("\t%-2s %-7s  -  %s", "-i", "--in", "Input file\n");
-			status.exit = true;
+			status->exit = true;
 		}
 		else if ((string)argv[i] == "-i" || (string)argv[i] == "--in")
 		{
@@ -85,30 +85,30 @@ int main(int argc, char *argv[])
 {
 	// инициализирую переменные
 	// они принимают указатели друг на друга
-	status = Status(); 
-	bus = Bus(&status);
-	cpu = Ox64cmCPU(&bus, &status);
-	bus.connect_cpu(&cpu);
+	status = new Status(); 
+	bus = new Bus(status);
+	cpu = new Ox64cmCPU(bus, status);
+	bus->connect_cpu(cpu);
 	// переменная для хранения команды юзера
 	//string command;
 	std::string program_file_name = parse_args(argc, argv);
 
 	if (program_file_name == "")
-		status.exit = true;
+		status->exit = true;
 
-	if (!status.exit)
+	if (!status->exit)
 		initialize_memory(program_file_name);
 
 	MainWindow window;
-	bus.RAM.print();
-	cpu.reset();
+	bus->RAM.print();
+	cpu->reset();
 
-	window.coonect_cpu_bus_status(&cpu, &bus, &status);
+	window.coonect_cpu_bus_status(cpu, bus, status);
 
-	if (window.Construct(600, 400, 2, 2) && !status.exit)
+	if (window.Construct(600, 400, 2, 2) && !status->exit)
 		window.Start();
 	
-
+	delete bus, status, cpu;
 	
 	return 0;
 }

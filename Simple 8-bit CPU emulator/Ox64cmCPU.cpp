@@ -85,7 +85,7 @@ void Ox64cmCPU::reset()
 
 	status->erorr = false;
 	status->execute_til_hlt = false;
-	status->exit = false;
+	//status->exit = false;
 	bus->gpu.clear_buffer();
 	cout_buffer = "";
 }
