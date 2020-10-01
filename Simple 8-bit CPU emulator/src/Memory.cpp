@@ -51,6 +51,8 @@ Memory & Memory::operator=(Memory && obj)
 	if (this == &obj)
 		return *this;
 
+	delete[] memory;
+
 	memory = obj.memory;
 	obj.memory = nullptr;
 
@@ -178,19 +180,6 @@ u8 Memory::fetch_instruction(u16 address)
 				sprintf_s(buf, "Cant execute [0x%.4X] (UNEXECUTABLE_MEMORY)", address);
 				throw buf;
 			}
-		}
-	}
-	if (stack.in(address))
-	{
-		if (stack.rights_KERNEL & EXECUTE)
-		{
-			return read<u8>(address);
-		}
-		else
-		{
-			char buf[100];
-			sprintf_s(buf, "Cant execute [0x%.4X] (stack) (UNEXECUTABLE_MEMORY)", address);
-			throw buf;
 		}
 	}
 	char buf[100];

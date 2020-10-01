@@ -19,7 +19,7 @@ private:
 public:
 	bool OnUserCreate() override
 	{
-		disassembled = cpu->get_disassembly(cpu->regs.PC.value, 0xff);
+		disassembled = cpu->get_disassembly(cpu->get_registers().PC.value, 0xff);
 
 		return true;
 	}
@@ -64,8 +64,6 @@ private:
 		olc::vi2d second_col = olc::vi2d(60, 0);
 
 
-		
-
 		FillRect(panel_offset, olc::vi2d(200 - 1, 400 - 1), olc::BLUE);
 
 		FillRect(panel_offset, olc::vi2d(200 - 1, 20 - 1), olc::DARK_BLUE);
@@ -77,9 +75,9 @@ private:
 
 		DrawString(panel_offset + line_offset - olc::vi2d(5, 0), "FLAGS:", olc::WHITE, 1);
 		line_offset += line_size;
-		DrawString(panel_offset + line_offset, "S", cpu->regs.STATUS.S ? olc::RED : olc::WHITE, 1);
-		DrawString(panel_offset + line_offset + olc::vi2d(15, 0), "C", cpu->regs.STATUS.C ? olc::RED : olc::WHITE, 1);
-		DrawString(panel_offset + line_offset + olc::vi2d(30, 0), "Z", cpu->regs.STATUS.Z ? olc::RED : olc::WHITE, 1);
+		DrawString(panel_offset + line_offset, "S", cpu->get_registers().STATUS.S ? olc::RED : olc::WHITE, 1);
+		DrawString(panel_offset + line_offset + olc::vi2d(15, 0), "C", cpu->get_registers().STATUS.C ? olc::RED : olc::WHITE, 1);
+		DrawString(panel_offset + line_offset + olc::vi2d(30, 0), "Z", cpu->get_registers().STATUS.Z ? olc::RED : olc::WHITE, 1);
 
 		line_offset += line_size;
 
@@ -89,16 +87,16 @@ private:
 		DrawString(panel_offset + line_offset - olc::vi2d(5, 0), "REGISTERS:", olc::WHITE, 1);
 		line_offset += line_size;
 
-		DrawString(panel_offset + line_offset, "AX=", olc::WHITE, 1); DrawString(panel_offset + line_offset + olc::vi2d(24 ,0), cpu->regs.get_string(0xAA), olc::GREEN, 1);
-		DrawString(panel_offset + line_offset + olc::vi2d(60, 0), "BX=", olc::WHITE, 1); DrawString(panel_offset + line_offset + second_col + olc::vi2d(24, 0), cpu->regs.get_string(0xBB), olc::GREEN, 1);
+		DrawString(panel_offset + line_offset, "AX=", olc::WHITE, 1); DrawString(panel_offset + line_offset + olc::vi2d(24 ,0), cpu->get_registers().get_string(0xAA), olc::GREEN, 1);
+		DrawString(panel_offset + line_offset + olc::vi2d(60, 0), "BX=", olc::WHITE, 1); DrawString(panel_offset + line_offset + second_col + olc::vi2d(24, 0), cpu->get_registers().get_string(0xBB), olc::GREEN, 1);
 		line_offset += line_size;
 
-		DrawString(panel_offset + line_offset, "CX=", olc::WHITE, 1); DrawString(panel_offset + line_offset + olc::vi2d(24, 0), cpu->regs.get_string(0xCC), olc::GREEN, 1);
-		DrawString(panel_offset + line_offset + olc::vi2d(60, 0), "DX=", olc::WHITE, 1); DrawString(panel_offset + line_offset + second_col + olc::vi2d(24, 0), cpu->regs.get_string(0xDD), olc::GREEN, 1);
+		DrawString(panel_offset + line_offset, "CX=", olc::WHITE, 1); DrawString(panel_offset + line_offset + olc::vi2d(24, 0), cpu->get_registers().get_string(0xCC), olc::GREEN, 1);
+		DrawString(panel_offset + line_offset + olc::vi2d(60, 0), "DX=", olc::WHITE, 1); DrawString(panel_offset + line_offset + second_col + olc::vi2d(24, 0), cpu->get_registers().get_string(0xDD), olc::GREEN, 1);
 		line_offset += line_size;
 
-		DrawString(panel_offset + line_offset, "PC=", olc::WHITE, 1); DrawString(panel_offset + line_offset + olc::vi2d(24, 0), cpu->regs.get_string(0xEE), olc::GREEN, 1);
-		DrawString(panel_offset + line_offset + olc::vi2d(60, 0), "SP=", olc::WHITE, 1); DrawString(panel_offset + line_offset + second_col + olc::vi2d(24, 0), cpu->regs.get_string(0xFF), olc::GREEN, 1);
+		DrawString(panel_offset + line_offset, "PC=", olc::WHITE, 1); DrawString(panel_offset + line_offset + olc::vi2d(24, 0), cpu->get_registers().get_string(0xEE), olc::GREEN, 1);
+		DrawString(panel_offset + line_offset + olc::vi2d(60, 0), "SP=", olc::WHITE, 1); DrawString(panel_offset + line_offset + second_col + olc::vi2d(24, 0), cpu->get_registers().get_string(0xFF), olc::GREEN, 1);
 		line_offset += line_size;
 
 		DrawRect(panel_offset + olc::vi2d(0, 130 - 1), olc::vi2d(200 - 1, 270 - 1), olc::WHITE);
@@ -109,7 +107,7 @@ private:
 	{
 		//DrawString(olc::vi2d(115, 190), "Video does not implemented yet", olc::WHITE);
 		
-		DrawString(0, 1, bus->gpu.get_buffer());
+		DrawString(0, 1, bus->get_GPU().get_buffer());
 		
 
 		//DrawString(olc::vi2d(115, 300), "SPACE - Make 1 step\n    R - Reset\n    E - Satrt\stop execution", olc::WHITE);
@@ -127,7 +125,7 @@ private:
 
 		for (int i = 0; i < disassembled.size(); i++)
 		{
-			if (disassembled[i].address == cpu->regs.PC.value)
+			if (disassembled[i].address == cpu->get_registers().PC.value)
 			{
 				ci = disassembled[i];
 				ci_index = i;

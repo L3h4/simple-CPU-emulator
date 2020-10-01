@@ -180,6 +180,6 @@ public:
 	}
 
 
-private:
-	Register* parse_register(u8 code);
+//private:
+	//Register* parse_register(u8 code);
 };

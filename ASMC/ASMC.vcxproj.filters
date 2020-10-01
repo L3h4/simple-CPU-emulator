@@ -18,30 +18,30 @@
     <ClCompile Include="src\main.cpp">
       <Filter>Исходные файлы</Filter>
     </ClCompile>
-    <ClCompile Include="src\Utilities\CompilingUtilities.cpp">
+    <ClCompile Include="src\CompilingUtilities.cpp">
       <Filter>Исходные файлы</Filter>
     </ClCompile>
-    <ClCompile Include="src\Utilities\CompilingUtilities.h">
+    <ClCompile Include="src\CompilingUtilities.h">
       <Filter>Файлы заголовков</Filter>
     </ClCompile>
-    <ClCompile Include="src\Lexer\Lexer.cpp">
+    <ClCompile Include="src\Parser.cpp">
       <Filter>Исходные файлы</Filter>
     </ClCompile>
-    <ClCompile Include="src\Parser\Parser.cpp">
+    <ClCompile Include="src\Operation.cpp">
       <Filter>Исходные файлы</Filter>
     </ClCompile>
-    <ClCompile Include="src\Operation\Operation.cpp">
+    <ClCompile Include="src\Lexer.cpp">
       <Filter>Исходные файлы</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="src\Lexer\Lexer.h">
+    <ClInclude Include="src\Parser.h">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
-    <ClInclude Include="src\Parser\Parser.h">
+    <ClInclude Include="src\Operation.h">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
-    <ClInclude Include="src\Operation\Operation.h">
+    <ClInclude Include="src\Lexer.h">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
   </ItemGroup>

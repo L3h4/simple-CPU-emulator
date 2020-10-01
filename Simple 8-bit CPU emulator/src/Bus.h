@@ -56,9 +56,14 @@ public:
 		}
 	}
 
-public: // девайсы на шине
+private: // девайсы на шине
 	Memory RAM; // ОЗУ
 	GPU gpu; // видео адаптер
+
+public:
+	Memory & get_RAM();
+	GPU & get_GPU();
+
 
 private:
 	Status *status;

@@ -6,6 +6,7 @@
 
 class BusDevice
 {
+protected:
 	virtual u16 read16(u16 address) = 0;
 	virtual u8 read8(u16 address) = 0;
 

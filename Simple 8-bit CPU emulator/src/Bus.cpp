@@ -56,3 +56,13 @@ void Bus::load_from_file(std::string file_name)
 
 	delete[] bytes;
 }
+
+Memory & Bus::get_RAM()
+{
+	return RAM;
+}
+
+GPU & Bus::get_GPU()
+{
+	return gpu;
+}

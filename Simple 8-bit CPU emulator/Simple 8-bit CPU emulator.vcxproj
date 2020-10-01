@@ -132,26 +132,26 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="BusDevice.cpp" />
-    <ClCompile Include="GPU.cpp" />
-    <ClCompile Include="Memory.cpp" />
-    <ClCompile Include="RegisterFile.cpp" />
-    <ClCompile Include="Process.cpp" />
-    <ClCompile Include="Bus.cpp" />
-    <ClCompile Include="main.cpp" />
-    <ClCompile Include="Ox64cmCPU.cpp" />
+    <ClCompile Include="src\BusDevice.cpp" />
+    <ClCompile Include="src\GPU.cpp" />
+    <ClCompile Include="src\Memory.cpp" />
+    <ClCompile Include="src\RegisterFile.cpp" />
+    <ClCompile Include="src\Process.cpp" />
+    <ClCompile Include="src\Bus.cpp" />
+    <ClCompile Include="src\main.cpp" />
+    <ClCompile Include="src\Ox64cmCPU.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="BusDevice.h" />
-    <ClInclude Include="GPU.h" />
-    <ClInclude Include="Memory.h" />
-    <ClInclude Include="RegisterFile.h" />
-    <ClInclude Include="Process.h" />
-    <ClInclude Include="Bus.h" />
-    <ClInclude Include="Ox64cmCPU.h" />
-    <ClInclude Include="MainWindow.h" />
-    <ClInclude Include="olcPixelGameEngine.h" />
-    <ClInclude Include="Status.h" />
+    <ClInclude Include="src\BusDevice.h" />
+    <ClInclude Include="src\GPU.h" />
+    <ClInclude Include="src\Memory.h" />
+    <ClInclude Include="src\RegisterFile.h" />
+    <ClInclude Include="src\Process.h" />
+    <ClInclude Include="src\Bus.h" />
+    <ClInclude Include="src\Ox64cmCPU.h" />
+    <ClInclude Include="src\MainWindow.h" />
+    <ClInclude Include="src\olcPixelGameEngine.h" />
+    <ClInclude Include="src\Status.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

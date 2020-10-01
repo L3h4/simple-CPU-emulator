@@ -9,8 +9,8 @@
 #include<fstream>
 
 
-#include "../Utilities/CompilingUtilities.h"
-#include"../Operation/Operation.h"
+#include"CompilingUtilities.h"
+#include"Operation.h"
 
 // класс парсер отвечает за парсинг исходног файла на лексемы
 class Parser

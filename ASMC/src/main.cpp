@@ -3,8 +3,8 @@
 #include<vector>
 #include<fstream>
 
-#include"Parser/Parser.h"
-#include"Lexer/Lexer.h"
+#include"Parser.h"
+#include"Lexer.h"
 
 using namespace std;
 
@@ -108,8 +108,10 @@ int main(int argc, char *argv[]) {
 			pause();
 			return 1;
 		}
+
 		ofstream out_file(config.out_file_name, ios::out | ios::binary);
-		if (!out_file)
+
+		if (!out_file.is_open())
 		{
 			printf("Cannot open file \"%s\"\n", config.out_file_name.c_str());
 			pause();

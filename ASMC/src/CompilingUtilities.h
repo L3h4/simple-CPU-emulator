@@ -4,7 +4,8 @@
 #include<string>
 #include<algorithm>
 #include<cctype>
-#include"../Operation/Operation.h"
+
+#include"Operation.h"
 
 // тут собраны все функции для работы с текстом
 namespace utilities

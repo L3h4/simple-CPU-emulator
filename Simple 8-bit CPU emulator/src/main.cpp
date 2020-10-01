@@ -90,7 +90,6 @@ int main(int argc, char *argv[])
 	cpu = new Ox64cmCPU(bus, status);
 	bus->connect_cpu(cpu);
 	// переменная для хранения команды юзера
-	//string command;
 	std::string program_file_name = parse_args(argc, argv);
 
 	if (program_file_name == "")
@@ -100,7 +99,7 @@ int main(int argc, char *argv[])
 		initialize_memory(program_file_name);
 
 	MainWindow window;
-	bus->RAM.print();
+	bus->get_RAM().print();
 	cpu->reset();
 
 	window.coonect_cpu_bus_status(cpu, bus, status);

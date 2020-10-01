@@ -25,68 +25,65 @@
     <Filter Include="Исходные файлы\Bus">
       <UniqueIdentifier>{7ab389f1-2544-4d37-bdbc-b3f5765db6e5}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Файлы заголовков\CPU\Instructions">
-      <UniqueIdentifier>{0dd7f6f7-ab90-4cbd-8314-656097c9e6ff}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Файлы заголовков\GUI LIB">
       <UniqueIdentifier>{6d426671-c0bc-4b91-9d79-f973c88c49b3}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Bus.cpp">
+    <ClCompile Include="src\Bus.cpp">
       <Filter>Исходные файлы\Bus</Filter>
     </ClCompile>
-    <ClCompile Include="GPU.cpp">
+    <ClCompile Include="src\BusDevice.cpp">
       <Filter>Исходные файлы</Filter>
     </ClCompile>
-    <ClCompile Include="main.cpp">
-      <Filter>Исходные файлы</Filter>
-    </ClCompile>
-    <ClCompile Include="Memory.cpp">
+    <ClCompile Include="src\GPU.cpp">
       <Filter>Исходные файлы\Bus</Filter>
     </ClCompile>
-    <ClCompile Include="Ox64cmCPU.cpp">
+    <ClCompile Include="src\main.cpp">
+      <Filter>Исходные файлы</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Memory.cpp">
+      <Filter>Исходные файлы\Bus</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Ox64cmCPU.cpp">
       <Filter>Исходные файлы\CPU</Filter>
     </ClCompile>
-    <ClCompile Include="RegisterFile.cpp">
+    <ClCompile Include="src\Process.cpp">
       <Filter>Исходные файлы</Filter>
     </ClCompile>
-    <ClCompile Include="Process.cpp">
-      <Filter>Исходные файлы</Filter>
-    </ClCompile>
-    <ClCompile Include="BusDevice.cpp">
+    <ClCompile Include="src\RegisterFile.cpp">
       <Filter>Исходные файлы</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Bus.h">
-      <Filter>Файлы заголовков\Bus</Filter>
-    </ClInclude>
-    <ClInclude Include="GPU.h">
+    <ClInclude Include="src\Status.h">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
-    <ClInclude Include="MainWindow.h">
-      <Filter>Файлы заголовков</Filter>
-    </ClInclude>
-    <ClInclude Include="Memory.h">
+    <ClInclude Include="src\Bus.h">
       <Filter>Файлы заголовков\Bus</Filter>
     </ClInclude>
-    <ClInclude Include="olcPixelGameEngine.h">
+    <ClInclude Include="src\BusDevice.h">
+      <Filter>Файлы заголовков</Filter>
+    </ClInclude>
+    <ClInclude Include="src\GPU.h">
+      <Filter>Файлы заголовков\Bus</Filter>
+    </ClInclude>
+    <ClInclude Include="src\MainWindow.h">
+      <Filter>Файлы заголовков</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Memory.h">
+      <Filter>Файлы заголовков\Bus</Filter>
+    </ClInclude>
+    <ClInclude Include="src\olcPixelGameEngine.h">
       <Filter>Файлы заголовков\GUI LIB</Filter>
     </ClInclude>
-    <ClInclude Include="Ox64cmCPU.h">
+    <ClInclude Include="src\Ox64cmCPU.h">
       <Filter>Файлы заголовков\CPU</Filter>
     </ClInclude>
-    <ClInclude Include="RegisterFile.h">
+    <ClInclude Include="src\Process.h">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
-    <ClInclude Include="Status.h">
-      <Filter>Файлы заголовков</Filter>
-    </ClInclude>
-    <ClInclude Include="Process.h">
-      <Filter>Файлы заголовков</Filter>
-    </ClInclude>
-    <ClInclude Include="BusDevice.h">
+    <ClInclude Include="src\RegisterFile.h">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
   </ItemGroup>

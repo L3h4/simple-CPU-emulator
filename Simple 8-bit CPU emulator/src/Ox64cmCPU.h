@@ -39,13 +39,14 @@ public:
 	std::vector<DisassembledInstruction> get_disassembly(u16 start, u16 size);
 
 
-	RegisterFile regs;
 
-
+	RegisterFile & get_registers();
 	
 
 
 private:
+
+	RegisterFile regs;
 
 	enum ArgType // Перречисление всех типов аргументов (8бит. значение, 16бит. значение, регистр ...)
 	{
@@ -62,20 +63,13 @@ private:
 		WORD
 	};
 
-	//struct Instructin
-	//{
-	//	std::string name; // текстовое представление, нужно для вывода  дизассембли
-	//	void(Ox64cmCPU::*execute)(void) = nullptr; // указатель на обработчик операции
-	//	std::string(Ox64cmCPU::*get_arg1)(void) = nullptr; // указатель на "парсер" 1 аргумента, возвращает строку с тем что он там напарсил(нужно для вывода  дизассембли)
-	//	std::string(Ox64cmCPU::*get_arg2)(void) = nullptr; // указатель на "парсер" 2 аргумента, возвращает строку с тем что он там напарсил(нужно для вывода  дизассембли) 
-	//};
 
 	// Обьявление структуры ИНСТРУКЦИЯ
-	struct Instructin
+	struct Instruction
 	{
 		std::string name; // текстовое представление, нужно для вывода  дизассембли
 		DataType data_type;
-		void (Ox64cmCPU::*operate)(Instructin i) = nullptr;
+		void (Ox64cmCPU::*operate)(Instruction i) = nullptr;
 		ArgType arg1_type;
 		ArgType arg2_type;
 		int size;
@@ -85,34 +79,33 @@ private:
 	{
 		std::string name;
 		void (Ox64cmCPU::*operate)(void) = nullptr;
-		//int permissions = 0;
 	};
 
 	// функции / операции
-	void MOV(Instructin i);
-	void ADD(Instructin i);
-	void SUB(Instructin i);
-	void CMP(Instructin i);
-	void JMP(Instructin i);
-	void JE(Instructin i);
-	void JNE(Instructin i);
-	void JL(Instructin i);
-	void JG(Instructin i);
-	void JLE(Instructin i);
-	void JGE(Instructin i);
+	void MOV(Instruction i);
+	void ADD(Instruction i);
+	void SUB(Instruction i);
+	void CMP(Instruction i);
+	void JMP(Instruction i);
+	void JE(Instruction i);
+	void JNE(Instruction i);
+	void JL(Instruction i);
+	void JG(Instruction i);
+	void JLE(Instruction i);
+	void JGE(Instruction i);
 
-	void PUSH(Instructin i);
-	void POP(Instructin i);
+	void PUSH(Instruction i);
+	void POP(Instruction i);
 
-	void CALL(Instructin i);
-	void RET(Instructin i);
+	void CALL(Instruction i);
+	void RET(Instruction i);
 
-	void NOP(Instructin i);
-	void HLT(Instructin i);
+	void NOP(Instruction i);
+	void HLT(Instruction i);
 
-	void SYSCALL(Instructin i);
+	void SYSCALL(Instruction i);
 
-	void ERR(Instructin i);
+	void ERR(Instruction i);
 
 	std::string cout_buffer;
 
@@ -125,7 +118,7 @@ private:
 
 	Bus* bus;
 	Status* status;
-	std::vector<Instructin> opcodes;
+	std::vector<Instruction> opcodes;
 	std::vector<Syscall_instruction> syscalls;
 
 private:
@@ -163,12 +156,12 @@ private:
 
 	std::string parse_arg(u16& PC, ArgType arg_type, DataType data_type);
 
-	//template<typename T>
-	u8 parse_2nd_arg_value8(Instructin i);
-	u16 parse_2nd_arg_value16(Instructin i);
 
-	u8 parse_1st_arg_value8(Instructin i);
-	u16 parse_1st_arg_value16(Instructin i);
+	u8 parse_2nd_arg_value8(Instruction i);
+	u16 parse_2nd_arg_value16(Instruction i);
+
+	u8 parse_1st_arg_value8(Instruction i);
+	u16 parse_1st_arg_value16(Instruction i);
 	
 	
 	// определения инструкций

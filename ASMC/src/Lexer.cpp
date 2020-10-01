@@ -114,7 +114,7 @@ void Lexer::analise_named_pointers()
 		{
 			for (auto p : definitions)
 			{
- 				if (utilities::delete_brackets(program[i].arg0) == p.name)
+ 				if (delete_brackets(program[i].arg0) == p.name)
 				{
 					program[i].arg0 = std::to_string(p.address);
 					program[i].uses_POINT = false;

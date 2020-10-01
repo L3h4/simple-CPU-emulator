@@ -58,8 +58,8 @@ void Ox64cmCPU::step()
 {
 	try
 	{
-		u8 opcode = bus->RAM.fetch_instruction(regs.PC.value);
-		Instructin inst = opcodes[opcode];
+		u8 opcode = bus->get_RAM().fetch_instruction(regs.PC.value);
+		Instruction inst = opcodes[opcode];
 
 		(this->*opcodes[opcode].operate)(inst);
 	}
@@ -86,7 +86,7 @@ void Ox64cmCPU::reset()
 	status->erorr = false;
 	status->execute_til_hlt = false;
 	//status->exit = false;
-	bus->gpu.clear_buffer();
+	bus->get_GPU().clear_buffer();
 	cout_buffer = "";
 }
 
@@ -104,9 +104,9 @@ void Ox64cmCPU::print_disassembly(u16 start, u16 size)
 	{
 		char instruction_str[70];
 		PC_backup = PC;
-		u8 opcode = bus->RAM.fetch_instruction(PC);
+		u8 opcode = bus->get_RAM().fetch_instruction(PC);
 		
-		Instructin inst = opcodes[opcode];
+		Instruction inst = opcodes[opcode];
 
 		if (inst.arg1_type == NO_ARG && inst.arg2_type == NO_ARG)
 		{
@@ -139,9 +139,9 @@ std::vector<DisassembledInstruction> Ox64cmCPU::get_disassembly(u16 start, u16 s
 	{
 		char instruction_str[70];
 		PC_backup = PC;
-		u8 opcode = bus->RAM.fetch_instruction(PC);
+		u8 opcode = bus->get_RAM().fetch_instruction(PC);
 
-		Instructin inst = opcodes[opcode];
+		Instruction inst = opcodes[opcode];
 
 		if (inst.arg1_type == NO_ARG && inst.arg2_type == NO_ARG)
 		{
@@ -163,16 +163,21 @@ std::vector<DisassembledInstruction> Ox64cmCPU::get_disassembly(u16 start, u16 s
 	return disassembled;
 }
 
+RegisterFile & Ox64cmCPU::get_registers()
+{
+	return regs;
+}
 
 
 
-void Ox64cmCPU::MOV(Instructin i)
+
+void Ox64cmCPU::MOV(Instruction i)
 {
 	if (i.data_type == BYTE)
 	{
 		if (i.arg1_type == REGISTER)
 		{
-			u8 dest = bus->RAM.read<u8>(++regs.PC.value);
+			u8 dest = bus->get_RAM().read<u8>(++regs.PC.value);
 			u8 operand2 = parse_2nd_arg_value8(i);
 
 			regs.write<u8>(dest, operand2);
@@ -180,24 +185,24 @@ void Ox64cmCPU::MOV(Instructin i)
 		else if (i.arg1_type == PTR_IN_NUMBER)
 		{
 			regs.PC.value++;
-			u16 dest = bus->RAM.read<u16>(regs.PC.value++);
+			u16 dest = bus->get_RAM().read<u16>(regs.PC.value++);
 			u8 operand2 = parse_2nd_arg_value8(i);
 
-			bus->RAM.write<u8>(dest, operand2);
+			bus->get_RAM().write<u8>(dest, operand2);
 		}
 		else if (i.arg1_type == PTR_IN_REGISTER)
 		{
-			u16 dest = regs.read<u16>(bus->RAM.read<u8>(++regs.PC.value));
+			u16 dest = regs.read<u16>(bus->get_RAM().read<u8>(++regs.PC.value));
 			u8 operand2 = parse_2nd_arg_value8(i);
 
-			bus->RAM.write<u8>(dest, operand2);
+			bus->get_RAM().write<u8>(dest, operand2);
 		}
 	}
 	else if (i.data_type == WORD)
 	{
 		if (i.arg1_type == REGISTER)
 		{
-			u8 dest = bus->RAM.read<u8>(++regs.PC.value);
+			u8 dest = bus->get_RAM().read<u8>(++regs.PC.value);
 			u16 operand2 = parse_2nd_arg_value16(i);
 
 			regs.write<u16>(dest, operand2);
@@ -205,23 +210,23 @@ void Ox64cmCPU::MOV(Instructin i)
 		else if (i.arg1_type == PTR_IN_NUMBER)
 		{
 			regs.PC.value++;
-			u16 dest = bus->RAM.read<u16>(regs.PC.value++);
+			u16 dest = bus->get_RAM().read<u16>(regs.PC.value++);
 			u16 operand2 = parse_2nd_arg_value16(i);
 
-			bus->RAM.write<u16>(dest, operand2);
+			bus->get_RAM().write<u16>(dest, operand2);
 		}
 		else if (i.arg1_type == PTR_IN_REGISTER)
 		{
-			u16 dest = regs.read<u16>(bus->RAM.read<u8>(++regs.PC.value));
+			u16 dest = regs.read<u16>(bus->get_RAM().read<u8>(++regs.PC.value));
 			u16 operand2 = parse_2nd_arg_value16(i);
 
-			bus->RAM.write<u16>(dest, operand2);
+			bus->get_RAM().write<u16>(dest, operand2);
 		}
 	}
 	regs.PC.value++;
 }
 
-void Ox64cmCPU::ADD(Instructin i)
+void Ox64cmCPU::ADD(Instruction i)
 {
 	
 	this->regs.STATUS.C = false;
@@ -231,7 +236,7 @@ void Ox64cmCPU::ADD(Instructin i)
 	{
 		if (i.arg1_type == REGISTER)
 		{
-			u8 dest = bus->RAM.read<u8>(++regs.PC.value);
+			u8 dest = bus->get_RAM().read<u8>(++regs.PC.value);
 			u8 operand1 = regs.read<u8>(dest);
 			u8 operand2 = parse_2nd_arg_value8(i);
 
@@ -240,26 +245,26 @@ void Ox64cmCPU::ADD(Instructin i)
 		else if (i.arg1_type == PTR_IN_NUMBER)
 		{
 			regs.PC.value++;
-			u16 dest = bus->RAM.read<u16>(regs.PC.value++);
-			u8 operand1 = bus->RAM.read<u8>(dest);
+			u16 dest = bus->get_RAM().read<u16>(regs.PC.value++);
+			u8 operand1 = bus->get_RAM().read<u8>(dest);
 			u8 operand2 = parse_2nd_arg_value8(i);
 
-			bus->RAM.write<u8>(dest, add(operand1, operand2));
+			bus->get_RAM().write<u8>(dest, add(operand1, operand2));
 		}
 		else if (i.arg1_type == PTR_IN_REGISTER)
 		{
-			u16 dest = regs.read<u16>(bus->RAM.read<u8>(++regs.PC.value));
-			u8 operand1 = bus->RAM.read<u8>(dest);
+			u16 dest = regs.read<u16>(bus->get_RAM().read<u8>(++regs.PC.value));
+			u8 operand1 = bus->get_RAM().read<u8>(dest);
 			u8 operand2 = parse_2nd_arg_value8(i);
 
-			bus->RAM.write<u8>(dest, add(operand1, operand2));
+			bus->get_RAM().write<u8>(dest, add(operand1, operand2));
 		}
 	}
 	else if (i.data_type == WORD)
 	{
 		if (i.arg1_type == REGISTER)
 		{
-			u8 dest = bus->RAM.read<u8>(++regs.PC.value);
+			u8 dest = bus->get_RAM().read<u8>(++regs.PC.value);
 			u16 operand1 = regs.read<u16>(dest);
 			u16 operand2 = parse_2nd_arg_value16(i);
 
@@ -268,25 +273,25 @@ void Ox64cmCPU::ADD(Instructin i)
 		else if (i.arg1_type == PTR_IN_NUMBER)
 		{
 			regs.PC.value++;
-			u16 dest = bus->RAM.read<u16>(regs.PC.value++);
-			u16 operand1 = bus->RAM.read<u16>(dest);
+			u16 dest = bus->get_RAM().read<u16>(regs.PC.value++);
+			u16 operand1 = bus->get_RAM().read<u16>(dest);
 			u16 operand2 = parse_2nd_arg_value16(i);
 
-			bus->RAM.write<u16>(dest, add(operand1, operand2));
+			bus->get_RAM().write<u16>(dest, add(operand1, operand2));
 		}
 		else if (i.arg1_type == PTR_IN_REGISTER)
 		{
-			u16 dest = regs.read<u16>(bus->RAM.read<u8>(++regs.PC.value));
-			u16 operand1 = bus->RAM.read<u16>(dest);
+			u16 dest = regs.read<u16>(bus->get_RAM().read<u8>(++regs.PC.value));
+			u16 operand1 = bus->get_RAM().read<u16>(dest);
 			u16 operand2 = parse_2nd_arg_value16(i);
 
-			bus->RAM.write<u16>(dest, add(operand1, operand2));
+			bus->get_RAM().write<u16>(dest, add(operand1, operand2));
 		}
 	}
 	regs.PC.value++;
 }
 
-void Ox64cmCPU::SUB(Instructin i)
+void Ox64cmCPU::SUB(Instruction i)
 {
 	this->regs.STATUS.C = false;
 	this->regs.STATUS.Z = false;
@@ -295,7 +300,7 @@ void Ox64cmCPU::SUB(Instructin i)
 	{
 		if (i.arg1_type == REGISTER)
 		{
-			u8 dest = bus->RAM.read<u8>(++regs.PC.value);
+			u8 dest = bus->get_RAM().read<u8>(++regs.PC.value);
 			u8 operand1 = regs.read<u8>(dest);
 			u8 operand2 = parse_2nd_arg_value8(i);
 
@@ -304,26 +309,26 @@ void Ox64cmCPU::SUB(Instructin i)
 		else if (i.arg1_type == PTR_IN_NUMBER)
 		{
 			regs.PC.value++;
-			u16 dest = bus->RAM.read<u16>(regs.PC.value++);
-			u8 operand1 = bus->RAM.read<u8>(dest);
+			u16 dest = bus->get_RAM().read<u16>(regs.PC.value++);
+			u8 operand1 = bus->get_RAM().read<u8>(dest);
 			u8 operand2 = parse_2nd_arg_value8(i);
 
-			bus->RAM.write<u8>(dest, sub(operand1, operand2));
+			bus->get_RAM().write<u8>(dest, sub(operand1, operand2));
 		}
 		else if (i.arg1_type == PTR_IN_REGISTER)
 		{
-			u16 dest = regs.read<u16>(bus->RAM.read<u8>(++regs.PC.value));
-			u8 operand1 = bus->RAM.read<u8>(dest);
+			u16 dest = regs.read<u16>(bus->get_RAM().read<u8>(++regs.PC.value));
+			u8 operand1 = bus->get_RAM().read<u8>(dest);
 			u8 operand2 = parse_2nd_arg_value8(i);
 
-			bus->RAM.write<u8>(dest, sub(operand1, operand2));
+			bus->get_RAM().write<u8>(dest, sub(operand1, operand2));
 		}
 	}
 	else if (i.data_type == WORD)
 	{
 		if (i.arg1_type == REGISTER)
 		{
-			u8 dest = bus->RAM.read<u8>(++regs.PC.value);
+			u8 dest = bus->get_RAM().read<u8>(++regs.PC.value);
 			u16 operand1 = regs.read<u16>(dest);
 			u16 operand2 = parse_2nd_arg_value16(i);
 
@@ -332,25 +337,25 @@ void Ox64cmCPU::SUB(Instructin i)
 		else if (i.arg1_type == PTR_IN_NUMBER)
 		{
 			regs.PC.value++;
-			u16 dest = bus->RAM.read<u16>(regs.PC.value++);
-			u16 operand1 = bus->RAM.read<u16>(dest);
+			u16 dest = bus->get_RAM().read<u16>(regs.PC.value++);
+			u16 operand1 = bus->get_RAM().read<u16>(dest);
 			u16 operand2 = parse_2nd_arg_value16(i);
 
-			bus->RAM.write<u16>(dest, sub(operand1, operand2));
+			bus->get_RAM().write<u16>(dest, sub(operand1, operand2));
 		}
 		else if (i.arg1_type == PTR_IN_REGISTER)
 		{
-			u16 dest = regs.read<u16>(bus->RAM.read<u8>(++regs.PC.value));
-			u16 operand1 = bus->RAM.read<u16>(dest);
+			u16 dest = regs.read<u16>(bus->get_RAM().read<u8>(++regs.PC.value));
+			u16 operand1 = bus->get_RAM().read<u16>(dest);
 			u16 operand2 = parse_2nd_arg_value16(i);
 
-			bus->RAM.write<u16>(dest, sub(operand1, operand2));
+			bus->get_RAM().write<u16>(dest, sub(operand1, operand2));
 		}
 	}
 	regs.PC.value++;
 }
 
-void Ox64cmCPU::CMP(Instructin i)
+void Ox64cmCPU::CMP(Instruction i)
 {
 	this->regs.STATUS.C = false;
 	this->regs.STATUS.Z = false;
@@ -372,13 +377,13 @@ void Ox64cmCPU::CMP(Instructin i)
 	regs.PC.value++;
 }
 
-void Ox64cmCPU::JMP(Instructin i)
+void Ox64cmCPU::JMP(Instruction i)
 {
 	u16 address = parse_1st_arg_value16(i);
 	regs.PC.value = address;
 }
 
-void Ox64cmCPU::JE(Instructin i)
+void Ox64cmCPU::JE(Instruction i)
 {
 	u16 address = parse_1st_arg_value16(i);
 
@@ -388,7 +393,7 @@ void Ox64cmCPU::JE(Instructin i)
 		regs.PC.value++;
 }
 
-void Ox64cmCPU::JNE(Instructin i)
+void Ox64cmCPU::JNE(Instruction i)
 {
 	u16 address = parse_1st_arg_value16(i);
 
@@ -398,7 +403,7 @@ void Ox64cmCPU::JNE(Instructin i)
 		regs.PC.value++;
 }
 
-void Ox64cmCPU::JL(Instructin i)
+void Ox64cmCPU::JL(Instruction i)
 {
 	u16 address = parse_1st_arg_value16(i);
 
@@ -408,7 +413,7 @@ void Ox64cmCPU::JL(Instructin i)
 		regs.PC.value++;
 }
 
-void Ox64cmCPU::JG(Instructin i)
+void Ox64cmCPU::JG(Instruction i)
 {
 	u16 address = parse_1st_arg_value16(i);
 
@@ -418,7 +423,7 @@ void Ox64cmCPU::JG(Instructin i)
 		regs.PC.value++;
 }
 
-void Ox64cmCPU::JLE(Instructin i)
+void Ox64cmCPU::JLE(Instruction i)
 {
 	u16 address = parse_1st_arg_value16(i);
 
@@ -428,7 +433,7 @@ void Ox64cmCPU::JLE(Instructin i)
 		regs.PC.value++;
 }
 
-void Ox64cmCPU::JGE(Instructin i)
+void Ox64cmCPU::JGE(Instruction i)
 {
 	u16 address = parse_1st_arg_value16(i);
 
@@ -438,7 +443,7 @@ void Ox64cmCPU::JGE(Instructin i)
 		regs.PC.value++;
 }
 
-void Ox64cmCPU::PUSH(Instructin i)
+void Ox64cmCPU::PUSH(Instruction i)
 {
 	if (regs.SP.value < 0x07EF - 0xFF)
 	{
@@ -449,20 +454,20 @@ void Ox64cmCPU::PUSH(Instructin i)
 	if (i.data_type == BYTE)
 	{
 		u8 value = parse_1st_arg_value8(i);
-		bus->RAM.write<u8>(regs.SP.value, value);
+		bus->get_RAM().write<u8>(regs.SP.value, value);
 		regs.SP.value--;
 	}
 	else if (i.data_type == WORD)
 	{
 		u16 value = parse_1st_arg_value16(i);
 		regs.SP.value--;
-		bus->RAM.write<u16>(regs.SP.value, value);
+		bus->get_RAM().write<u16>(regs.SP.value, value);
 		regs.SP.value--;
 	}
 	regs.PC.value++;
 }
 
-void Ox64cmCPU::POP(Instructin i)
+void Ox64cmCPU::POP(Instruction i)
 {
 	if (i.data_type == BYTE)
 	{
@@ -472,25 +477,25 @@ void Ox64cmCPU::POP(Instructin i)
 			throw "stack empty";
 		}
 
-		u8 value = bus->RAM.read<u8>(++regs.SP.value);
+		u8 value = bus->get_RAM().read<u8>(++regs.SP.value);
 		if (i.arg1_type == REGISTER)
 		{
-			u8 dest = bus->RAM.read<u8>(++regs.PC.value);
+			u8 dest = bus->get_RAM().read<u8>(++regs.PC.value);
 			
 			regs.write<u8>(dest, value);
 		}
 		else if (i.arg1_type == PTR_IN_REGISTER)
 		{
-			u16 dest = regs.read<u16>(bus->RAM.read<u8>(++regs.PC.value));
+			u16 dest = regs.read<u16>(bus->get_RAM().read<u8>(++regs.PC.value));
 			
-			bus->RAM.write<u8>(dest, value);
+			bus->get_RAM().write<u8>(dest, value);
 		}
 		else if (i.arg1_type == PTR_IN_NUMBER)
 		{
 			regs.PC.value++;
-			u16 dest = bus->RAM.read<u16>(regs.PC.value++);
+			u16 dest = bus->get_RAM().read<u16>(regs.PC.value++);
 			
-			bus->RAM.write<u8>(dest, value);
+			bus->get_RAM().write<u8>(dest, value);
 		}
 	}
 	else if (i.data_type == WORD)
@@ -502,30 +507,30 @@ void Ox64cmCPU::POP(Instructin i)
 		}
 
 		regs.SP.value++;
-		u16 value = bus->RAM.read<u16>(regs.SP.value++);
+		u16 value = bus->get_RAM().read<u16>(regs.SP.value++);
 		if (i.arg1_type == REGISTER)
 		{
-			u8 dest = bus->RAM.read<u8>(++regs.PC.value);
+			u8 dest = bus->get_RAM().read<u8>(++regs.PC.value);
 			regs.write<u16>(dest, value);
 		}
 		else if (i.arg1_type == PTR_IN_REGISTER)
 		{
-			u16 dest = regs.read<u16>(bus->RAM.read<u8>(++regs.PC.value));
+			u16 dest = regs.read<u16>(bus->get_RAM().read<u8>(++regs.PC.value));
 	
-			bus->RAM.write<u16>(dest, value);
+			bus->get_RAM().write<u16>(dest, value);
 		}
 		else if (i.arg1_type == PTR_IN_NUMBER)
 		{
 			regs.PC.value++;
-			u16 dest = bus->RAM.read<u16>(regs.PC.value++);
+			u16 dest = bus->get_RAM().read<u16>(regs.PC.value++);
 	
-			bus->RAM.write<u16>(dest, value);
+			bus->get_RAM().write<u16>(dest, value);
 		}
 	}
 	regs.PC.value++;
 }
 
-void Ox64cmCPU::CALL(Instructin i)
+void Ox64cmCPU::CALL(Instruction i)
 {
 	if (regs.SP.value < 0x07EF - 0xFF)
 	{
@@ -536,13 +541,13 @@ void Ox64cmCPU::CALL(Instructin i)
 	u16 value = parse_1st_arg_value16(i);
 	regs.SP.value--;
 	regs.PC.value++;
-	bus->RAM.write<u16>(regs.SP.value, regs.PC.value);
+	bus->get_RAM().write<u16>(regs.SP.value, regs.PC.value);
 	regs.SP.value--;
 
 	regs.PC.value = value;
 }
 
-void Ox64cmCPU::RET(Instructin i)
+void Ox64cmCPU::RET(Instruction i)
 {
 	if (regs.SP.value > 0x07EF - 1)
 	{
@@ -551,24 +556,24 @@ void Ox64cmCPU::RET(Instructin i)
 	}
 
 	regs.SP.value++;
-	u16 value = bus->RAM.read<u16>(regs.SP.value);
+	u16 value = bus->get_RAM().read<u16>(regs.SP.value);
 	regs.SP.value++;
 
 	regs.PC.value = value;
 }
 
-void Ox64cmCPU::NOP(Instructin i)
+void Ox64cmCPU::NOP(Instruction i)
 {
 	regs.PC.value++;
 }
 
-void Ox64cmCPU::HLT(Instructin i)
+void Ox64cmCPU::HLT(Instruction i)
 {
 	status->execute_til_hlt = false;
 	printf("Program finished\n");
 }
 
-void Ox64cmCPU::SYSCALL(Instructin i)
+void Ox64cmCPU::SYSCALL(Instruction i)
 {
 	if (regs.AX.lo < syscalls.size())
 		(this->*syscalls[regs.AX.lo].operate)();
@@ -577,7 +582,7 @@ void Ox64cmCPU::SYSCALL(Instructin i)
 	regs.PC.value++;
 }
 
-void Ox64cmCPU::ERR(Instructin i)
+void Ox64cmCPU::ERR(Instruction i)
 {
 	throw "Bad instruction";
 }
@@ -600,88 +605,88 @@ void Ox64cmCPU::cout_buf_clear_syscall()
 
 void Ox64cmCPU::display_clear_syscall()
 {
-	bus->gpu.clear_buffer();
+	bus->get_GPU().clear_buffer();
 }
 
 void Ox64cmCPU::cout_buf_print_syscall()
 {
 	//printf("%s", cout_buffer.c_str());
-	bus->gpu.print_text(cout_buffer);
+	bus->get_GPU().print_text(cout_buffer);
 }
 
 
-u8 Ox64cmCPU::parse_1st_arg_value8(Instructin i)
+u8 Ox64cmCPU::parse_1st_arg_value8(Instruction i)
 {
 	u8 operand = 0;
 
 
 	if (i.arg1_type == NUMBER)
 	{
-		operand = bus->RAM.read<u8>(++regs.PC.value);
+		operand = bus->get_RAM().read<u8>(++regs.PC.value);
 	}
 	else if (i.arg1_type == REGISTER)
 	{
-		operand = regs.read<u8>(bus->RAM.read<u8>(++regs.PC.value));
+		operand = regs.read<u8>(bus->get_RAM().read<u8>(++regs.PC.value));
 	}
 	else if (i.arg1_type == PTR_IN_NUMBER)
 	{
 		regs.PC.value++;
-		operand = bus->RAM.read<u8>(bus->RAM.read<u16>(regs.PC.value++));
+		operand = bus->get_RAM().read<u8>(bus->get_RAM().read<u16>(regs.PC.value++));
 	}
 	else if (i.arg1_type == PTR_IN_REGISTER)
 	{
-		operand = bus->RAM.read<u8>(regs.read<u16>(bus->RAM.read<u8>(++regs.PC.value)));
+		operand = bus->get_RAM().read<u8>(regs.read<u16>(bus->get_RAM().read<u8>(++regs.PC.value)));
 	}
 
 	return operand;
 }
 
-u16 Ox64cmCPU::parse_1st_arg_value16(Instructin i)
+u16 Ox64cmCPU::parse_1st_arg_value16(Instruction i)
 {
 	u16 operand = 0;
 	if (i.arg1_type == NUMBER)
 	{
 		regs.PC.value++;
-		operand = bus->RAM.read<u16>(regs.PC.value++);
+		operand = bus->get_RAM().read<u16>(regs.PC.value++);
 	}
 	else if (i.arg1_type == REGISTER)
 	{
-		operand = regs.read<u16>(bus->RAM.read<u8>(++regs.PC.value));
+		operand = regs.read<u16>(bus->get_RAM().read<u8>(++regs.PC.value));
 	}
 	else if (i.arg1_type == PTR_IN_NUMBER)
 	{
 		regs.PC.value++;
-		operand = bus->RAM.read<u16>(bus->RAM.read<u16>(regs.PC.value++));
+		operand = bus->get_RAM().read<u16>(bus->get_RAM().read<u16>(regs.PC.value++));
 	}
 	else if (i.arg1_type == PTR_IN_REGISTER)
 	{
-		operand = bus->RAM.read<u16>(regs.read<u16>(bus->RAM.read<u8>(++regs.PC.value)));
+		operand = bus->get_RAM().read<u16>(regs.read<u16>(bus->get_RAM().read<u8>(++regs.PC.value)));
 	}
 	return operand;
 }
 
 
 
-u16 Ox64cmCPU::parse_2nd_arg_value16(Instructin i)
+u16 Ox64cmCPU::parse_2nd_arg_value16(Instruction i)
 {
 	u16 operand = 0;
 	if (i.arg2_type == NUMBER)
 	{
 		regs.PC.value++;
-		operand = bus->RAM.read<u16>(regs.PC.value++);
+		operand = bus->get_RAM().read<u16>(regs.PC.value++);
 	}
 	else if (i.arg2_type == REGISTER)
 	{
-		operand = regs.read<u16>(bus->RAM.read<u8>(++regs.PC.value));
+		operand = regs.read<u16>(bus->get_RAM().read<u8>(++regs.PC.value));
 	}
 	else if (i.arg2_type == PTR_IN_NUMBER)
 	{
 		regs.PC.value++;
-		operand = bus->RAM.read<u16>(bus->RAM.read<u16>(regs.PC.value++));
+		operand = bus->get_RAM().read<u16>(bus->get_RAM().read<u16>(regs.PC.value++));
 	}
 	else if (i.arg2_type == PTR_IN_REGISTER)
 	{
-		operand = bus->RAM.read<u16>(regs.read<u16>(bus->RAM.read<u8>(++regs.PC.value)));
+		operand = bus->get_RAM().read<u16>(regs.read<u16>(bus->get_RAM().read<u8>(++regs.PC.value)));
 	}
 	return operand;
 }
@@ -696,51 +701,51 @@ std::string Ox64cmCPU::parse_arg(u16 & PC, ArgType arg_type, DataType data_type)
 
 	if (arg_type == NUMBER && data_type == BYTE)
 	{
-		sprintf_s(str, "0x%.2X", bus->RAM.read<u8>(++PC));
+		sprintf_s(str, "0x%.2X", bus->get_RAM().read<u8>(++PC));
 	}
 	else if (arg_type == NUMBER)
 	{
 		PC++;
-		sprintf_s(str, "0x%.4X", bus->RAM.read<u16>(PC++));
+		sprintf_s(str, "0x%.4X", bus->get_RAM().read<u16>(PC++));
 	}
 	else if (arg_type == REGISTER)
 	{
-		sprintf_s(str, "%s", regs.get_string_name(bus->RAM.read<u8>(++PC)).c_str());
+		sprintf_s(str, "%s", regs.get_string_name(bus->get_RAM().read<u8>(++PC)).c_str());
 	}
 	else if (arg_type == PTR_IN_NUMBER)
 	{
 		PC++;
-		sprintf_s(str, "[0x%.4X]", bus->RAM.read<u16>(PC++));
+		sprintf_s(str, "[0x%.4X]", bus->get_RAM().read<u16>(PC++));
 	}
 	else if (arg_type == PTR_IN_REGISTER)
 	{
-		sprintf_s(str, "[%s]", regs.get_string_name(bus->RAM.read<u8>(++PC)).c_str());
+		sprintf_s(str, "[%s]", regs.get_string_name(bus->get_RAM().read<u8>(++PC)).c_str());
 	}
 
 	return (std::string)str;
 }
 
-u8 Ox64cmCPU::parse_2nd_arg_value8(Instructin i)
+u8 Ox64cmCPU::parse_2nd_arg_value8(Instruction i)
 {
 	u8 operand = 0;
 
 
 	if (i.arg2_type == NUMBER)
 	{
-		operand = bus->RAM.read<u8>(++regs.PC.value);
+		operand = bus->get_RAM().read<u8>(++regs.PC.value);
 	}
 	else if (i.arg2_type == REGISTER)
 	{
-		operand = regs.read<u8>(bus->RAM.read<u8>(++regs.PC.value));
+		operand = regs.read<u8>(bus->get_RAM().read<u8>(++regs.PC.value));
 	}
 	else if (i.arg2_type == PTR_IN_NUMBER)
 	{
 		regs.PC.value++;
-		operand = bus->RAM.read<u8>(bus->RAM.read<u16>(regs.PC.value++));
+		operand = bus->get_RAM().read<u8>(bus->get_RAM().read<u16>(regs.PC.value++));
 	}
 	else if (i.arg2_type == PTR_IN_REGISTER)
 	{
-		operand = bus->RAM.read<u8>(regs.read<u16>(bus->RAM.read<u8>(++regs.PC.value)));
+		operand = bus->get_RAM().read<u8>(regs.read<u16>(bus->get_RAM().read<u8>(++regs.PC.value)));
 	}
 
 	return operand;

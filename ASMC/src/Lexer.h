@@ -2,8 +2,8 @@
 #include<iostream>
 #include<vector>
 #include<string>
-#include"../Operation/Operation.h"
-#include "../Utilities/CompilingUtilities.h"
+#include"Operation.h"
+#include"CompilingUtilities.h"
 
 // Класс котрый отвечает за лексический анализ и генерацию кода
 class Lexer
